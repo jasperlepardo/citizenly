@@ -16,10 +16,11 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { z } from 'zod';
 
+import { CRITICAL_VALIDATION_FIELDS } from '@/constants/residentFormDefaults';
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-import { CRITICAL_VALIDATION_FIELDS } from '@/constants/residentFormDefaults';
 import { REQUIRED_FIELDS } from '@/services/infrastructure/validation/fieldValidators';
+
 import type {
   ResidentFormData,
   ResidentValidationOptions,
@@ -27,7 +28,7 @@ import type {
   FieldValidationResult,
   ValidationSummary,
   SectionValidationStatus,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Comprehensive resident validation schema
@@ -279,7 +280,7 @@ export function useUnifiedResidentValidation(
     enableRealTimeValidation: false,
     debounceDelay: 300,
     enableAsyncValidation: false,
-    customErrorMessages: {},
+    customErrorMessages: {} as Record<string, string>,
     ...options,
   }), [options]);
 
@@ -486,16 +487,18 @@ export function useUnifiedResidentValidation(
     
     const totalErrors = errorFields.length;
     const totalFields = allRequiredFields.length;
-    const validFields = totalFields - totalErrors;
-    const progressPercentage = getValidationProgress(errorsToUse);
-    
+    const validatedFields = totalFields; // All fields have been processed
+    const invalidFields = totalErrors;
+    const progress = getValidationProgress(errorsToUse);
+
     return {
       totalErrors,
       criticalErrors,
       warnings: 0,
       totalFields,
-      validFields,
-      progressPercentage,
+      validatedFields,
+      invalidFields,
+      progress,
     };
   }, [errors, allRequiredFields, getValidationProgress]);
 
@@ -521,11 +524,14 @@ export function useUnifiedResidentValidation(
     const progressPercentage = totalFields > 0 ? Math.round(((totalFields - errorCount) / totalFields) * 100) : 100;
 
     return {
+      sectionId: section,
+      sectionName: section,
       section,
       isValid,
       errorCount,
       totalFields,
       progressPercentage,
+      hasValidated: true,
     };
   }, [errors]);
 
@@ -611,7 +617,7 @@ export function useUnifiedResidentValidation(
 }
 
 // Export types
-export type { ResidentFormData } from '@/types';
+export type { ResidentFormData } from '@/types/domain/residents/forms';
 export type UnifiedResidentValidationReturn = UseUnifiedResidentValidationReturn;
 
 // Export as default

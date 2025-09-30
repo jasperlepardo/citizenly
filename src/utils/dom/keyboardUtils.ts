@@ -28,7 +28,7 @@ export function useCommandMenuShortcut(onToggle: () => void) {
  * Supports both simple callback and advanced dropdown navigation
  */
 export function createDropdownKeyHandler(
-  options: 
+  options:
     | (() => void) // Simple callback for basic dropdowns
     | {
         isOpen: boolean;
@@ -38,6 +38,7 @@ export function createDropdownKeyHandler(
         onClose: () => void;
         onSelect: (index: number) => void;
         onNavigate: (index: number) => void;
+        searchable?: boolean; // New flag to indicate if this is a searchable input
       } // Advanced options for Select component
 ) {
   return (event: React.KeyboardEvent) => {
@@ -51,7 +52,7 @@ export function createDropdownKeyHandler(
     }
 
     // Advanced dropdown navigation
-    const { isOpen, selectedIndex, itemCount, onOpen, onClose, onSelect, onNavigate } = options;
+    const { isOpen, selectedIndex, itemCount, onOpen, onClose, onSelect, onNavigate, searchable = false } = options;
 
     switch (event.key) {
       case 'ArrowDown':
@@ -84,11 +85,24 @@ export function createDropdownKeyHandler(
         break;
 
       case ' ':
-        event.preventDefault();
-        if (isOpen && selectedIndex >= 0) {
-          onSelect(selectedIndex);
+        // For searchable inputs: only prevent spacebar if explicitly navigating to an option
+        // For non-searchable inputs: use traditional dropdown behavior
+        if (searchable) {
+          // Searchable input: only prevent spacebar if user has navigated to an option
+          if (isOpen && selectedIndex >= 0) {
+            event.preventDefault();
+            onSelect(selectedIndex);
+          }
+          // Otherwise allow spacebar for typing in searchable inputs
         } else {
-          onOpen();
+          // Non-searchable input: traditional dropdown behavior
+          if (isOpen && selectedIndex >= 0) {
+            event.preventDefault();
+            onSelect(selectedIndex);
+          } else if (!isOpen) {
+            event.preventDefault();
+            onOpen();
+          }
         }
         break;
 

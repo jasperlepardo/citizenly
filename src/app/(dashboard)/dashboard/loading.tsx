@@ -15,9 +15,9 @@ export default function DashboardPageLoading() {
 
       {/* Stats Cards */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {Array.from({ length: 4 }, (_, i) => ({ id: `stats-card-${Date.now()}-${i}` })).map((item) => (
           <div
-            key={`stats-card-${i}`}
+            key={item.id}
             className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
           >
             <div className="flex items-center justify-between">
@@ -61,8 +61,8 @@ export default function DashboardPageLoading() {
             <div className="h-6 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
           <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={`recent-item-${i}`} className="flex items-center space-x-4">
+            {Array.from({ length: 5 }, (_, i) => ({ id: `recent-item-${Date.now()}-${i}` })).map((item) => (
+              <div key={item.id} className="flex items-center space-x-4">
                 <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                 <div className="flex-1">
                   <div className="mb-1 h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
@@ -80,8 +80,8 @@ export default function DashboardPageLoading() {
             <div className="h-6 w-28 rounded bg-gray-200 dark:bg-gray-700"></div>
           </div>
           <div className="space-y-3">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={`action-${i}`} className="h-10 rounded bg-gray-200 dark:bg-gray-700"></div>
+            {Array.from({ length: 4 }, (_, i) => ({ id: `action-${Date.now()}-${i}` })).map((item) => (
+              <div key={item.id} className="h-10 rounded bg-gray-200 dark:bg-gray-700"></div>
             ))}
           </div>
         </div>

@@ -25,8 +25,8 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   // Physical Characteristics
   blood_type: null,
   complexion: '',
-  height: 0,
-  weight: 0,
+  height: '',
+  weight: '',
   religion: null,
   religion_others_specify: '',
   // Voting Information
@@ -38,12 +38,6 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   // Voting Information
   is_voter: null,
   is_resident_voter: null,
-  // System fields
-  is_active: true,
-  created_by: null,
-  updated_by: null,
-  created_at: null,
-  updated_at: null,
   // Note: Sectoral and migration information are handled separately
   // These properties are stored in separate tables (resident_sectoral_info, resident_migrant_info)
   // and should not be part of the core ResidentFormData interface

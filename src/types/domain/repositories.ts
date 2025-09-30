@@ -3,10 +3,11 @@
  * Pure interfaces with no infrastructure dependencies
  */
 
+import type { RepositoryResult } from '../infrastructure/services/repositories';
+
+import type { HouseholdData } from './households/households';
 import type { Resident } from './residents/core';
 import type { ResidentFormData } from './residents/forms';
-import type { HouseholdData } from './households/households';
-import type { RepositoryResult } from '../infrastructure/services/repositories';
 
 /**
  * Base Repository Interface
@@ -66,10 +67,20 @@ export interface IHouseholdRepository extends BaseRepository<HouseholdData> {
  * Auth Repository Interface
  */
 export interface IAuthRepository {
+  // Authentication methods
+  signUp(email: string, password: string, userData?: any): Promise<RepositoryResult<any>>;
+  signIn(email: string, password: string): Promise<RepositoryResult<any>>;
+  signOut(): Promise<RepositoryResult<boolean>>;
+  getCurrentUser(): Promise<RepositoryResult<any>>;
+
+  // Profile methods
   findUserProfile(userId: string): Promise<RepositoryResult<any>>;
   updateUserProfile(userId: string, data: any): Promise<RepositoryResult<any>>;
   createUserProfile(data: any): Promise<RepositoryResult<any>>;
-  
+  updateProfile(userId: string, data: any): Promise<RepositoryResult<any>>;
+  getProfile(userId: string): Promise<RepositoryResult<any>>;
+
+  // User management
   findUserByEmail(email: string): Promise<RepositoryResult<any>>;
   verifyUserCredentials(email: string, password: string): Promise<RepositoryResult<any>>;
   updateUserPassword(userId: string, newPassword: string): Promise<RepositoryResult<boolean>>;
@@ -102,13 +113,13 @@ export interface ISecurityAuditRepository {
     success: boolean,
     metadata?: any
   ): Promise<RepositoryResult<any>>;
-  
+
   logSecurityEvent(
     event: string,
     userId: string,
     metadata?: any
   ): Promise<RepositoryResult<any>>;
-  
+
   logAuthenticationAttempt(
     userId: string,
     success: boolean,
@@ -116,7 +127,7 @@ export interface ISecurityAuditRepository {
     userAgent?: string,
     metadata?: any
   ): Promise<RepositoryResult<any>>;
-  
+
   logPermissionDenied(
     userId: string,
     resource: string,
@@ -124,6 +135,20 @@ export interface ISecurityAuditRepository {
     reason: string,
     metadata?: any
   ): Promise<RepositoryResult<any>>;
+
+  storeAuditLog(
+    logEntry: any
+  ): Promise<RepositoryResult<any>>;
+
+  storeThreatEvent(
+    threatEvent: any
+  ): Promise<RepositoryResult<any>>;
+
+  queryAuditLogs(
+    filters?: any
+  ): Promise<RepositoryResult<any>>;
+
+  getSecurityStatistics(timeframe?: '24h' | '7d' | '30d'): Promise<RepositoryResult<any>>;
 }
 
 /**

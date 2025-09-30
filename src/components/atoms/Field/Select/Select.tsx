@@ -1,71 +1,52 @@
 /**
  * Enhanced Select Component
- * Follows PSGCSelector patterns for consistency across the application
- * Supports both static enums and API-driven data
+ * Modular, maintainable Select component using custom hooks and utilities
+ *
+ * ACCESSIBILITY NOTE: This component implements a custom combobox pattern using ARIA
+ * instead of native HTML elements (<select>, <input list>) because it provides:
+ * - API-driven search with debouncing
+ * - Infinite scrolling and lazy loading
+ * - Custom option creation
+ * - Rich option rendering (descriptions, badges)
+ * - Advanced keyboard navigation
+ * - Server-side filtering
+ *
+ * The component follows WAI-ARIA 1.2 combobox pattern with proper:
+ * - Role attributes (combobox, listbox, option)
+ * - ARIA states (expanded, selected, activedescendant)
+ * - Keyboard navigation (Arrow keys, Enter, Escape, Tab)
+ * - Screen reader support with proper labeling
  */
 
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo, memo } from 'react';
 
-import { createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
+// Types
+import type { SelectProps } from '@/types/app/ui/select';
 
-import { Input } from '@/components/atoms/Field/Input';
+// Utilities
+import {
+  normalizeOptions,
+  filterStaticOptions,
+  handleInputChangeLogic,
+  handleStaticDataFocus,
+  handleApiDataFocus,
+  handleDropdownToggle,
+  type SelectOption,
+} from '@/utils/ui/selectUtils';
+import { renderLoadMoreSection, renderEmptyState } from '@/utils/ui/selectRenderUtils';
 
-import { Option } from './Option';
+// Hooks
+import { useSelectState } from '@/hooks/ui/useSelectState';
+import { useSelectDropdown } from '@/hooks/ui/useSelectDropdown';
+import { useSelectKeyboard } from '@/hooks/ui/useSelectKeyboard';
 
-export type SelectOption = {
-  value: string;
-  label: string;
-  disabled?: boolean;
-  description?: string;
-  category?: string;
-  badge?: string;
-};
+// Components
+import { Input } from '@/components/atoms/Field/Input/Input';
+import { Option } from './Option/Option';
 
-interface SelectProps {
-  value?: string;
-  onSelect: (option: SelectOption | null) => void;
-  placeholder?: string;
-  className?: string;
-  error?: string;
-  // Data sources
-  options?: SelectOption[];
-  enumData?: Record<string, string> | SelectOption[];
-  // Configuration options
-  name?: string;
-  id?: string;
-  disabled?: boolean;
-  searchable?: boolean;
-  allowCustom?: boolean;
-  // API integration (similar to PSGCSelector)
-  onSearch?: (query: string) => void;
-  loading?: boolean;
-  // Lazy loading support
-  hasMore?: boolean;
-  onLoadMore?: () => void;
-  loadingMore?: boolean;
-  infiniteScroll?: boolean; // Enable infinite scroll vs manual button
-}
-
-// Utility function to convert enum/constant data to SelectOption array
-const normalizeOptions = (
-  data: SelectOption[] | Record<string, string> | undefined
-): SelectOption[] => {
-  if (!data) return [];
-
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  // Convert enum or object to options
-  return Object.entries(data).map(([key, value]) => ({
-    value: key,
-    label: typeof value === 'string' ? value : String(value),
-  }));
-};
-
-export default function Select({
+const SelectComponent: React.FC<SelectProps> = ({
   value,
   onSelect,
   placeholder = 'Select an option...',
@@ -78,40 +59,112 @@ export default function Select({
   disabled = false,
   searchable = true,
   allowCustom = false,
-  onSearch, // For API-driven searches
+  allowCreate = false,
+  onCreateNew,
+  onSearch,
   loading = false,
   hasMore = false,
   onLoadMore,
   loadingMore = false,
-  infiniteScroll = true, // Default to infinite scroll
-}: SelectProps) {
-  const [inputValue, setInputValue] = useState('');
-  const [normalizedOptions, setNormalizedOptions] = useState<SelectOption[]>([]);
-  const [filteredOptions, setFilteredOptions] = useState<SelectOption[]>([]);
-  const [selectedOption, setSelectedOption] = useState<SelectOption | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [dropdownPosition, setDropdownPosition] = useState<'below' | 'above'>('below');
-  const [justSelected, setJustSelected] = useState(false);
+  infiniteScroll = true,
+}) => {
+  // Initialize state using custom hook
+  const state = useSelectState({ value, options, enumData });
 
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const lastSearchRef = useRef<string>('');
+  const {
+    inputValue,
+    setInputValue,
+    normalizedOptions,
+    setNormalizedOptions,
+    filteredOptions,
+    setFilteredOptions,
+    selectedOption,
+    setSelectedOption,
+    showDropdown,
+    setShowDropdown,
+    focusedIndex,
+    setFocusedIndex,
+    dropdownPosition,
+    setDropdownPosition,
+    justSelected,
+    setJustSelected,
+    isCreating,
+    setIsCreating,
+    createError,
+    setCreateError,
+    debounceTimerRef,
+    inputRef,
+    dropdownRef,
+    optionRefs,
+    lastSearchRef,
+  } = state;
 
-  // Generate unique IDs for the form elements
-  const inputId = id || `select-field`;
+  // Initialize dropdown management using custom hook
+  const { calculateDropdownPosition } = useSelectDropdown({
+    inputRef,
+    dropdownRef,
+    optionRefs,
+    filteredOptions,
+    focusedIndex,
+    showDropdown,
+    setShowDropdown,
+    setDropdownPosition,
+    setFocusedIndex,
+  });
+
+  // Generate unique IDs for form elements (memoized)
+  const inputId = useMemo(() => id || 'select-field', [id]);
+
+  // Handle option selection from dropdown (optimized dependencies)
+  const handleOptionSelect = useCallback((option: SelectOption) => {
+    if (option.disabled) return;
+
+    setSelectedOption(option);
+    setInputValue(option.label);
+    setShowDropdown(false);
+    setFocusedIndex(-1);
+    setJustSelected(true);
+
+    // Always reset filtering for static data after selection
+    if (!onSearch && normalizedOptions.length > 0) {
+      setFilteredOptions(normalizedOptions);
+    }
+
+    onSelect(option);
+
+    // Blur the input after selection
+    inputRef.current?.blur();
+
+    // Reset the justSelected flag after a delay
+    setTimeout(() => setJustSelected(false), 300);
+  }, [onSearch, onSelect, normalizedOptions]);
+
+  // Initialize keyboard navigation using custom hook
+  const { handleKeyDown } = useSelectKeyboard({
+    showDropdown,
+    focusedIndex,
+    filteredOptions,
+    normalizedOptions,
+    selectedOption,
+    searchable,
+    onSearch,
+    setShowDropdown,
+    setDropdownPosition,
+    setFocusedIndex,
+    setJustSelected,
+    setFilteredOptions,
+    calculateDropdownPosition,
+    handleOptionSelect,
+    inputRef,
+  });
 
   // Normalize and set options (for static data)
   useEffect(() => {
     if (enumData || options.length > 0) {
       const normalized = normalizeOptions(enumData || options);
       setNormalizedOptions(normalized);
-      // Don't automatically set filteredOptions here - let explicit interactions control this
-      // setFilteredOptions(normalized);
     }
-  }, [options, enumData]);
+  }, [options, enumData, setNormalizedOptions]);
 
   // Debounced search (handles both static and API)
   useEffect(() => {
@@ -122,28 +175,23 @@ export default function Select({
     if (onSearch) {
       // API-driven search with debounce
       const timer = setTimeout(() => {
-        if (inputValue && inputValue.trim() && inputValue.length >= 2 && lastSearchRef.current !== inputValue) {
+        const shouldSearch = inputValue?.trim() && inputValue.length >= 2 && lastSearchRef.current !== inputValue;
+        if (shouldSearch) {
           lastSearchRef.current = inputValue;
           onSearch(inputValue);
-        } else if (!enumData && inputValue && inputValue.trim().length < 2) {
+        } else if (!enumData && (inputValue?.trim()?.length ?? 0) < 2) {
           setFilteredOptions([]);
         }
       }, 300);
       debounceTimerRef.current = timer;
-    } else {
+    }
+
+    if (!onSearch) {
       // Static data filtering - immediate for better UX
       if (!inputValue.trim() || !searchable) {
-        // Don't automatically set filteredOptions when input is empty
-        // This prevents unwanted dropdown showing
-        // setFilteredOptions(normalizedOptions);
         setFocusedIndex(-1);
       } else {
-        const filtered = normalizedOptions.filter(
-          option =>
-            option.label.toLowerCase().includes(inputValue.toLowerCase()) ||
-            option.value.toLowerCase().includes(inputValue.toLowerCase()) ||
-            option.description?.toLowerCase().includes(inputValue.toLowerCase())
-        );
+        const filtered = filterStaticOptions(normalizedOptions, inputValue, searchable);
         setFilteredOptions(filtered);
         setFocusedIndex(filtered.length > 0 ? 0 : -1);
       }
@@ -154,41 +202,33 @@ export default function Select({
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [inputValue, onSearch, normalizedOptions, searchable, enumData]);
+  }, [inputValue, onSearch, normalizedOptions, searchable, enumData, setFilteredOptions, setFocusedIndex]);
 
-  // Calculate dropdown position based on available space
-  const calculateDropdownPosition = useCallback(() => {
-    if (!inputRef.current) return 'below';
+  // Memoized expensive computations
+  const shouldShowCreateButton = useMemo(() =>
+    allowCreate && inputValue.trim() && !filteredOptions.some(opt =>
+      opt.label.toLowerCase() === inputValue.toLowerCase()
+    ), [allowCreate, inputValue, filteredOptions]);
 
-    const inputRect = inputRef.current.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const dropdownHeight = 320; // max-h-80 = 320px
+  const shouldShowCreateNoResults = useMemo(() =>
+    allowCreate && inputValue.trim(), [allowCreate, inputValue]);
 
-    const spaceBelow = viewportHeight - inputRect.bottom;
-    const spaceAbove = inputRect.top;
+  const dropdownClasses = useMemo(() =>
+    `absolute right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg sm:max-h-80 dark:border-gray-600 dark:bg-gray-800 ${
+      dropdownPosition === 'above' ? 'bottom-full mb-1' : 'top-full mt-1'
+    }`, [dropdownPosition]);
 
-    // If there's not enough space below but enough space above, show above
-    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
-      return 'above';
-    }
-
-    return 'below';
-  }, []);
-
-  // Show dropdown only on explicit user interaction (focus, click, typing, keyboard)
-  // By default, hide dropdown - only show when user actively interacts
+  // Show dropdown only on explicit user interaction
   useEffect(() => {
-    // Always hide dropdown by default after selection
     if (justSelected) {
       setShowDropdown(false);
       return;
     }
 
     // For typing behavior: only show when user has typed enough characters
-    // BUT don't show if the inputValue exactly matches the selectedOption (means it's not user typing)
     if (inputValue && inputValue.trim().length > 0 && !(selectedOption && inputValue === selectedOption.label)) {
       const shouldShow = onSearch
-        ? true // For API search: always show when user is typing, let dropdown content handle the messaging
+        ? true // For API search: always show when user is typing
         : filteredOptions.length > 0; // For static data: only show if there are options
 
       if (shouldShow) {
@@ -199,7 +239,6 @@ export default function Select({
         setShowDropdown(false);
       }
     }
-    // Note: Focus and keyboard interactions are handled separately in their respective handlers
   }, [
     filteredOptions,
     inputValue,
@@ -207,141 +246,87 @@ export default function Select({
     onSearch,
     justSelected,
     selectedOption,
+    setShowDropdown,
+    setDropdownPosition,
   ]);
 
-  // Scroll focused option into view
-  useEffect(() => {
-    if (focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
-      optionRefs.current[focusedIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'nearest',
-      });
-    }
-  }, [focusedIndex]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(target);
-      const isOutsideInput = inputRef.current && !inputRef.current.contains(target);
-
-      if (isOutsideDropdown && isOutsideInput) {
-        setShowDropdown(false);
-        setFocusedIndex(-1);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation(); // Prevent event bubbling to parent components
+  // Handle input changes (optimized dependencies)
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     const query = e.target.value;
     setInputValue(query);
 
-    // Always show dropdown when user starts typing (especially important for API selects and error states)
+    // Always show dropdown when user starts typing
     setShowDropdown(true);
     setDropdownPosition(calculateDropdownPosition());
     setFocusedIndex(-1);
-    setJustSelected(false); // Reset the flag when user starts typing
+    setJustSelected(false);
 
-    // Clear selection when user starts typing (unless it matches exactly)
-    if (!onSearch) {
-      // Only clear selection if the input doesn't match the current selection
-      if (selectedOption && query !== selectedOption.label) {
-        setSelectedOption(null);
-        onSelect(null);
-      }
+    const { shouldClearSelection, matchingOption, customOption } = handleInputChangeLogic(
+      query,
+      selectedOption,
+      normalizedOptions,
+      allowCustom,
+      onSearch
+    );
 
-      // Check for exact matches
-      const matchingOption = normalizedOptions.find(
-        option => option.label === query || option.value === query
-      );
-
-      if (matchingOption && query === matchingOption.label) {
-        setSelectedOption(matchingOption);
-        onSelect(matchingOption);
-      } else if (!query.trim()) {
-        setSelectedOption(null);
-        onSelect(null);
-        setShowDropdown(false);
-      } else if (allowCustom && query.trim()) {
-        // Create custom option for allowCustom mode
-        const customOption: SelectOption = { value: query, label: query };
-        setSelectedOption(customOption);
-        onSelect(customOption);
-      }
-    } else {
-      // For API-driven search, clear selection when user modifies input
-      if (selectedOption && query !== selectedOption.label) {
-        setSelectedOption(null);
-        onSelect(null);
-      }
+    if (shouldClearSelection) {
+      setSelectedOption(null);
+      onSelect(null);
     }
-  };
 
-  // Handle input focus - show options with selected value highlighted
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.stopPropagation(); // Prevent event bubbling to parent components
+    if (matchingOption && query === matchingOption.label) {
+      setSelectedOption(matchingOption);
+      onSelect(matchingOption);
+    } else if (!query.trim() && !onSearch) {
+      setSelectedOption(null);
+      onSelect(null);
+      setShowDropdown(false);
+    } else if (customOption) {
+      setSelectedOption(customOption);
+      onSelect(customOption);
+    }
+  }, [selectedOption, normalizedOptions, allowCustom, onSearch, onSelect, calculateDropdownPosition]);
+
+  // Handle input focus (optimized dependencies)
+  const handleInputFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     if (!disabled) {
-      // Reset just selected flag to allow dropdown to show
       setJustSelected(false);
 
-      // For static data, show all options on focus
       if (!onSearch && normalizedOptions.length > 0) {
-        setFilteredOptions(normalizedOptions);
+        const { filteredOptions: focusOptions, focusedIndex: focusIndex } =
+          handleStaticDataFocus(normalizedOptions, selectedOption);
+        setFilteredOptions(focusOptions);
         setShowDropdown(true);
         setDropdownPosition(calculateDropdownPosition());
-
-        // Highlight and scroll to the currently selected item
-        if (selectedOption) {
-          const selectedIndex = normalizedOptions.findIndex(
-            opt => opt.value === selectedOption.value
-          );
-          if (selectedIndex >= 0) {
-            setFocusedIndex(selectedIndex);
-            // Scroll will be handled by the focusedIndex useEffect
-          } else {
-            setFocusedIndex(0);
-          }
-        } else {
-          setFocusedIndex(0);
-        }
+        setFocusedIndex(focusIndex);
       }
 
-      // For API-driven selects, show dropdown immediately to display empty state
-      else if (onSearch) {
-        setShowDropdown(true);
+      if (onSearch) {
+        const { showDropdown: shouldShow, focusedIndex: focusIndex } = handleApiDataFocus();
+        setShowDropdown(shouldShow);
         setDropdownPosition(calculateDropdownPosition());
-        setFocusedIndex(-1);
-        // Don't trigger onSearch with empty string to avoid API errors
+        setFocusedIndex(focusIndex);
       }
     }
-  };
+  }, [disabled, onSearch, normalizedOptions, selectedOption, calculateDropdownPosition]);
 
   // Handle input blur
-  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    // Check if focus is moving to the dropdown
+  const handleInputBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     const relatedTarget = e.relatedTarget as Node | null;
     const isMovingToDropdown = relatedTarget && dropdownRef.current?.contains(relatedTarget);
-    
-    // If focusing on dropdown, don't close it
+
     if (isMovingToDropdown) {
       return;
     }
-    
-    // For Tab navigation or clicking outside, close immediately
+
     if (!relatedTarget || !dropdownRef.current?.contains(relatedTarget)) {
       setShowDropdown(false);
       setFocusedIndex(-1);
       return;
     }
-    
-    // Fallback: delay hiding dropdown only for mouse interactions within component
+
     setTimeout(() => {
       const activeElement = document.activeElement;
       const isWithinThisComponent =
@@ -353,81 +338,120 @@ export default function Select({
         setShowDropdown(false);
         setFocusedIndex(-1);
       }
-    }, 150); // Reduced timeout for better UX
-  };
+    }, 150);
+  }, [setShowDropdown, setFocusedIndex]);
 
-  // Handle keyboard navigation using consolidated utility
-  const handleKeyDown = createDropdownKeyHandler({
-    isOpen: showDropdown,
-    selectedIndex: focusedIndex,
-    itemCount: filteredOptions.length,
-    onOpen: () => {
-      // Reset just selected flag to allow dropdown to show
-      setJustSelected(false);
+  // Handle clear button click
+  const handleClearClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      if (onSearch) {
-        // For API-driven selects, show dropdown immediately without triggering API call
-        setShowDropdown(true);
-        setDropdownPosition(calculateDropdownPosition());
-      } else {
-        // Show all options when opening dropdown via keyboard for static data
-        setFilteredOptions(normalizedOptions);
-        setShowDropdown(true);
-        setDropdownPosition(calculateDropdownPosition());
-
-        // Highlight and scroll to the currently selected item
-        if (selectedOption) {
-          const selectedIndex = normalizedOptions.findIndex(
-            opt => opt.value === selectedOption.value
-          );
-          setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
-        } else {
-          setFocusedIndex(0);
-        }
-      }
-    },
-    onClose: () => {
-      setShowDropdown(false);
-      setFocusedIndex(-1);
-      inputRef.current?.blur();
-    },
-    onSelect: (index: number) => {
-      if (index >= 0 && index < filteredOptions.length) {
-        handleOptionSelect(filteredOptions[index]);
-      } else if (showDropdown) {
-        // If dropdown is open but no option focused, just close it
-        setShowDropdown(false);
-        setFocusedIndex(-1);
-      }
-    },
-    onNavigate: (index: number) => {
-      setFocusedIndex(index);
-    },
-  });
-
-  // Handle option selection from dropdown
-  const handleOptionSelect = (option: SelectOption) => {
-    if (option.disabled) return;
-
-    setSelectedOption(option);
-    setInputValue(option.label);
+    setSelectedOption(null);
+    setInputValue('');
     setShowDropdown(false);
     setFocusedIndex(-1);
-    setJustSelected(true);
+    onSelect(null);
 
-    // Always reset filtering for static data after selection to show all options next time
-    if (!onSearch && normalizedOptions.length > 0) {
+    if (onSearch) {
+      onSearch('');
+    } else {
       setFilteredOptions(normalizedOptions);
     }
 
-    onSelect(option);
+    inputRef.current?.focus();
+  }, [
+    normalizedOptions,
+    onSearch,
+    onSelect,
+    setSelectedOption,
+    setInputValue,
+    setShowDropdown,
+    setFocusedIndex,
+    setFilteredOptions,
+  ]);
 
-    // Blur the input after selection to prevent API handler from reopening
-    inputRef.current?.blur();
+  // Handle creating a new item
+  const handleCreateNew = useCallback(async () => {
+    if (!allowCreate || !onCreateNew || !inputValue.trim() || isCreating) return;
 
-    // Reset the justSelected flag after a longer delay to prevent reopening
-    setTimeout(() => setJustSelected(false), 300);
-  };
+    setIsCreating(true);
+    setCreateError(null);
+    try {
+      const newOption = await onCreateNew(inputValue.trim());
+
+      setNormalizedOptions(prev => [...prev, newOption]);
+      setFilteredOptions(prev => [...prev, newOption]);
+
+      setSelectedOption(newOption);
+      setInputValue(newOption.label);
+      setShowDropdown(false);
+      setFocusedIndex(-1);
+      setJustSelected(true);
+
+      onSelect(newOption);
+
+      setTimeout(() => setJustSelected(false), 300);
+    } catch (error) {
+      console.error('Failed to create new item:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create new item';
+      setCreateError(errorMessage);
+
+      setTimeout(() => setCreateError(null), 5000);
+    } finally {
+      setIsCreating(false);
+    }
+  }, [
+    allowCreate,
+    onCreateNew,
+    inputValue,
+    isCreating,
+    onSelect,
+    setIsCreating,
+    setCreateError,
+    setNormalizedOptions,
+    setFilteredOptions,
+    setSelectedOption,
+    setInputValue,
+    setShowDropdown,
+    setFocusedIndex,
+    setJustSelected,
+  ]);
+
+  // Handle dropdown icon click
+  const handleDropdownIconClick = useCallback(() => {
+    if (disabled) return;
+
+    setJustSelected(false);
+
+    const { shouldShow, filteredOptions: toggleOptions, focusedIndex: toggleIndex } = handleDropdownToggle(
+      showDropdown,
+      onSearch,
+      normalizedOptions,
+      selectedOption
+    );
+
+    setShowDropdown(shouldShow);
+    if (shouldShow) {
+      setDropdownPosition(calculateDropdownPosition());
+      setFilteredOptions(toggleOptions);
+      setFocusedIndex(toggleIndex);
+      inputRef.current?.focus();
+    } else {
+      setFocusedIndex(-1);
+    }
+  }, [
+    disabled,
+    showDropdown,
+    onSearch,
+    normalizedOptions,
+    selectedOption,
+    calculateDropdownPosition,
+    setJustSelected,
+    setShowDropdown,
+    setDropdownPosition,
+    setFilteredOptions,
+    setFocusedIndex,
+  ]);
 
   // Load initial value if provided
   useEffect(() => {
@@ -438,12 +462,11 @@ export default function Select({
         setInputValue(matchingOption.label);
       }
     }
-  }, [value, selectedOption, normalizedOptions]);
+  }, [value, selectedOption, normalizedOptions, setSelectedOption, setInputValue]);
 
   // Handle external option updates (for API-driven data)
   useEffect(() => {
-    if (onSearch && options.length > 0) {
-      // Only update if options have actually changed
+    if (onSearch) {
       setFilteredOptions(prev => {
         if (JSON.stringify(prev) !== JSON.stringify(options)) {
           return options;
@@ -451,29 +474,22 @@ export default function Select({
         return prev;
       });
     }
-  }, [options, onSearch]);
+  }, [options, onSearch, setFilteredOptions]);
 
   // Special handler for API-driven selects: show dropdown after focus loads options
   useEffect(() => {
-    // Only show dropdown if:
-    // 1. It's an API-driven select
-    // 2. We have options from API
-    // 3. We haven't just selected something
-    // 4. Input is currently focused (user is actively interacting)
-    // 5. Input is not showing a selected value (avoid reopening after selection)
     const shouldShowAPI =
       onSearch &&
       options.length > 0 &&
       !justSelected &&
       document.activeElement === inputRef.current &&
-      !showDropdown && // Don't reopen if already showing
-      !(selectedOption && inputValue === selectedOption.label); // Don't reopen if showing selected value
+      !showDropdown &&
+      !(selectedOption && inputValue === selectedOption.label);
 
     if (shouldShowAPI) {
       setShowDropdown(true);
       setDropdownPosition(calculateDropdownPosition());
 
-      // Highlight and scroll to the currently selected item
       if (selectedOption) {
         const selectedIndex = options.findIndex(opt => opt.value === selectedOption.value);
         if (selectedIndex >= 0) {
@@ -493,62 +509,13 @@ export default function Select({
     calculateDropdownPosition,
     showDropdown,
     inputValue,
+    setShowDropdown,
+    setDropdownPosition,
+    setFocusedIndex,
   ]);
 
-  // Handle clear button click
-  const handleClearClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setSelectedOption(null);
-    setInputValue('');
-    setShowDropdown(false);
-    setFocusedIndex(-1);
-    onSelect(null);
-
-    // Focus back to input for better UX
-    inputRef.current?.focus();
-  };
-
-  // Handle dropdown icon click
-  const handleDropdownIconClick = () => {
-    if (!disabled) {
-      if (showDropdown) {
-        setShowDropdown(false);
-        setFocusedIndex(-1);
-      } else {
-        // Reset just selected flag to allow dropdown to show
-        setJustSelected(false);
-
-        if (onSearch) {
-          // For API-driven selects, show dropdown immediately without triggering API call
-          setShowDropdown(true);
-          setDropdownPosition(calculateDropdownPosition());
-          inputRef.current?.focus();
-        } else {
-          // Show all options when clicking the dropdown arrow for static data
-          setFilteredOptions(normalizedOptions);
-          setShowDropdown(true);
-          setDropdownPosition(calculateDropdownPosition());
-
-          // Highlight and scroll to the currently selected item
-          if (selectedOption) {
-            const selectedIndex = normalizedOptions.findIndex(
-              opt => opt.value === selectedOption.value
-            );
-            setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
-          } else {
-            setFocusedIndex(0);
-          }
-
-          inputRef.current?.focus();
-        }
-      }
-    }
-  };
-
-  // Create the clear button icon
-  const clearIcon = (
+  // Memoized icons to prevent recreation
+  const clearIcon = useMemo(() => (
     <svg
       className="size-4 cursor-pointer transition-colors duration-200 hover:text-red-600 dark:hover:text-red-400"
       fill="none"
@@ -558,10 +525,9 @@ export default function Select({
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
-  );
+  ), [handleClearClick]);
 
-  // Create the dropdown chevron icon
-  const dropdownIcon = (
+  const dropdownIcon = useMemo(() => (
     <svg
       className={`size-4 cursor-pointer transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`}
       fill="none"
@@ -571,7 +537,15 @@ export default function Select({
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>
-  );
+  ), [showDropdown, handleDropdownIconClick]);
+
+  // Memoized right icon based on state
+  const rightIcon = useMemo(() => {
+    if (selectedOption && !disabled) {
+      return clearIcon;
+    }
+    return dropdownIcon;
+  }, [selectedOption, disabled, clearIcon, dropdownIcon]);
 
   return (
     <div className="relative">
@@ -589,32 +563,52 @@ export default function Select({
         disabled={disabled}
         error={error}
         loading={loading}
-        rightIcon={selectedOption && inputValue ? clearIcon : dropdownIcon}
+        rightIcon={rightIcon}
         suppressActions={true}
         autoComplete="off"
         role="combobox"
         aria-expanded={showDropdown}
         aria-haspopup="listbox"
+        aria-owns={showDropdown ? `${inputId}-listbox` : undefined}
+        aria-activedescendant={focusedIndex >= 0 ? `${inputId}-option-${focusedIndex}` : undefined}
         className={className}
       />
 
-      {/* Custom dropdown */}
+      {/* Error message for create actions */}
+      {createError && (
+        <div className="mt-1 text-sm text-red-600 dark:text-red-400">
+          {createError}
+        </div>
+      )}
+
+      {/* Custom dropdown with full keyboard and mouse support */}
       {showDropdown && (
         <div
           ref={dropdownRef}
-          className={`absolute right-0 left-0 z-50 max-h-60 overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg sm:max-h-80 dark:border-gray-600 dark:bg-gray-800 ${
-            dropdownPosition === 'above' ? 'bottom-full mb-1' : 'top-full mt-1'
-          }`}
-          onMouseDown={e => {
-            // Prevent the dropdown from closing when clicking inside it
-            e.preventDefault();
+          className={dropdownClasses}
+          onMouseDown={e => e.preventDefault()}
+          onKeyDown={e => {
+            if (e.key === 'Escape') {
+              e.preventDefault();
+              setShowDropdown(false);
+              inputRef.current?.focus();
+            }
           }}
+          onTouchStart={e => e.stopPropagation()}
         >
+          {/*
+            Using role="listbox" instead of native <select> because:
+            1. Native <select> doesn't support rich content (descriptions, badges)
+            2. Native <select> doesn't support API-driven search
+            3. Native <select> doesn't support infinite scrolling
+            4. This provides better UX while maintaining accessibility
+          */}
           <div
+            id={`${inputId}-listbox`}
             role="listbox"
+            aria-label="Options"
             className="py-1"
             onScroll={e => {
-              // Enhanced infinite scroll debugging
               const target = e.currentTarget;
               const scrollTop = target.scrollTop;
               const scrollHeight = target.scrollHeight;
@@ -623,23 +617,8 @@ export default function Select({
               const isScrollable = scrollHeight > clientHeight;
               const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
 
-              console.log('📊 Scroll Debug:', {
-                infiniteScroll,
-                hasMore,
-                hasOnLoadMore: !!onLoadMore,
-                loadingMore,
-                scrollTop,
-                scrollHeight,
-                clientHeight,
-                isScrollable,
-                isNearBottom,
-                distanceFromBottom: scrollHeight - (scrollTop + clientHeight),
-              });
-
-              // Infinite scroll: trigger when scrolled near bottom
               if (infiniteScroll && hasMore && onLoadMore && !loadingMore) {
                 if (isScrollable && isNearBottom) {
-                  console.log('🚀 Infinite scroll triggered');
                   onLoadMore();
                 }
               }
@@ -650,6 +629,7 @@ export default function Select({
                 {filteredOptions.map((option, index) => (
                   <Option
                     key={`${option.value}-${index}`}
+                    id={`${inputId}-option-${index}`}
                     ref={el => {
                       optionRefs.current[index] = el;
                     }}
@@ -665,78 +645,64 @@ export default function Select({
                   />
                 ))}
 
+                {/* Create New Option - shown when there are matches and input doesn't exactly match */}
+                {shouldShowCreateButton && (
+                  <div className="border-t border-gray-200 dark:border-gray-600">
+                    <button
+                      onClick={handleCreateNew}
+                      disabled={isCreating}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-blue-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none disabled:opacity-50 dark:text-blue-400 dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+                    >
+                      {isCreating ? (
+                        <>
+                          <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                          Create "{inputValue.trim()}"
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
                 {/* Load More Indicator */}
                 {hasMore && (
                   <div className="border-t border-gray-200 px-4 py-2 text-center dark:border-gray-600">
-                    {loadingMore ? (
-                      <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
-                        {infiniteScroll ? 'Loading more...' : 'Loading...'}
-                      </div>
-                    ) : !infiniteScroll ? (
-                      <button
-                        onClick={onLoadMore}
-                        className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none dark:text-blue-400 dark:hover:text-blue-200"
-                      >
-                        Load more results
-                      </button>
-                    ) : (
-                      <div className="py-1 text-xs text-gray-400">Scroll for more results</div>
-                    )}
+                    {renderLoadMoreSection(loadingMore, infiniteScroll, onLoadMore)}
                   </div>
                 )}
               </>
             ) : (
               <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                {loading ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
-                    <p className="text-sm">Searching...</p>
-                  </div>
-                ) : onSearch && inputValue.length >= 2 && filteredOptions.length === 0 ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
-                    <p className="text-sm">Searching...</p>
-                  </div>
-                ) : onSearch && inputValue.length < 2 ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <svg
-                      className="h-8 w-8 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                {renderEmptyState(loading, onSearch, inputValue)}
+
+                {/* Create New Option - also show when no results found */}
+                {shouldShowCreateNoResults && (
+                  <div className="border-t border-gray-200 dark:border-gray-600">
+                    <button
+                      onClick={handleCreateNew}
+                      disabled={isCreating}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-blue-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none disabled:opacity-50 dark:text-blue-400 dark:hover:bg-gray-700 dark:focus:bg-gray-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">Start typing to search</p>
-                      <p className="mt-1 text-xs">Type at least 2 characters to see results</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-3">
-                    <svg
-                      className="h-8 w-8 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">No results found</p>
-                      <p className="mt-1 text-xs">Try a different search term</p>
-                    </div>
+                      {isCreating ? (
+                        <>
+                          <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                          Create "{inputValue.trim()}"
+                        </>
+                      )}
+                    </button>
                   </div>
                 )}
               </div>
@@ -749,6 +715,11 @@ export default function Select({
       <input type="hidden" name={name} value={selectedOption?.value || ''} />
     </div>
   );
-}
+};
 
-export type { SelectProps };
+// Apply React.memo for performance optimization
+const Select = memo(SelectComponent);
+
+// Export types and component
+export type { SelectOption, SelectProps };
+export default Select;

@@ -14,9 +14,11 @@
 
 import React from 'react';
 
-import type {
-  WrapperComponentProps,
-} from '@/types';
+// Define WrapperComponentProps inline
+interface WrapperComponentProps {
+  children: React.ReactNode;
+  [key: string]: any;
+}
 
 // =============================================================================
 // CONSOLIDATED HOC UTILITY

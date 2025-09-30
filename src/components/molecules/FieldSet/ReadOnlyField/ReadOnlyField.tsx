@@ -14,7 +14,9 @@ const getFieldIds = (fieldId: string) => ({
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, ReadOnly, HelperText } from '@/components/atoms/Field';
+import { Label } from '@/components/atoms/Field/Label/Label';
+import { ReadOnly } from '@/components/atoms/Field/ReadOnly/ReadOnly';
+import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
 
 export interface ReadOnlyFieldProps {
   children?: React.ReactNode;
@@ -77,7 +79,7 @@ export const ReadOnlyField = ({
   };
 
   return (
-    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
+    <div className={cn('w-full', isHorizontal ? 'flex items-start space-x-4' : '', className)}>
       {/* Label */}
       {label && (
         <div
@@ -90,7 +92,7 @@ export const ReadOnlyField = ({
       )}
 
       {/* Field Container */}
-      <div className={cn(isHorizontal && 'min-w-0 flex-1')}>
+      <div className={cn(isHorizontal ? 'min-w-0 flex-1' : '')}>
         {/* ReadOnly Field */}
         <div>
           {readOnlyProps ? (

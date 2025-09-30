@@ -12,20 +12,5 @@ export { useDashboard } from './useDashboard';
 export { useDashboardApi } from './useDashboardApi';
 export { useDashboardCalculations } from './useDashboardCalculations';
 
-// Types are now exported from centralized @/types
-export type {
-  UseDashboardReturn,
-  UseDashboardApiReturn,
-  UseDashboardCalculationsReturn,
-  DashboardStats,
-  DependencyData,
-  SexData,
-  CivilStatusData,
-  EmploymentStatusData,
-  AgeGroup,
-  DashboardResponse,
-  ResidentData,
-  SectoralInfo,
-  DependencyRatioData,
-  SexDistributionData,
-} from '@/types';
+// Import types directly from the dashboard types file when needed
+// Example: import type { UseDashboardReturn } from '@/types/app/dashboard/dashboard';

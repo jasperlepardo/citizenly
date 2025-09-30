@@ -1,14 +1,13 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { HouseholdTypeInformationFormData , IncomeAndHeadInformationFormData } from '@/types/domain/households/forms';
 
 import {
   HouseholdTypeInformation,
-  HouseholdTypeInformationData,
 } from './FormField/HouseholdTypeInformation';
 import {
   IncomeAndHeadInformation,
-  IncomeAndHeadInformationData,
 } from './FormField/IncomeAndHeadInformation';
 
 export interface HouseholdDetailsFormProps {
@@ -42,7 +41,7 @@ export function HouseholdDetailsForm({
   householdHeadsLoading,
 }: HouseholdDetailsFormProps) {
   // Map form data to HouseholdTypeInformation component props
-  const householdTypeValue: HouseholdTypeInformationData = {
+  const householdTypeValue: HouseholdTypeInformationFormData = {
     householdType: formData.householdType || '',
     tenureStatus: formData.tenureStatus || '',
     tenureOthersSpecify: formData.tenureOthersSpecify || '',
@@ -51,23 +50,23 @@ export function HouseholdDetailsForm({
   };
 
   // Map form data to IncomeAndHeadInformation component props
-  const incomeAndHeadValue: IncomeAndHeadInformationData = {
+  const incomeAndHeadValue: IncomeAndHeadInformationFormData = {
     monthlyIncome: formData.monthlyIncome || 0,
     householdHeadId: formData.householdHeadId || '',
     householdHeadPosition: formData.householdHeadPosition || '',
   };
 
   // Handle changes from HouseholdTypeInformation component
-  const handleHouseholdTypeChange = (value: HouseholdTypeInformationData) => {
+  const handleHouseholdTypeChange = (value: HouseholdTypeInformationFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      onChange(field, fieldValue);
     });
   };
 
   // Handle changes from IncomeAndHeadInformation component
-  const handleIncomeAndHeadChange = (value: IncomeAndHeadInformationData) => {
+  const handleIncomeAndHeadChange = (value: IncomeAndHeadInformationFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      onChange(field, fieldValue);
     });
   };
 

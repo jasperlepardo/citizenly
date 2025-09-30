@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 
-import { InputField, SelectField, ControlField } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import {
   useMigrationInformation,
   MigrationInformationData,
 } from '@/hooks/utilities/useMigrationInformation';
-import type { FormMode } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
 
 export type { MigrationInformationData };
 
@@ -80,27 +83,27 @@ export function MigrationInformation({
                 placeholder: 'Search for previous barangay...',
                 options: barangayOptions.map(place => {
                   // Format hierarchical display based on level
-                  let displayLabel = place.name;
+                  let displayLabel = place.label;
                   let description = '';
                   let badge = place.level;
 
                   if (place.level === 'barangay') {
                     // For barangay: "Barangay Name, City, Province"
                     if ((place as any).city_name && (place as any).province_name) {
-                      displayLabel = `${place.name}, ${(place as any).city_name}, ${(place as any).province_name}`;
+                      displayLabel = `${place.label}, ${(place as any).city_name}, ${(place as any).province_name}`;
                     } else if ((place as any).city_name) {
-                      displayLabel = `${place.name}, ${(place as any).city_name}`;
+                      displayLabel = `${place.label}, ${(place as any).city_name}`;
                     }
                     badge = 'barangay';
                   } else if (place.level === 'city') {
                     // For city/municipality: "City Name, Province"
                     if ((place as any).province_name) {
-                      displayLabel = `${place.name}, ${(place as any).province_name}`;
+                      displayLabel = `${place.label}, ${(place as any).province_name}`;
                     }
                     badge = (place as any).type || 'city';
                   } else if (place.level === 'province') {
                     // For province: just "Province Name"
-                    displayLabel = place.name;
+                    displayLabel = place.label;
                     badge = 'province';
                   }
 
@@ -116,7 +119,7 @@ export function MigrationInformation({
                   }
 
                   return {
-                    value: place.code,
+                    value: place.value,
                     label: displayLabel,
                     description: description,
                     badge: badge,
@@ -125,10 +128,10 @@ export function MigrationInformation({
                 value: migrationData.previous_barangay_code || '',
                 searchable: true,
                 loading: isLoadingBarangays,
-                onSelect: option => {
+                onSelect: (option: any) => {
                   if (option) {
                     // Find the original barangay data by matching the value (code)
-                    const originalBarangay = barangayOptions.find(b => b.code === option.value);
+                    const originalBarangay = barangayOptions.find(b => b.value === option.value);
                     if (originalBarangay) {
                       handleBarangaySelect(originalBarangay);
                     }
@@ -200,7 +203,7 @@ export function MigrationInformation({
             inputProps={{
               type: 'number',
               value: migrationData.length_of_stay_previous_months || '',
-              onChange: e =>
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 updateMigrationData(
                   'length_of_stay_previous_months',
                   parseInt(e.target.value) || 0
@@ -218,7 +221,7 @@ export function MigrationInformation({
             mode={mode}
             inputProps={{
               value: migrationData.reason_for_leaving || '',
-              onChange: e => updateMigrationData('reason_for_leaving', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => updateMigrationData('reason_for_leaving', e.target.value),
               placeholder: 'e.g., employment, family, education',
             }}
           />
@@ -232,7 +235,7 @@ export function MigrationInformation({
             inputProps={{
               type: 'date',
               value: migrationData.date_of_transfer || '',
-              onChange: e => updateMigrationData('date_of_transfer', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => updateMigrationData('date_of_transfer', e.target.value),
             }}
           />
 
@@ -244,7 +247,7 @@ export function MigrationInformation({
             mode={mode}
             inputProps={{
               value: migrationData.reason_for_transferring || '',
-              onChange: e => updateMigrationData('reason_for_transferring', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => updateMigrationData('reason_for_transferring', e.target.value),
               placeholder: 'e.g., job opportunity, family reunion',
             }}
           />
@@ -257,7 +260,7 @@ export function MigrationInformation({
             inputProps={{
               type: 'number',
               value: migrationData.duration_of_stay_current_months || '',
-              onChange: e =>
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 updateMigrationData(
                   'duration_of_stay_current_months',
                   parseInt(e.target.value) || 0

@@ -8,5 +8,4 @@
 // Export hooks
 export { useResidentOperations } from './crud/useResidentOperations';
 
-// Export types
-export type { UseResidentOperationsOptions } from './crud/useResidentOperations';
+// Export types - UseResidentOperationsOptions is internal to useResidentOperations

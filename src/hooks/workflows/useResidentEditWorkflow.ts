@@ -10,17 +10,17 @@
 import { useCallback } from 'react';
 
 import { useResidentSubmission } from '@/hooks/utilities/useResidentSubmission';
-import type {
-  UseResidentFormStateOptions,
-  ResidentFormData,
-  UseResidentSubmissionOptions,
-  UseResidentEditWorkflowOptions,
-  UseResidentEditWorkflowReturn,
-} from '@/types';
-
 import { useResidentValidationErrors } from '@/hooks/validation/useResidentValidationErrors';
 
 import { useResidentFormState } from './useResidentFormState';
+
+import type {
+  UseResidentFormStateOptions,
+  UseResidentSubmissionOptions,
+  UseResidentEditWorkflowOptions,
+  UseResidentEditWorkflowReturn,
+} from '@/types/shared/hooks/utilityHooks';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 
 /**
@@ -101,8 +101,8 @@ export function useResidentEditWorkflow(
 
       // Clear errors for updated fields
       Object.keys(fields).forEach(field => {
-        if (validationHook.hasFieldError(field as keyof ResidentFormData)) {
-          validationHook.clearFieldError(field as keyof ResidentFormData);
+        if (validationHook.hasFieldError(field)) {
+          validationHook.clearFieldError(field);
         }
       });
     },
@@ -154,8 +154,9 @@ export function useResidentEditWorkflow(
     submissionError: submissionHook.submissionError,
 
     // Workflow methods
-    validateForm: validationHook.validateForm,
+    validateForm,
     submitForm,
+    validateAndSubmit: submitForm,
     resetWorkflow,
   };
 }

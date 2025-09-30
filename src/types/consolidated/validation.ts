@@ -38,6 +38,7 @@ export interface ValidationResult<T = any> {
   data?: T;
   warnings?: string[];
   success?: boolean; // Backward compatibility alias for isValid
+  rawError?: any; // Raw error from validation library (e.g., ZodError)
 }
 
 /**

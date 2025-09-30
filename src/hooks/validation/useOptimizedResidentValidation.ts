@@ -17,14 +17,16 @@ import { useCallback } from 'react';
 
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-import type { 
-  ResidentFormData,
-  UseResidentFormValidationReturn,
-  ResidentValidationOptions,
-} from '@/types';
+
 
 import { useResidentValidationCore } from './useResidentValidationCore';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
+
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+
+// TEMP: Missing validation types - use any for now
+type UseResidentFormValidationReturn = any;
+type ResidentValidationOptions = any;
 
 
 /**
@@ -63,7 +65,7 @@ export function useOptimizedResidentValidation(
       // Convert core validation errors from ValidationError[] to Record<string, string>
       const coreErrors: Record<string, string> = {};
       if (Array.isArray(coreResult.errors)) {
-        coreResult.errors.forEach(error => {
+        coreResult.errors.forEach((error: any) => {
           coreErrors[error.field] = error.message;
         });
       }

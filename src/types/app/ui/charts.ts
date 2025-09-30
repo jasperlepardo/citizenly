@@ -26,6 +26,7 @@
 
 /**
  * Demographic chart data types
+ * @deprecated Use DependencyRatioData and SexDistributionData instead
  */
 export type DependencyData = {
   youngDependents: number;

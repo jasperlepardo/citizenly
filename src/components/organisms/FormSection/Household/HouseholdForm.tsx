@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 
 import type { HouseholdFormData, FormMode } from '@/types/app/ui/forms';
 
-import { HouseholdDetailsForm } from './HouseholdDetails';
+import { HouseholdDetailsForm } from './HouseholdDetails/HouseholdDetails';
 
 export interface HouseholdFormProps {
   /** Initial form data */

@@ -55,6 +55,101 @@ export interface ContactInfoFormState {
 }
 
 /**
+ * Basic Information subset for form components
+ * Used by BasicInformation component
+ */
+export interface BasicInformationFormData {
+  first_name: string;
+  middle_name?: string | null;
+  last_name: string;
+  extension_name?: string | null;
+  sex: string;
+  civil_status: string;
+  civil_status_others_specify?: string | null;
+}
+
+/**
+ * Contact Details subset for ContactDetails component
+ */
+export interface ContactDetailsFormData {
+  mobile_number?: string | null;
+  telephone_number?: string | null;
+  email?: string | null;
+}
+
+/**
+ * Birth Information subset for form components
+ * Used by BirthInformation component
+ */
+export interface BirthInformationFormData {
+  birthdate: string;
+  birth_place_code?: string | null;
+  birth_place_name?: string | null;
+}
+
+/**
+ * Education Information subset for form components
+ * Used by EducationInformation component
+ */
+export interface EducationInformationFormData {
+  education_attainment?: string | null;
+  is_graduate?: string | null;
+}
+
+/**
+ * Employment Information subset for form components
+ * Used by EmploymentInformation component
+ */
+export interface EmploymentInformationFormData {
+  employment_status?: string | null;
+  occupation_code?: string | null;
+  occupation_title?: string | null;
+}
+
+/**
+ * Physical Characteristics subset for form components
+ * Used by PhysicalCharacteristics component
+ */
+export interface PhysicalCharacteristicsFormData {
+  blood_type?: string | null;
+  complexion?: string | null;
+  height?: string | null;
+  weight?: string | null;
+  citizenship?: string | null;
+  ethnicity?: string | null;
+  religion?: string | null;
+  religion_others_specify?: string | null;
+}
+
+/**
+ * Mother Maiden Name subset for form components
+ * Used by MotherMaidenName component
+ */
+export interface MotherMaidenNameFormData {
+  mother_maiden_first_name?: string | null;
+  mother_maiden_middle_name?: string | null;
+  mother_maiden_last_name?: string | null;
+}
+
+/**
+ * Voting Information subset for form components
+ * Used by VotingInformation component
+ */
+export interface VotingInformationFormData {
+  is_voter?: string | null;
+  is_resident_voter?: string | null;
+  precinct_number?: string | null;
+  last_voted_date?: string | null;
+}
+
+/**
+ * Sectoral Information types for compatibility
+ */
+export interface SectoralInformation {
+  [key: string]: any;
+}
+
+/**
  * Household Information subset for form components
  * Used by HouseholdInformation component
  */
@@ -144,11 +239,12 @@ export interface MigrationInfoFormState {
 export interface ResidentFormData
   extends PersonalInfoFormState,
     ContactInfoFormState,
-    PhysicalPersonalDetailsFormState,
-    SectoralInformation,
-    MigrationInfoFormState {
+    PhysicalPersonalDetailsFormState {
   // Additional fields for editing existing residents
   id?: string;
+
+  // Index signature for dynamic field access in validation
+  [key: string]: unknown;
 }
 
 // Note: FormValidationError is defined in ../validation.ts

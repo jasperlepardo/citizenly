@@ -70,9 +70,9 @@ export default function HouseholdsLoading() {
 
         {/* Table Rows */}
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 6 }, (_, i) => ({ id: `household-row-${Date.now()}-${i}` })).map((item) => (
             <div
-              key={i}
+              key={item.id}
               className="flex items-center bg-white p-0 transition-colors hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700"
             >
               {/* Checkbox */}

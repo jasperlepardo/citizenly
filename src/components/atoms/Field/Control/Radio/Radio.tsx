@@ -4,9 +4,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
 import { Button, type ButtonProps } from '@/components/atoms/Button/Button';
+import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 import { cn } from '@/components/shared/utils';
 
-import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 
 const radioVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
@@ -66,6 +66,36 @@ export interface RadioProps
   inGroup?: boolean;
 }
 
+// Helper function to create button click handler
+const createButtonClickHandler = (props: any, disabled?: boolean) => {
+  return () => {
+    if (!disabled && props.onChange) {
+      const event = {
+        target: { value: props.value },
+      } as React.ChangeEvent<HTMLInputElement>;
+      props.onChange(event);
+    }
+  };
+};
+
+// Helper function to get radio dot classes
+const getRadioDotClasses = (actualVariant: string, size: 'sm' | 'md' | 'lg' = 'md') => {
+  const sizeClasses = {
+    sm: 'h-1.5 w-1.5',
+    md: 'h-2 w-2',
+    lg: 'h-2.5 w-2.5',
+  }[size];
+
+  const variantClasses = {
+    default: 'bg-[#7c3aed]',
+    primary: 'bg-[#2563eb]',
+    error: 'bg-[#dc2626]',
+    disabled: 'bg-[#d4d4d4]',
+  }[actualVariant] || 'bg-[#7c3aed]';
+
+  return cn('rounded-full', variantClasses, sizeClasses);
+};
+
 const Radio = forwardRef<HTMLInputElement, RadioProps>(
   (
     {
@@ -84,7 +114,13 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
     },
     ref
   ) => {
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
+    // Determine the appropriate variant based on state
+    let actualVariant = variant;
+    if (disabled) {
+      actualVariant = 'disabled';
+    } else if (errorMessage) {
+      actualVariant = 'error';
+    }
 
     if (style === 'button') {
       const defaultButtonProps: ButtonProps = {
@@ -95,15 +131,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
       };
 
       const selectedButtonVariant = checked ? 'neutral' : defaultButtonProps.variant;
-
-      const handleClick = () => {
-        if (!disabled && props.onChange) {
-          const event = {
-            target: { value: props.value },
-          } as React.ChangeEvent<HTMLInputElement>;
-          props.onChange(event);
-        }
-      };
+      const handleClick = createButtonClickHandler(props, disabled);
 
       return (
         <div className={inGroup ? 'flex-1' : 'w-full'}>
@@ -156,18 +184,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               )}
             >
               {checked && (
-                <div
-                  className={cn(
-                    'rounded-full',
-                    actualVariant === 'default' && 'bg-[#7c3aed]',
-                    actualVariant === 'primary' && 'bg-[#2563eb]',
-                    actualVariant === 'error' && 'bg-[#dc2626]',
-                    actualVariant === 'disabled' && 'bg-[#d4d4d4]',
-                    size === 'sm' && 'h-1.5 w-1.5',
-                    size === 'md' && 'h-2 w-2',
-                    size === 'lg' && 'h-2.5 w-2.5'
-                  )}
-                />
+                <div className={getRadioDotClasses(actualVariant, size || 'md')} />
               )}
             </div>
           </div>

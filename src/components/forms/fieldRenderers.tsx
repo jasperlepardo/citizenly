@@ -1,18 +1,17 @@
 import React from 'react';
 
-import {
-  InputField,
-  SelectField,
-  ControlField,
-  ReadOnlyField,
-} from '@/components/molecules/FieldSet';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
+import { ReadOnlyField } from '@/components/molecules/FieldSet/ReadOnlyField/ReadOnlyField';
+import type { FormMode } from '@/types/app/ui/forms';
+
 import {
   isFieldReadOnly,
   formatDateForDisplay,
   formatBooleanForDisplay,
   getSelectDisplayValue,
 } from '../../services/app/forms/fieldLogic';
-import type { FormMode } from '@/types/app/ui/forms';
 
 // Re-export the FormMode type and utility functions for backward compatibility
 export type { FormMode } from '@/types/app/ui/forms';

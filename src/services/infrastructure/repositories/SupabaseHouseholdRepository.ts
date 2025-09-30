@@ -4,11 +4,11 @@
  * Handles all Supabase-specific data access for households
  */
 
+import { createLogger } from '@/lib/config/environment';
+import { createSupabaseClient } from '@/lib/data/client-factory';
 import type { HouseholdData } from '@/types/domain/households/households';
 import type { Resident } from '@/types/domain/residents/core';
 import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
-import { createLogger } from '@/lib/config/environment';
-import { createSupabaseClient } from '@/lib/data/client-factory';
 
 const logger = createLogger('SupabaseHouseholdRepository');
 
@@ -20,7 +20,7 @@ const logger = createLogger('SupabaseHouseholdRepository');
 export class SupabaseHouseholdRepository {
   private getAuthenticatedClient() {
     // Use service role client for server-side operations to bypass RLS
-    return createSupabaseClient('service');
+    return createSupabaseClient(true);
   }
 
   /**
@@ -31,7 +31,7 @@ export class SupabaseHouseholdRepository {
       const supabase = this.getAuthenticatedClient();
       const { data: household, error } = await supabase
         .from('households')
-        .insert([data])
+        .insert([data] as any)
         .select()
         .single();
 
@@ -56,8 +56,8 @@ export class SupabaseHouseholdRepository {
   async update(code: string, data: Partial<HouseholdData>): Promise<RepositoryResult<HouseholdData>> {
     try {
       const supabase = this.getAuthenticatedClient();
-      const { data: household, error } = await supabase
-        .from('households')
+      const { data: household, error } = await (supabase
+        .from('households') as any)
         .update(data)
         .eq('code', code)
         .select()
@@ -180,8 +180,8 @@ export class SupabaseHouseholdRepository {
   async delete(code: string): Promise<RepositoryResult<boolean>> {
     try {
       const supabase = this.getAuthenticatedClient();
-      const { error } = await supabase
-        .from('households')
+      const { error } = await (supabase
+        .from('households') as any)
         .update({ is_active: false })
         .eq('code', code);
 
@@ -225,6 +225,36 @@ export class SupabaseHouseholdRepository {
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown error' 
+      };
+    }
+  }
+
+  /**
+   * Find household by ID
+   */
+  async findById(id: string): Promise<RepositoryResult<HouseholdData>> {
+    try {
+      const client = this.getAuthenticatedClient();
+      const { data, error } = await client
+        .from('households')
+        .select('*')
+        .eq('code', id)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Household not found' };
+        }
+        logger.error('Failed to find household by ID', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding household by ID', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find household'
       };
     }
   }

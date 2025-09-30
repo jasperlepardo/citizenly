@@ -11,10 +11,10 @@
 
 import { useState, useCallback } from 'react';
 
-import type { 
+import type {
   UseGenericFormSubmissionOptions,
   UseGenericFormSubmissionReturn,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
 
 // =============================================================================
 // HOOK IMPLEMENTATION

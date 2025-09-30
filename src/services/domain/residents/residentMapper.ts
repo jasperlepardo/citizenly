@@ -4,22 +4,23 @@
  * Eliminates duplicate implementations and inconsistent mapping patterns
  */
 
-import { ResidentFormData } from '@/types/domain/residents/forms';
-import { ResidentRecord } from '@/types/infrastructure/database/database';
-import { ResidentWithRelations } from '@/types/domain/residents/core';
-import { PsocOption, PsgcOption } from '@/types/domain/residents/api';
 import {
   HouseholdData,
   HouseholdHead,
   HouseholdOption,
 } from '@/types/domain/households/households';
+import { PsocOption, PsgcOption } from '@/types/domain/residents/api';
+import { ResidentWithRelations } from '@/types/domain/residents/core';
+import { ResidentFormData } from '@/types/domain/residents/forms';
+import { ResidentRecord } from '@/types/infrastructure/database/database';
 import type {
   ServiceRawPsocData as RawPsocData,
   ServiceRawPsgcData as RawPsgcData,
 } from '@/types/infrastructure/services/services';
-import { calculateAge } from '@/utils/shared/dateUtils';
-import { formatFullName } from './residentHelpers';
 import { parseFullName } from '@/utils/residents/residentDataProcessing';
+import { calculateAge } from '@/utils/shared/dateUtils';
+
+import { formatFullName } from './residentHelpers';
 
 /**
  * Map form data (camelCase) to API format (snake_case for database)
@@ -41,12 +42,12 @@ export const mapFormToApi = (
     email: formData.email || undefined,
     mobile_number: formData.mobile_number || undefined,
     telephone_number: formData.telephone_number || undefined, // Maps to telephone_number in DB
-    civil_status: formData.civil_status || undefined,
+    civil_status: (formData.civil_status as any) || undefined,
     civil_status_others_specify: formData.civil_status_others_specify || undefined,
-    citizenship: formData.citizenship || undefined,
-    blood_type: formData.blood_type || undefined,
-    ethnicity: formData.ethnicity || undefined,
-    religion: formData.religion || undefined,
+    citizenship: (formData.citizenship as any) || undefined,
+    blood_type: (formData.blood_type as any) || undefined,
+    ethnicity: (formData.ethnicity as any) || undefined,
+    religion: (formData.religion as any) || undefined,
     religion_others_specify: formData.religion_others_specify || undefined,
 
     // Physical characteristics - convert to numbers for API
@@ -66,9 +67,9 @@ export const mapFormToApi = (
     mother_maiden_last: formData.mother_maiden_last || undefined,
 
     // Education and employment
-    education_attainment: formData.education_attainment || undefined,
+    education_attainment: (formData.education_attainment as any) || undefined,
     is_graduate: formData.is_graduate || false,
-    employment_status: formData.employment_status || undefined,
+    employment_status: (formData.employment_status as any) || undefined,
     occupation_code: formData.occupation_code || undefined, // Maps to occupation_code in DB
 
     // Voting information
@@ -89,16 +90,13 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
   return {
     // Required database fields
     id: resident.id,
-    created_at: resident.created_at,
-    updated_at: resident.updated_at,
-    is_active: resident.is_active,
     // Personal Information
     first_name: resident.first_name,
     middle_name: resident.middle_name || '',
     last_name: resident.last_name,
     extension_name: resident.extension_name || '',
     sex: resident.sex,
-    civil_status: resident.civil_status || undefined,
+    civil_status: resident.civil_status || '',
     civil_status_others_specify: resident.civil_status_others_specify || '',
     citizenship: resident.citizenship || 'filipino',
     birthdate: resident.birthdate,
@@ -119,8 +117,8 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     // Physical Characteristics
     blood_type: resident.blood_type || undefined,
     complexion: resident.complexion || '',
-    height: resident.height || 0,
-    weight: resident.weight || 0,
+    height: resident.height ? resident.height.toString() : '',
+    weight: resident.weight ? resident.weight.toString() : '',
     religion: resident.religion || undefined,
     religion_others_specify: resident.religion_others_specify || '',
 
@@ -136,7 +134,7 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
 
     // Note: Sectoral and migration information are handled separately
     // These should be fetched/stored via separate services and tables
-  };
+  } as ResidentFormData;
 };
 
 /**

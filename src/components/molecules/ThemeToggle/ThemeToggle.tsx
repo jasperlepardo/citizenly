@@ -3,8 +3,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 
-import { useTheme } from '@/contexts';
 import { cn } from '@/components/shared/utils';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const themeToggleVariants = cva(
   'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',

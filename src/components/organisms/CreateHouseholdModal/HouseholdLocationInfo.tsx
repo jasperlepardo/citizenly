@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import type { AddressHierarchyInfo } from '@/types/domain/addresses';
+import type { AddressHierarchyInfo } from '@/types/domain/addresses/addresses';
 
 interface HouseholdLocationInfoProps {
   addressDisplayInfo: AddressHierarchyInfo;

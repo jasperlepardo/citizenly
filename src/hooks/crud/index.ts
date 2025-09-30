@@ -13,5 +13,4 @@ export { useHouseholdCrud } from './useHouseholdCrud';
 export { useResidents } from './useResidents';
 export { useHouseholds } from './useHouseholds';
 
-// Export types
-export type { UseResidentOperationsOptions } from './useResidentOperations';
+// Export types (none available from useResidentOperations)

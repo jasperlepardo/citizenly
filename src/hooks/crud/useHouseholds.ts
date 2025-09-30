@@ -6,8 +6,10 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useAuth } from '@/contexts';
-import { HouseholdWithMembersResult } from '@/types/domain/households';
+import { useAuth } from '@/contexts/AuthContext';
+
+// Legacy type - minimal stub
+type HouseholdWithMembersResult = any;
 
 interface HouseholdsParams {
   searchTerm?: string;

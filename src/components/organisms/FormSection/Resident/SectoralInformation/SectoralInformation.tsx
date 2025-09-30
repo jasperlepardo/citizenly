@@ -1,13 +1,10 @@
 import React from 'react';
 
-import type {
-  FormMode,
-  SectoralInformation,
-  SectoralContext,
-  ResidentFormData
-} from '@/types';
-
 import SectoralClassifications from './FormField/SectoralClassifications';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { ResidentFormData, SectoralInformation } from '@/types/domain/residents/forms';
+
 
 /**
  * Props for the SectoralInformationForm component
@@ -27,7 +24,7 @@ export interface SectoralInformationFormProps {
    * Form data containing sectoral flags and context fields for auto-calculation.
    * Uses the complete resident form data which includes all needed fields.
    */
-  formData: ResidentFormData;
+  formData: ResidentFormData & SectoralInformation;
 
   /**
    * Callback when any sectoral field changes.
@@ -141,7 +138,7 @@ export function SectoralInformationForm({
   );
 
   // Context for auto-calculation (form data already uses database field names)
-  const sectoralContext: SectoralContext = React.useMemo(
+  const sectoralContext = React.useMemo(
     () => {
       const context = {
         birthdate: formData.birthdate,
@@ -173,7 +170,7 @@ export function SectoralInformationForm({
       });
       
       // Send all updates as a single batch to avoid race conditions
-      onChange('__sectoral_batch__', batchUpdate);
+      onChange('__sectoral_batch__', JSON.stringify(batchUpdate));
     },
     [onChange]
   );

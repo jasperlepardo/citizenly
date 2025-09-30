@@ -9,11 +9,11 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import type { 
-  ResidentFormData,
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type {
   UseResidentFormStateOptions,
   UseResidentFormStateReturn,
-} from '@/types';
+} from '@/types/shared/hooks/workflowHooks';
 
 /**
  * Default form data with proper typing

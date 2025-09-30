@@ -8,8 +8,9 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { UserProfile, Button } from '@/components';
-import { useAuth } from '@/contexts';
+import UserProfile from '@/components/organisms/UserProfile/UserProfile';
+import { Button } from '@/components/atoms/Button/Button';
+import { useAuth } from '@/contexts/AuthContext';
 import { logError } from '@/lib/logging/client-logger';
 
 // Simple logout button component

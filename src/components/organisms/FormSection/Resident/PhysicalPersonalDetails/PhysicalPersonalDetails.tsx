@@ -1,15 +1,16 @@
 import React from 'react';
 
-import type {
-  FormMode,
-  MotherMaidenNameFormData,
-  PhysicalCharacteristicsFormData,
-  VotingInformationFormData,
-} from '@/types';
 
 import { MotherMaidenName } from './FormField/MotherMaidenName';
 import { PhysicalCharacteristics } from './FormField/PhysicalCharacteristics';
 import { VotingInformation } from './FormField/VotingInformation';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type {
+  MotherMaidenNameFormData,
+  PhysicalCharacteristicsFormData,
+  VotingInformationFormData,
+} from '@/types/domain/residents/forms';
 
 export interface PhysicalPersonalDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -82,9 +83,9 @@ export function PhysicalPersonalDetailsForm({
 
   // Map form data to MotherMaidenName component props
   const motherMaidenNameValue: MotherMaidenNameFormData = {
-    mother_maiden_first: formData.mother_maiden_first || '',
-    mother_maiden_middle: formData.mother_maiden_middle || '',
-    mother_maiden_last: formData.mother_maiden_last || '',
+    mother_maiden_first_name: formData.mother_maiden_first || '',
+    mother_maiden_middle_name: formData.mother_maiden_middle || '',
+    mother_maiden_last_name: formData.mother_maiden_last || '',
   };
 
   // Handle changes from PhysicalCharacteristics component
@@ -104,7 +105,7 @@ export function PhysicalPersonalDetailsForm({
     
     Object.entries(value).forEach(([field, fieldValue]) => {
       console.log('🔍 PhysicalPersonalDetails: batching field', { field, fieldValue });
-      batchedUpdates[field] = fieldValue;
+      batchedUpdates[field] = fieldValue as string;
     });
     
     // Send as a single batch update to prevent race conditions
@@ -120,7 +121,7 @@ export function PhysicalPersonalDetailsForm({
       if (field === 'is_voter' || field === 'is_resident_voter') {
         onChange(field as keyof typeof value, fieldValue === 'yes');
       } else {
-        onChange(field as keyof typeof value, fieldValue);
+        onChange(field as string, fieldValue as string | number | boolean | null);
       }
     });
   };

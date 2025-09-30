@@ -1,12 +1,13 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
 
-import { AddressInformation, AddressInformationData } from './FormField/AddressInformation';
+import { AddressInformation } from './FormField/AddressInformation';
 import {
   DemographicsInformation,
-  DemographicsInformationData,
 } from './FormField/DemographicsInformation';
+import type { AddressInformationFormData, DemographicsInformationFormData } from '@/types/domain/households/forms';
+
+import type { FormMode } from '@/types/app/ui/forms';
 
 export interface LocationAndDemographicsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -32,6 +33,8 @@ export interface LocationAndDemographicsFormProps {
   provinceOptions?: Array<{ value: string; label: string }>;
   cityOptions?: Array<{ value: string; label: string }>;
   barangayOptions?: Array<{ value: string; label: string }>;
+  streetOptions?: Array<{ value: string; label: string }>;
+  subdivisionOptions?: Array<{ value: string; label: string }>;
   // Loading states (streets and subdivisions handled automatically)
   regionsLoading?: boolean;
   provincesLoading?: boolean;
@@ -53,6 +56,8 @@ export function LocationAndDemographicsForm({
   provinceOptions,
   cityOptions,
   barangayOptions,
+  streetOptions,
+  subdivisionOptions,
   regionsLoading,
   provincesLoading,
   citiesLoading,
@@ -63,7 +68,7 @@ export function LocationAndDemographicsForm({
   onBarangayChange,
 }: LocationAndDemographicsFormProps) {
   // Map form data to AddressInformation component props
-  const addressInfoValue: AddressInformationData = {
+  const addressInfoValue: AddressInformationFormData = {
     houseNumber: formData.houseNumber || '',
     streetId: formData.streetId || '', // Updated field name
     subdivisionId: formData.subdivisionId || '', // Updated field name
@@ -74,23 +79,23 @@ export function LocationAndDemographicsForm({
   };
 
   // Map form data to DemographicsInformation component props
-  const demographicsValue: DemographicsInformationData = {
+  const demographicsValue: DemographicsInformationFormData = {
     noOfFamilies: formData.noOfFamilies || 1,
     noOfHouseholdMembers: formData.noOfHouseholdMembers || 0,
     noOfMigrants: formData.noOfMigrants || 0,
   };
 
   // Handle changes from AddressInformation component
-  const handleAddressInfoChange = (value: AddressInformationData) => {
+  const handleAddressInfoChange = (value: AddressInformationFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      onChange(field as string, fieldValue);
     });
   };
 
   // Handle changes from DemographicsInformation component
-  const handleDemographicsChange = (value: DemographicsInformationData) => {
+  const handleDemographicsChange = (value: DemographicsInformationFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      onChange(field as string, fieldValue);
     });
   };
 
@@ -117,6 +122,8 @@ export function LocationAndDemographicsForm({
             provinceOptions={provinceOptions}
             cityOptions={cityOptions}
             barangayOptions={barangayOptions}
+            streetOptions={streetOptions}
+            subdivisionOptions={subdivisionOptions}
             regionsLoading={regionsLoading}
             provincesLoading={provincesLoading}
             citiesLoading={citiesLoading}

@@ -4,12 +4,12 @@
  * Handles all Supabase-specific data access for residents
  */
 
-import type { Resident } from '@/types/domain/residents/core';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
-import type { ValidationResult } from '@/types/shared/validation/validation';
-import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 import { createLogger } from '@/lib/config/environment';
 import { supabase } from '@/lib/data/supabase';
+import type { Resident } from '@/types/domain/residents/core';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
+import type { ValidationResult } from '@/types/shared/validation/validation';
 
 const logger = createLogger('SupabaseResidentRepository');
 

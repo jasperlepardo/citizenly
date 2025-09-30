@@ -10,11 +10,13 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { useCSRFToken } from '@/lib/authentication/csrf';
 // Note: In clean architecture, hooks should call API endpoints, not services directly
 import { ResidentFormData } from '@/types/domain/residents/forms';
-import type { UseResidentOperationsOptions } from '@/types';
+
+// Legacy type - minimal stub
+type UseResidentOperationsOptions = { onSuccess?: () => void; onError?: (error: string) => void };
 
 
 /**
@@ -126,7 +128,7 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
 
         // Success callback
         if (options.onSuccess) {
-          options.onSuccess(result);
+          options.onSuccess();
         }
 
         return { success: true, data: result };
@@ -137,7 +139,7 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
         }
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.';
         if (options.onError) {
-          options.onError(new Error(errorMessage));
+          options.onError(errorMessage);
         }
         return { success: false, error: errorMessage };
       } finally {

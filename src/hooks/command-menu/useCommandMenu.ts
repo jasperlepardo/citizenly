@@ -3,9 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
-import type { UseCommandMenuProps, UseCommandMenuReturn } from '@/types';
+
+import type {
+  UseCommandMenuProps,
+  UseCommandMenuReturn,
+  CommandMenuSearchResult
+} from '@/types/shared/hooks/commandMenuHooks';
 
 export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps): UseCommandMenuReturn {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,16 +21,16 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps):
   const filteredItems = useMemo(() => {
     if (!searchQuery.trim()) {
       // Show recent items first when no search query
-      const recentItems = items.filter(item => item.recent).slice(0, 5);
+      const recentItems = items.filter((item: CommandMenuSearchResult) => item.recent).slice(0, 5);
       const otherItems = items
-        .filter(item => !item.recent)
+        .filter((item: CommandMenuSearchResult) => !item.recent)
         .slice(0, maxResults - recentItems.length);
       return [...recentItems, ...otherItems];
     }
 
     const query = searchQuery.toLowerCase();
     const scored = items
-      .map(item => {
+      .map((item: CommandMenuSearchResult) => {
         let score = 0;
         const label = item.label?.toLowerCase() || '';
         const description = item.description?.toLowerCase() || '';
@@ -45,8 +49,8 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps):
 
         return { item, score };
       })
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
+      .filter(({ score }: { score: number }) => score > 0)
+      .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
       .slice(0, maxResults)
       .map(({ item }) => item);
 
@@ -59,7 +63,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps):
   }, [filteredItems]);
 
   // Global keyboard shortcut for opening command menu
-  useCommandMenuShortcut(() => setIsOpen(true), true);
+  useCommandMenuShortcut(() => setIsOpen(true));
 
   // Command menu navigation when open
   useEffect(() => {
@@ -69,17 +73,18 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps):
       isOpen: true,
       selectedIndex,
       itemCount: filteredItems.length,
+      onOpen: open,
       onClose: close,
       onSelect: (index: number) => {
         if (filteredItems[index]) {
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex,
+      onNavigate: (index: number) => setSelectedIndex(index),
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      handleMenuKeyDown(event);
+      handleMenuKeyDown(event as any as React.KeyboardEvent);
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -107,7 +112,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps):
   }, [isOpen, open, close]);
 
   const executeCommand = useCallback(
-    (item: CommandMenuItem) => {
+    (item: CommandMenuSearchResult) => {
       if (item.disabled) return;
 
       // Close menu first

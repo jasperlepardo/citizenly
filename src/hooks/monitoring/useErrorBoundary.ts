@@ -7,9 +7,10 @@ import { useCallback, useState } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
 import type { ErrorBoundaryState } from '@/types/shared/errors/errors';
-import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/shared/hooks';
 
-import { captureError, addSentryBreadcrumb } from '@/hooks/sentry-config';
+import { captureError, addSentryBreadcrumb } from '@/lib/monitoring/sentry-config';
+import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/shared/errors/errors';
+
 
 // Extended error boundary state for hook usage
 interface HookErrorBoundaryState extends ErrorBoundaryState {
@@ -135,8 +136,12 @@ export const useErrorBoundary = (options: UseErrorBoundaryOptions): ErrorBoundar
   return {
     error: errorState.error || null,
     hasError: errorState.hasError,
+    retry: resetError, // Use resetError as retry
     resetError,
-    captureError: handleError,
     wrapAsync,
+    errorState: {
+      error: errorState.error || null,
+      hasError: errorState.hasError,
+    },
   };
 };

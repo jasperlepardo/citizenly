@@ -9,7 +9,8 @@ import type {
   PSGCCityMunicipality,
   PSGCBarangay,
   AddressHierarchyQueryResult as AddressHierarchy,
-} from '../../types/database';
+} from '@/types/infrastructure/database/database';
+
 import { supabase } from './supabase';
 
 // Import geographic types from centralized location
@@ -24,7 +25,7 @@ export type City = Pick<
 export type Barangay = Pick<PSGCBarangay, 'code' | 'name' | 'city_municipality_code'>;
 
 // Re-export address hierarchy type
-export type { AddressHierarchyQueryResult as AddressHierarchy } from '../../types/database';
+export type { AddressHierarchyQueryResult as AddressHierarchy } from '@/types/infrastructure/database/database';
 
 /**
  * Test database connection and get basic stats

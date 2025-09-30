@@ -6,7 +6,8 @@
 
 import { lazy } from 'react';
 
-import { FormSkeleton } from '@/components/atoms/Loading';
+import { FormSkeleton } from '@/components/atoms/Loading/FormSkeleton/FormSkeleton';
+import { withLazyLoading } from '@/components/shared/lazy/lazyLoading';
 // REMOVED: @/lib barrel import - replace with specific module;
 
 const PersonalInformationLazy = lazy(() =>

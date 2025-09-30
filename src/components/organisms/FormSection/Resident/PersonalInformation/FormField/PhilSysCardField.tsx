@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { InputField } from '@/components';
-import type { FormMode } from '@/types';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+
+import type { FormMode } from '@/types/app/ui/forms';
 
 export interface PhilSysCardFieldProps {
   /** Form mode - determines if field is editable or read-only */
@@ -35,7 +36,7 @@ export function PhilSysCardField({
         loading={loading}
         inputProps={{
           value: value,
-          onChange: e => onChange(e.target.value),
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value),
           placeholder: 'XXXX-XXXX-XXXX',
           error: error,
         }}

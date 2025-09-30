@@ -15,10 +15,10 @@ import {
   getRecentItems,
   clearRecentItems,
 } from '@/utils/shared/apiUtils';
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
+
+import type { CommandMenuSearchResult as CommandMenuItem , UseCommandMenuRecentsReturn } from '@/types/shared/hooks/commandMenuHooks';
 
 
-import type { UseCommandMenuRecentsReturn } from '@/types';
 
 // Interface moved to centralized types
 
@@ -34,7 +34,7 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
 
   // Error boundary for recent items operations
   const { wrapAsync } = useAsyncErrorBoundary({
-    onError: (error, errorInfo) => {
+    onError: (error: any, errorInfo: any) => {
       if (process.env.NODE_ENV === 'development') {
         console.error('Command Menu Recents Error:', errorInfo, error);
       }
@@ -53,7 +53,7 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
       const recent = await wrapAsync(getRecentItems, 'load recent items')();
 
       if (recent) {
-        const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
+        const recentMenuItems: CommandMenuItem[] = recent.map((item: any) => ({
           id: `recent-${item.id}`,
           title: item.title,
           subtitle: item.description,

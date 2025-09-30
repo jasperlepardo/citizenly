@@ -2,9 +2,9 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import { createWrappedComponent } from '@/utils/react/hocUtils';
 import { logError } from '@/lib/logging/client-logger';
 import { captureError, addSentryBreadcrumb } from '@/lib/monitoring/sentry-config';
+import { createWrappedComponent } from '@/utils/react/hocUtils';
 
 interface Props {
   children: ReactNode;

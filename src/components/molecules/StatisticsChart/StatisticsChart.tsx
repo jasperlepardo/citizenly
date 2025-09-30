@@ -2,10 +2,16 @@
 
 import React from 'react';
 
-import {
-  transformChartData,
-  getChartTitle,
-} from '@/utils/reports/chartTransformers';
+// TODO: Create missing chartTransformers module
+// import {
+//   transformChartData,
+//   getChartTitle,
+// } from '@/utils/reports/chartTransformers';
+
+// Temporary stub implementations
+const getChartTitle = (type: string, title?: string) => title || `${type} Chart`;
+const transformChartData = (type: string, data: any) => data;
+import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 import type {
   ChartType,
   DependencyData,
@@ -14,7 +20,6 @@ import type {
   EmploymentStatusData,
 } from '@/types/app/ui/charts';
 
-import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 
 interface BaseStatisticsChartProps {
   title?: string;

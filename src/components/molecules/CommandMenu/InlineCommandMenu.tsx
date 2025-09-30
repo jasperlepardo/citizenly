@@ -3,12 +3,12 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/components/shared/utils';
-import { trackCommandMenuError, trackWorkflowSuggestion } from '@/utils/command-menu/analytics-utils';
+import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import type {
   CommandMenuSearchResult,
 } from '@/types/infrastructure/services/services';
+import { trackCommandMenuError, trackWorkflowSuggestion } from '@/utils/command-menu/analytics-utils';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
@@ -266,7 +266,7 @@ export function InlineCommandMenu({
                     query={searchQuery}
                     onSuggestionClick={suggestion => {
                       // Track workflow suggestion click
-                      trackWorkflowSuggestion(suggestion.id, searchQuery, suggestion.title);
+                      trackWorkflowSuggestion(suggestion.id, { query: searchQuery, title: suggestion.title });
 
                       // Close the dropdown
                       setIsInputFocused(false);

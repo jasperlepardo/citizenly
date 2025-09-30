@@ -9,16 +9,16 @@
 
 import { useCallback } from 'react';
 
-import { HouseholdFormData } from '@/services/household.service';
-import type {
-  UseHouseholdOperationsWorkflowOptions,
-  UseHouseholdOperationsWorkflowReturn,
-  UseHouseholdCreationServiceOptions,
-} from '@/types';
 
 import { useHouseholdCrud, UseHouseholdCrudOptions } from '@/hooks/crud/useHouseholdCrud';
 import { useHouseholdValidation } from '@/hooks/validation/useOptimizedHouseholdValidation';
-import { useHouseholdCreationService } from './useHouseholdCreationService';
+
+
+import type { HouseholdFormData } from '@/types/app/ui/forms';
+import type {
+  UseHouseholdOperationsWorkflowOptions,
+  UseHouseholdOperationsWorkflowReturn,
+} from '@/types/shared/hooks/workflowHooks';
 
 
 /**
@@ -51,22 +51,15 @@ import { useHouseholdCreationService } from './useHouseholdCreationService';
 export function useHouseholdOperationsWorkflow(
   options: UseHouseholdOperationsWorkflowOptions = {}
 ): UseHouseholdOperationsWorkflowReturn {
-  // Extract options for each hook
+  // Extract options for each hook - adapt signatures to match UseHouseholdCrudOptions
   const crudOptions: UseHouseholdCrudOptions = {
-    onSuccess: options.onSuccess,
+    onSuccess: options.onSuccess ? () => options.onSuccess?.({}) : undefined,
     onError: options.onError,
-  };
-
-  const creationOptions: UseHouseholdCreationServiceOptions = {
-    onSuccess: options.onSuccess,
-    onError: options.onError,
-    onValidationError: options.onValidationError,
   };
 
   // Compose focused hooks
   const crudHook = useHouseholdCrud(crudOptions);
   const validationHook = useHouseholdValidation();
-  const creationHook = useHouseholdCreationService(creationOptions);
 
   /**
    * Enhanced createHousehold with validation integration
@@ -87,17 +80,10 @@ export function useHouseholdOperationsWorkflow(
         };
       }
 
-      // Proceed with creation
-      const result = await creationHook.createHousehold(formData);
-
-      // Set validation errors if any
-      if (result.validationErrors) {
-        validationHook.setValidationErrors(result.validationErrors);
-      }
-
-      return result;
+      // Proceed with creation using CRUD hook
+      return await crudHook.createHousehold(formData);
     },
-    [validationHook, creationHook]
+    [validationHook, crudHook]
   );
 
   /**
@@ -116,19 +102,17 @@ export function useHouseholdOperationsWorkflow(
   );
 
   // Determine if any operation is submitting
-  const isSubmitting = crudHook.isLoading || creationHook.isCreating;
+  const isSubmitting = crudHook.isLoading;
 
   return {
     // CRUD operations
     getHousehold: crudHook.getHousehold,
-    getHouseholdByCode: crudHook.getHouseholdByCode,
     listHouseholds: crudHook.listHouseholds,
     updateHousehold,
     deleteHousehold: crudHook.deleteHousehold,
 
     // Creation operations
     createHousehold,
-    generateHouseholdCode: creationHook.generateHouseholdCode,
 
     // Validation
     validateHousehold: validationHook.validateHousehold,

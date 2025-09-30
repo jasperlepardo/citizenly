@@ -7,9 +7,16 @@
 
 // ComponentType import removed - was not being used
 import type { FormMode } from '@/types/app/ui/forms';
+import type { AddressHierarchyInfo } from '@/types/domain/addresses/addresses';
 import type { AddressHierarchyQueryResult } from '@/types/infrastructure/database/database';
 import type { HookPerformanceMetrics } from '@/types/shared/utilities/performance';
-import type { AddressHierarchyInfo } from '@/types/domain/addresses/addresses';
+
+// Re-export performance metrics for use in hooks
+export type { HookPerformanceMetrics };
+
+// Re-export commonly used form and validation types
+export type { ResidentFormData } from '@/types/domain/residents/forms';
+export type { ValidationResult, FieldValidationResult } from '@/types/consolidated/validation';
 
 // Note: Form hook types removed - unused (FormFieldState, FormState, UseFormOptions, UseFormReturn)
 
@@ -393,6 +400,298 @@ export interface UseGenericFormSubmissionReturn<T> {
   handleSubmit: (e: React.FormEvent, formData: T) => Promise<void>;
   /** Manual submission function (without event) */
   submit: (formData: T) => Promise<void>;
+}
+
+/**
+ * Resident submission options interface
+ * For use with resident form submission hook
+ */
+export interface UseResidentSubmissionOptions {
+  /** Function to call when form is submitted */
+  onSubmit?: (data: any) => Promise<void>;
+  /** Called on successful submission */
+  onSuccess?: (data: any) => void;
+  /** Called on submission error */
+  onError?: (error: any) => void;
+}
+
+/**
+ * Resident submission hook return interface
+ * For use with resident form submission hook
+ */
+export interface UseResidentSubmissionReturn {
+  /** Whether the form is currently being submitted */
+  isSubmitting: boolean;
+  /** Current submission error if any */
+  submissionError: string | null;
+  /** Form submission function */
+  submitForm: (formData: any, validationResult: any) => Promise<void>;
+  /** Reset submission state */
+  resetSubmissionState: () => void;
+}
+
+// =============================================================================
+// VALIDATION HOOK TYPES
+// =============================================================================
+
+/**
+ * Resident validation options interface
+ * For resident validation configuration
+ */
+export interface ResidentValidationOptions {
+  /** Whether to validate on blur events */
+  validateOnBlur?: boolean;
+  /** Whether to validate on change events */
+  validateOnChange?: boolean;
+  /** Whether to enable async validation */
+  enableAsyncValidation?: boolean;
+  /** Custom validation messages */
+  customMessages?: Record<string, string>;
+}
+
+/**
+ * Validation summary interface
+ * For tracking validation progress across sections
+ */
+export interface ValidationSummary {
+  /** Total number of fields */
+  totalFields: number;
+  /** Number of validated fields */
+  validatedFields: number;
+  /** Number of invalid fields */
+  invalidFields: number;
+  /** Total number of errors */
+  totalErrors: number;
+  /** Number of critical errors */
+  criticalErrors: number;
+  /** Number of warnings */
+  warnings: number;
+  /** Validation progress percentage */
+  progress: number;
+}
+
+/**
+ * Section validation status interface
+ * For tracking validation status of form sections
+ */
+export interface SectionValidationStatus {
+  /** Section identifier */
+  sectionId: string;
+  /** Section display name */
+  sectionName: string;
+  /** Section (alias for sectionId for backward compatibility) */
+  section?: string;
+  /** Whether section is valid */
+  isValid: boolean;
+  /** Number of errors in section */
+  errorCount: number;
+  /** Total number of fields in section */
+  totalFields: number;
+  /** Progress percentage for this section */
+  progressPercentage: number;
+  /** Whether section has been validated */
+  hasValidated: boolean;
+}
+
+/**
+ * Resident validation core hook return interface
+ * For core resident validation functionality
+ */
+export interface UseResidentValidationCoreReturn {
+  /** Validation errors by field */
+  errors: Record<string, string>;
+  /** Whether form is currently valid */
+  isValid: boolean;
+  /** Whether validation has been performed */
+  hasValidated: boolean;
+  /** Whether currently validating */
+  isValidating: boolean;
+  /** Get error for specific field */
+  getFieldError: (fieldName: string) => string | undefined;
+  /** Check if field has error */
+  hasFieldError: (fieldName: string) => boolean;
+  /** Validate entire form */
+  validateForm: (data: any) => Promise<any>;
+  /** Validate single field */
+  validateField: (fieldName: string, value: any) => Promise<any>;
+  /** Clear all errors */
+  clearErrors: () => void;
+  /** Set field error */
+  setFieldError: (fieldName: string, error: string) => void;
+  /** Validate form section */
+  validateSectionFields: (formData: any, section: any) => any;
+  /** Get required fields for section */
+  getRequiredFieldsForSection: (section: any) => string[];
+  /** Validate field with debouncing */
+  validateFieldDebounced: (fieldName: string, value: any) => void;
+  /** Get formatted field error */
+  getFormattedFieldError: (fieldName: string) => string | undefined;
+  /** Batch validate multiple fields */
+  batchValidateFields: (fields: Record<string, unknown>) => Record<string, string>;
+  /** Clear errors for specific section */
+  clearSectionErrors: (section: string) => void;
+  /** Check if section is valid */
+  isSectionValid: (section: string) => boolean;
+  /** Check if field should be validated */
+  shouldValidateField: (fieldName: string) => boolean;
+}
+
+/**
+ * Resident validation errors hook return interface
+ * For managing validation errors
+ */
+export interface UseResidentValidationErrorsReturn {
+  /** Current validation errors */
+  errors: Record<string, string>;
+  /** Whether form is valid (no errors) */
+  isValid: boolean;
+  /** Set errors for multiple fields */
+  setErrors: (errors: Record<string, string>) => void;
+  /** Add error for single field */
+  addError: (fieldName: string, message: string) => void;
+  /** Remove error for single field */
+  removeError: (fieldName: string) => void;
+  /** Clear all errors */
+  clearErrors: () => void;
+  /** Get formatted error for field */
+  getFormattedError: (fieldName: string) => string | undefined;
+  /** Check if field has error */
+  hasFieldError: (fieldName: string) => boolean;
+  /** Clear error for specific field */
+  clearFieldError: (fieldName: string) => void;
+  /** Validate entire form */
+  validateForm: (data: any) => any;
+  /** Get error for field */
+  getFieldError: (fieldName: string) => string | undefined;
+  /** Validate single field */
+  validateField: (fieldName: string, value: any) => Promise<any>;
+  /** Clear all errors (alias for clearErrors) */
+  clearAllErrors: () => void;
+}
+
+/**
+ * Resident validation progress hook return interface
+ * For tracking validation progress
+ */
+export interface UseResidentValidationProgressReturn {
+  /** Current validation summary */
+  summary: ValidationSummary;
+  /** Validation status by section */
+  sectionStatuses: SectionValidationStatus[];
+  /** Overall validation progress percentage */
+  progress: number;
+  /** Update section validation status */
+  updateSectionStatus: (sectionId: string, status: Partial<SectionValidationStatus>) => void;
+  /** Reset validation progress */
+  resetProgress: () => void;
+  /** Get validation summary from errors */
+  getValidationSummary: (errors: Record<string, string>) => ValidationSummary;
+  /** Get validation progress from errors */
+  getValidationProgress: (errors: Record<string, string>) => number;
+  /** Check if errors contain critical issues */
+  hasCriticalErrors: (errors: Record<string, string>) => boolean;
+  /** Get validation status for specific section */
+  getSectionValidationStatus: (sectionId: string) => SectionValidationStatus | undefined;
+  /** Get all section statuses from errors (alias for compatibility) */
+  getAllSectionStatuses: (errors: Record<string, string>) => SectionValidationStatus[];
+  /** Check if field is critical */
+  isFieldCritical: (fieldName: string) => boolean;
+  /** Get all required fields */
+  getAllRequiredFields: () => string[];
+  /** Check if field is required */
+  isFieldRequired: (fieldName: string) => boolean;
+}
+
+// =============================================================================
+// WORKFLOW HOOK TYPES
+// =============================================================================
+
+/**
+ * Resident form state options interface
+ * For configuring resident form state management
+ */
+export interface UseResidentFormStateOptions {
+  /** Initial form data */
+  initialData?: any;
+  /** Whether to track dirty state */
+  trackDirty?: boolean;
+  /** Auto-save interval in milliseconds */
+  autoSaveInterval?: number;
+  /** Auto-save enabled */
+  autoSave?: boolean;
+  /** Auto-save key for storage */
+  autoSaveKey?: string;
+}
+
+/**
+ * Resident edit workflow options interface
+ * For configuring the complete resident edit workflow
+ */
+export interface UseResidentEditWorkflowOptions {
+  /** Initial resident data */
+  initialData?: any;
+  /** Validation options */
+  validationOptions?: ResidentValidationOptions;
+  /** Submission options */
+  submissionOptions?: UseResidentSubmissionOptions;
+  /** Form state options */
+  formStateOptions?: UseResidentFormStateOptions;
+  /** Auto-save enabled */
+  autoSave?: boolean;
+  /** Auto-save key for storage */
+  autoSaveKey?: string;
+  /** Form submission handler */
+  onSubmit?: (data: any) => Promise<void>;
+  /** Success callback */
+  onSuccess?: (data: any) => void;
+  /** Error callback */
+  onError?: (error: any) => void;
+}
+
+/**
+ * Resident edit workflow hook return interface
+ * For the complete resident edit workflow
+ */
+export interface UseResidentEditWorkflowReturn {
+  // Form state
+  /** Current form data */
+  formData: any;
+  /** Whether form has unsaved changes */
+  isDirty: boolean;
+  /** Update single field */
+  updateField: (field: string, value: any) => void;
+  /** Update multiple fields */
+  updateFields: (fields: Record<string, any>) => void;
+  /** Reset form to initial state */
+  resetForm: () => void;
+
+  // Validation
+  /** Current validation errors */
+  errors: Record<string, string>;
+  /** Whether form is valid */
+  isValid: boolean;
+  /** Validate single field */
+  validateField: (field: string, value: any) => Promise<any>;
+  /** Get error for specific field */
+  getFieldError: (field: string) => string | undefined;
+  /** Check if field has error */
+  hasFieldError: (field: string) => boolean;
+  /** Clear error for specific field */
+  clearFieldError: (field: string) => void;
+  /** Validate entire form */
+  validateForm: () => any;
+
+  // Submission
+  /** Whether form is being submitted */
+  isSubmitting: boolean;
+  /** Current submission error */
+  submissionError: string | null;
+  /** Submit form */
+  submitForm: () => Promise<void>;
+  /** Validate and submit form */
+  validateAndSubmit: () => Promise<void>;
+  /** Reset entire workflow */
+  resetWorkflow: () => void;
 }
 
 /**

@@ -9,7 +9,7 @@
 
 import { useCallback, useState } from 'react';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/data/supabase';
 import { formatAddress } from '@/services/app/display/residentDisplayHelpers';
 import { container } from '@/services/container';
@@ -20,7 +20,7 @@ import type {
   HouseholdSearchResult,
   UseHouseholdSearchOptions,
   UseHouseholdSearchReturn,
-} from '@/types';
+} from '@/types/shared/hooks/searchHooks';
 
 /**
  * Process households data and add computed fields

@@ -3,8 +3,10 @@
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { LoginForm, DevLogin, ThemeToggle } from '@/components';
-import { useAuth } from '@/contexts';
+import LoginForm from '@/components/organisms/LoginForm/LoginForm';
+import DevLogin from '@/components/organisms/DevLogin/DevLogin';
+import { ThemeToggle } from '@/components/molecules/ThemeToggle/ThemeToggle';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLastVisitedPage } from '@/hooks/utilities';
 
 export const dynamic = 'force-dynamic';

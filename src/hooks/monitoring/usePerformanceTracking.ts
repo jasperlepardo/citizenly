@@ -6,9 +6,10 @@
 import { useEffect, useRef, useCallback } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-import type { UsePerformanceTrackingOptions, PerformanceTrackingReturn } from '@/types/shared/hooks';
 
-import { performanceMonitor } from '@/hooks/performance';
+import { performanceMonitor } from '@/lib/performance/performanceMonitor';
+import type { UsePerformanceTrackingOptions, PerformanceTrackingReturn } from '@/types/shared/utilities/performance';
+
 
 /**
  * Hook for tracking component performance metrics
@@ -34,11 +35,8 @@ export const usePerformanceTracking = (
       mountTimeRef.current = performance.now();
       const metricName = `component_mount_${componentName}`;
 
-      performanceMonitor.startMetric(metricName, {
-        component: componentName,
-        type: 'mount',
-        ...metadata,
-      });
+      // Record mount start time
+      performance.mark(`${metricName}-start`);
 
       clientLogger.component(componentName, 'mounted', { timestamp: mountTimeRef.current });
 
@@ -47,7 +45,10 @@ export const usePerformanceTracking = (
         const unmountTime = performance.now();
         const lifecycleDuration = unmountTime - mountTimeRef.current;
 
-        performanceMonitor.endMetric(metricName);
+        // Record mount duration
+        performance.mark(`${metricName}-end`);
+        performance.measure(metricName, `${metricName}-start`, `${metricName}-end`);
+        performanceMonitor.recordCustomMetric(metricName, lifecycleDuration);
 
         clientLogger.component(componentName, 'unmounted', {
           lifecycleDuration: Math.round(lifecycleDuration * 100) / 100,
@@ -91,16 +92,23 @@ export const usePerformanceTracking = (
 
   // Track custom operations
   const trackOperation = useCallback(
-    (name: string, operationMetadata?: Record<string, any>) => {
+    <T>(name: string, operation: () => T, operationMetadata?: Record<string, any>): T => {
       const metricName = `${componentName}_${name}`;
-      performanceMonitor.startMetric(metricName, {
-        component: componentName,
-        operation: name,
-        ...metadata,
-        ...operationMetadata,
-      });
+      const startTime = performance.now();
 
-      return () => performanceMonitor.endMetric(metricName);
+      try {
+        const result = operation();
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
+        performanceMonitor.recordCustomMetric(metricName, duration);
+        return result;
+      } catch (error) {
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        performanceMonitor.recordCustomMetric(`${metricName}_error`, duration);
+        throw error;
+      }
     },
     [componentName, metadata]
   );
@@ -114,13 +122,21 @@ export const usePerformanceTracking = (
     ): Promise<T> => {
       const metricName = `${componentName}_async_${name}`;
 
-      return performanceMonitor.measureFunction(metricName, operation, {
-        component: componentName,
-        operation: name,
-        type: 'async',
-        ...metadata,
-        ...operationMetadata,
-      });
+      const startTime = performance.now();
+
+      try {
+        const result = await operation();
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
+        performanceMonitor.recordCustomMetric(metricName, duration);
+        return result;
+      } catch (error) {
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        performanceMonitor.recordCustomMetric(`${metricName}_error`, duration);
+        throw error;
+      }
     },
     [componentName, metadata]
   );

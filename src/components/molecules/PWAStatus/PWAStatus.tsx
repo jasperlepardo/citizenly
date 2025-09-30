@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 
 interface PWAStatusInfo {
   isOnline: boolean;

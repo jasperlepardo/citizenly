@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+
 import type { HouseholdFormData } from '@/types/app/ui/forms';
 
 // =============================================================================

@@ -2,16 +2,14 @@
 
 import React from 'react';
 
-import {
-  StatsCard,
-  DependencyRatioPieChart,
-  SexDistributionPieChart,
-  CivilStatusPieChart,
-  EmploymentStatusPieChart,
-  StatsSkeleton,
-  PopulationPyramid,
-} from '@/components';
-import { useAuth } from '@/contexts';
+import StatsCard from '@/components/molecules/StatsCard/StatsCard';
+import DependencyRatioPieChart from '@/components/molecules/DependencyRatioPieChart/DependencyRatioPieChart';
+import SexDistributionPieChart from '@/components/molecules/SexDistributionPieChart/SexDistributionPieChart';
+import CivilStatusPieChart from '@/components/molecules/CivilStatusPieChart/CivilStatusPieChart';
+import EmploymentStatusPieChart from '@/components/molecules/EmploymentStatusPieChart/EmploymentStatusPieChart';
+import StatsSkeleton from '@/components/atoms/Loading/StatsSkeleton/StatsSkeleton';
+import PopulationPyramid from '@/components/organisms/PopulationPyramid/PopulationPyramid';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 import { clientLogger } from '@/lib/logging/client-logger';
 

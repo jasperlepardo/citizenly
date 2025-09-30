@@ -7,8 +7,9 @@
 
 import React, { useState } from 'react';
 
-import { Button, SelectField } from '@/components';
-import { useTheme } from '@/contexts';
+import { Button } from '@/components/atoms/Button/Button';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import { useTheme } from '@/contexts/ThemeContext';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 export default function SettingsPage() {

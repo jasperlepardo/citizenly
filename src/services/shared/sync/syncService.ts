@@ -5,13 +5,12 @@
  */
 
 import { createLogger } from '@/lib/config/environment';
-
+import { offlineStorage } from '@/lib/data/offline-storage';
 import { ErrorCode, ErrorSeverity } from '@/types/shared/errors/errors';
+import type { SyncResult } from '@/types/shared/utilities/utilities';
 import { createAppError } from '@/utils/shared/errorUtils';
 
-import { offlineStorage } from '@/lib/data/offline-storage';
 
-import type { SyncResult } from '@/types/shared/utilities/utilities';
 
 const logger = createLogger('SyncService');
 
@@ -83,7 +82,7 @@ export class SyncService {
         return;
       }
 
-      const stats = await this.processSyncItems(pendingItems);
+      const stats = await this.processSyncItems(pendingItems as any);
       this.logProcessingResults(stats);
     } catch (error) {
       logger.error('Error processing sync queue:', error);

@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { SelectField, ControlFieldSet } from '@/components';
-import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
 import { formatGraduateStatus } from '@/utils/shared/dateUtils';
-import type { FormMode, EducationInformationFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { EducationInformationFormData } from '@/types/domain/residents/forms';
 
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [
@@ -34,7 +35,7 @@ export function EducationInformation({
   className = '',
   loadingStates = {},
 }: EducationInformationProps) {
-  const handleChange = (field: keyof EducationInformationFormData, fieldValue: any) => {
+  const handleChange = (field: keyof EducationInformationFormData, fieldValue: string) => {
     const updatedValue = {
       ...value,
       [field]: fieldValue,
@@ -78,42 +79,35 @@ export function EducationInformation({
           selectProps={{
             placeholder: 'Select education level...',
             options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
-            value: value.education_attainment,
-            onSelect: option => handleChange('education_attainment', option?.value || ''),
+            value: value.education_attainment || '',
+            onSelect: (option: any) => handleChange('education_attainment', option?.value || ''),
           }}
         />
 
-        <ControlFieldSet
-          type="radio"
-          label="Graduate Status"
-          labelSize="sm"
-          radioName="is_graduate"
-          radioValue={mode === 'view' ? formatGraduateStatus(value.is_graduate) : value.is_graduate}
-          onRadioChange={(selectedValue: string) => handleChange('is_graduate', selectedValue)}
-          errorMessage={errors.is_graduate}
-          orientation="horizontal"
-          spacing="sm"
-          mode={value.education_attainment === 'post_graduate' ? 'view' : mode}
-          loading={loadingStates.is_graduate}
-          // helperText={
-          //   value.education_attainment === 'post_graduate'
-          //     ? "Automatically set to 'Yes' for post-graduate education"
-          //     : "Whether the current education level has been completed"
-          // }
-        >
-          {GRADUATE_STATUS_OPTIONS.map(option => (
-            <Radio
-              key={option.value}
-              value={option.value}
-              label={option.label}
-              style="button"
-              buttonProps={{
-                variant: 'neutral-outline',
-                size: 'lg',
-              }}
-            />
-          ))}
-        </ControlFieldSet>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Graduate Status
+          </label>
+          {errors.is_graduate && (
+            <p className="text-sm text-red-600 dark:text-red-400">{errors.is_graduate}</p>
+          )}
+          <div className="flex space-x-4">
+            {GRADUATE_STATUS_OPTIONS.map(option => (
+              <label key={option.value} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="is_graduate"
+                  value={option.value}
+                  checked={(mode === 'view' ? formatGraduateStatus(value.is_graduate || '') : (value.is_graduate || '')) === option.value}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('is_graduate', e.target.value)}
+                  disabled={value.education_attainment === 'post_graduate' && mode !== 'view'}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

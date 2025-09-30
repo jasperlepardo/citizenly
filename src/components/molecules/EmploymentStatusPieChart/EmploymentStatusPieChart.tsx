@@ -2,9 +2,9 @@
 
 import React from 'react';
 
+import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 import type { EmploymentStatusData } from '@/types/app/ui/charts';
 
-import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 
 interface EmploymentStatusPieChartProps {
   data: EmploymentStatusData;

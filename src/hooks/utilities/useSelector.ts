@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-import type { UseSelectorOptions, UseSelectorReturn } from '@/types';
+
+import type { UseSelectorOptions, UseSelectorReturn } from '@/types/shared/hooks/utilityHooks';
 
 export function useSelector<T extends { value: string; label: string }>({
   value,
@@ -60,7 +61,7 @@ export function useSelector<T extends { value: string; label: string }>({
 
   useEffect(() => {
     if (value && !selectedOption && loadSelectedFn) {
-      loadSelectedFn(value).then(option => {
+      loadSelectedFn(value).then((option: T | null) => {
         if (option) {
           setSelectedOption(option);
           setSearchTerm(formatDisplayValue ? formatDisplayValue(option) : option.label);

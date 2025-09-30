@@ -7,16 +7,16 @@
  * Provides clean pagination support with filtering capabilities.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useCallback } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
-import { useCallback } from 'react';
-import type { 
+
+import type {
   PaginatedSearchConfig,
   PaginatedSearchState,
   PaginatedSearchFunction,
-  UseGenericPaginatedSearchReturn 
-} from '@/types';
+  UseGenericPaginatedSearchReturn
+} from '@/types/shared/hooks/searchHooks';
 
 /**
  * Generic paginated search hook
@@ -51,7 +51,7 @@ export function useGenericPaginatedSearch<T, F = any>(
   const executeSearch = useCallback(
     async (query: string, page: number, searchFilters?: F, resetResults = false) => {
       if (query.length < (config.minQueryLength || 0)) {
-        setState(prev => ({
+        setState((prev: PaginatedSearchState<T>) => ({
           ...prev,
           results: [],
           error: null,
@@ -74,14 +74,9 @@ export function useGenericPaginatedSearch<T, F = any>(
       }));
 
       try {
-        const result = await searchFn({
-          query,
-          page,
-          pageSize: state.pagination.pageSize,
-          filters: searchFilters,
-        });
+        const result = await searchFn(query, page, state.pagination.pageSize, searchFilters);
 
-        setState(prev => ({
+        setState((prev: PaginatedSearchState<T>) => ({
           ...prev,
           results: resetResults ? result.data : [...prev.results, ...result.data],
           isLoading: false,
@@ -98,7 +93,7 @@ export function useGenericPaginatedSearch<T, F = any>(
         if (config.onError) {
           config.onError(searchError);
         }
-        setState(prev => ({
+        setState((prev: PaginatedSearchState<T>) => ({
           ...prev,
           results: resetResults ? [] : prev.results,
           error: searchError,

@@ -9,9 +9,12 @@
 
 import { useCallback } from 'react';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
+import { clientLogger as logger } from '@/lib/logging/client-logger';
+import { supabase } from '@/lib/data/supabase';
+
 // REMOVED: @/lib barrel import - replace with specific module;
-import type { UseHouseholdCodeGenerationReturn } from '@/types';
+import type { UseHouseholdCodeGenerationReturn } from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Custom hook for household code generation
@@ -38,7 +41,11 @@ export function useHouseholdCodeGeneration(): UseHouseholdCodeGenerationReturn {
     const barangayCode = userProfile?.barangay_code || '000000000';
 
     try {
-      logger.debug('Generating household code', { barangayCode });
+      logger.debug('Generating household code', {
+        component: 'useHouseholdCodeGeneration',
+        action: 'generate_code',
+        data: { barangayCode }
+      });
 
       // Get next household sequence number for this barangay
       const { count, error } = await supabase
@@ -47,7 +54,11 @@ export function useHouseholdCodeGeneration(): UseHouseholdCodeGenerationReturn {
         .eq('barangay_code', barangayCode);
 
       if (error) {
-        logger.warn('Error counting households, using fallback', { error: error.message });
+        logger.warn('Error counting households, using fallback', {
+          component: 'useHouseholdCodeGeneration',
+          action: 'count_households',
+          error: new Error(error.message)
+        });
         throw new Error('Failed to generate household code');
       }
 
@@ -56,10 +67,19 @@ export function useHouseholdCodeGeneration(): UseHouseholdCodeGenerationReturn {
       // Format: RRPPMMBBB-SSSS-TTTT-HHHH
       const householdCode = `${barangayCode}-0000-0001-${nextSequence.toString().padStart(4, '0')}`;
 
-      logger.debug('Generated household code', { householdCode, sequence: nextSequence });
+      logger.debug('Generated household code', {
+        component: 'useHouseholdCodeGeneration',
+        action: 'code_generated',
+        data: { householdCode, sequence: nextSequence }
+      });
       return householdCode;
     } catch (error) {
-      logger.error('Failed to generate household code', { error, barangayCode });
+      logger.error('Failed to generate household code', {
+        component: 'useHouseholdCodeGeneration',
+        action: 'generate_code_failed',
+        error: error instanceof Error ? error : new Error(String(error)),
+        data: { barangayCode }
+      });
       throw new Error('Unable to generate household code. Please try again.');
     }
   }, [userProfile?.barangay_code]);
@@ -76,7 +96,11 @@ export function useHouseholdCodeGeneration(): UseHouseholdCodeGenerationReturn {
    */
   const deriveGeographicCodes = useCallback((barangayCode: string) => {
     if (!barangayCode || barangayCode.length !== 9 || !/^\d{9}$/.test(barangayCode)) {
-      logger.warn('Invalid barangay code format', { barangayCode });
+      logger.warn('Invalid barangay code format', {
+        component: 'useHouseholdCodeGeneration',
+        action: 'validate_barangay_code',
+        data: { barangayCode }
+      });
       return null;
     }
 

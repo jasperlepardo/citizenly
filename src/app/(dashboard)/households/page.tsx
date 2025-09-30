@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 import { useHouseholds } from '@/hooks/crud/useHouseholds';
 import type { HouseholdWithMembersResult } from '@/types/domain/households/households';
 

@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
+
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types/shared/hooks/commandMenuHooks';
 
 // Safe router hook that works in both Next.js and Storybook environments
 function useSafeRouter() {
@@ -95,7 +96,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
   }, [filteredItems]);
 
   // Global keyboard shortcut for opening command menu
-  useCommandMenuShortcut(() => setIsOpen(true), true);
+  useCommandMenuShortcut(() => setIsOpen(true));
 
   // Command menu navigation when open
   useEffect(() => {
@@ -105,17 +106,18 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
       isOpen: true,
       selectedIndex,
       itemCount: filteredItems.length,
+      onOpen: () => setIsOpen(true),
       onClose: close,
       onSelect: (index: number) => {
         if (filteredItems[index]) {
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex,
+      onNavigate: (index: number) => setSelectedIndex(index),
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      handleMenuKeyDown(event);
+      handleMenuKeyDown(event as unknown as React.KeyboardEvent);
     };
 
     document.addEventListener('keydown', handleKeyDown);

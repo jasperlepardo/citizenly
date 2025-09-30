@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { SelectField } from '@/components';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { HouseholdInformationFormData } from '@/types/domain/residents/forms';

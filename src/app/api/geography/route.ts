@@ -5,15 +5,16 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { withAuth } from '@/lib/middleware/authMiddleware';
 import { createRateLimitHandler } from '@/lib/security/rateLimit';
 import { container } from '@/services/container';
+import type { RequestContext, AuthenticatedUser } from '@/types/app/auth/auth';
 import {
   createSuccessResponse,
   withNextRequestErrorHandling,
   withSecurityHeaders,
 } from '@/utils/auth/apiResponseHandlers';
-import type { RequestContext, AuthenticatedUser } from '@/types/app/auth/auth';
 
 type GeographicLevel = 'region' | 'province' | 'city' | 'barangay';
 

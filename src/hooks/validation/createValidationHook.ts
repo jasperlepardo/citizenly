@@ -12,14 +12,15 @@ import { z, ZodSchema, ZodError } from 'zod';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { useLogger } from '@/hooks/utilities/useLogger';
-import { ZodValidationResult } from '@/types/shared/validation/validation';
+import type {
+  ValidationResult,
+  ValidationHookOptions,
+  UseValidationReturn,
+  ValidationError
+} from '@/types/consolidated/validation';
 
-/**
- * Use the centralized ZodValidationResult type
- */
-export type ValidationResult<T> = ZodValidationResult<T>;
-
-import type { ValidationHookOptions, UseValidationReturn } from '@/types/shared/validation';
+// Re-export types for use in index
+export type { ValidationResult, ValidationHookOptions, UseValidationReturn };
 
 /**
  * Creates a validation hook factory for a specific schema
@@ -42,23 +43,23 @@ export function createValidationHook<T>(
 
     const { error: logError } = useLogger('ValidationHook');
     const { wrapAsync } = useAsyncErrorBoundary({
-      onError: (error, errorInfo) => {
+      onError: (error: any, errorInfo: any) => {
         logError('Validation error occurred', error, { context: errorInfo });
       },
     });
 
     const [validation, setValidation] = useState<ValidationResult<T>>({
       isValid: true,
-      errors: {},
+      errors: [],
     });
     const [isValidating, setIsValidating] = useState(false);
 
     /**
-     * Parse Zod errors into field-specific error messages
+     * Parse Zod errors into ValidationError array format
      */
     const parseZodErrors = useCallback(
-      (zodError: ZodError): Record<string, string[]> => {
-        const errors: Record<string, string[]> = {};
+      (zodError: ZodError): ValidationError[] => {
+        const errors: ValidationError[] = [];
 
         zodError.issues.forEach((error: z.ZodIssue) => {
           const path = error.path.join('.');
@@ -67,10 +68,13 @@ export function createValidationHook<T>(
           // Use custom message if available
           const message = customMessages[field] || error.message;
 
-          if (!errors[field]) {
-            errors[field] = [];
-          }
-          errors[field].push(message);
+          errors.push({
+            field,
+            message,
+            code: error.code,
+            value: (error as any).received || (error as any).input,
+            severity: 'error',
+          });
         });
 
         return errors;
@@ -87,7 +91,7 @@ export function createValidationHook<T>(
           const result = schema.parse(data);
           const validationResult: ValidationResult<T> = {
             isValid: true,
-            errors: {},
+            errors: [],
             data: result,
           };
 
@@ -128,7 +132,7 @@ export function createValidationHook<T>(
 
           const validationResult: ValidationResult<T> = {
             isValid: true,
-            errors: {},
+            errors: [],
             data: result || undefined,
           };
 
@@ -153,7 +157,12 @@ export function createValidationHook<T>(
           // Handle other errors
           const validationResult: ValidationResult<T> = {
             isValid: false,
-            errors: { general: ['An unexpected validation error occurred'] },
+            errors: [{
+              field: 'general',
+              message: 'An unexpected validation error occurred',
+              code: 'UNKNOWN_ERROR',
+              severity: 'error',
+            }],
           };
 
           setValidation(validationResult);
@@ -169,7 +178,7 @@ export function createValidationHook<T>(
     const clearErrors = useCallback(() => {
       setValidation({
         isValid: true,
-        errors: {},
+        errors: [],
       });
     }, []);
 
@@ -180,10 +189,15 @@ export function createValidationHook<T>(
       setValidation(prev => ({
         ...prev,
         isValid: false,
-        errors: {
-          ...prev.errors,
-          [field]: [error],
-        },
+        errors: [
+          ...prev.errors.filter(e => e.field !== field),
+          {
+            field,
+            message: error,
+            code: 'CUSTOM_ERROR',
+            severity: 'error' as const,
+          }
+        ],
       }));
     }, []);
 
@@ -192,12 +206,11 @@ export function createValidationHook<T>(
      */
     const clearFieldError = useCallback((field: string) => {
       setValidation(prev => {
-        const newErrors = { ...prev.errors };
-        delete newErrors[field];
+        const newErrors = prev.errors.filter((e: ValidationError) => e.field !== field);
 
         return {
           ...prev,
-          isValid: Object.keys(newErrors).length === 0,
+          isValid: newErrors.length === 0,
           errors: newErrors,
         };
       });

@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 
-import type {
-  FormMode,
-  ContactDetailsFormData,
-  HouseholdInformationFormData,
-} from '@/types';
 
 import { ContactDetails } from './FormField/ContactDetails';
 import { HouseholdInformation } from './FormField/HouseholdInformation';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type {
+  ContactDetailsFormData,
+  HouseholdInformationFormData,
+} from '@/types/domain/residents/forms';
 
 export interface ContactInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -66,7 +67,7 @@ export function ContactInformationForm({
       Object.entries(value).forEach(([field, fieldValue]) => {
         const currentValue = formData[field as keyof typeof formData];
         if (currentValue !== fieldValue) {
-          onChange(field as keyof typeof value, fieldValue);
+          onChange(field as string, fieldValue);
         }
       });
     },

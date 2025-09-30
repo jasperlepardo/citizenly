@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useState, useMemo } from 'react';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 import type { TableColumn, DataTableProps } from '@/types/app/ui/components';
 
 // Type aliases for union types

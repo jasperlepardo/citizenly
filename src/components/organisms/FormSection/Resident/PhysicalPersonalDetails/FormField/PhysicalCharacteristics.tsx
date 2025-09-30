@@ -1,13 +1,16 @@
 import React from 'react';
 
-import { InputField, SelectField } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import {
   BLOOD_TYPE_OPTIONS_WITH_DEFAULT,
   ETHNICITY_OPTIONS_WITH_DEFAULT,
   RELIGION_OPTIONS_WITH_DEFAULT,
   CITIZENSHIP_OPTIONS_WITH_DEFAULT,
 } from '@/constants/residentEnums';
-import type { FormMode, PhysicalCharacteristicsFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { PhysicalCharacteristicsFormData } from '@/types/domain/residents/forms';
 
 export interface PhysicalCharacteristicsProps {
   /** Form mode - determines if field is editable or read-only */
@@ -85,8 +88,8 @@ export function PhysicalCharacteristics({
           selectProps={{
             placeholder: 'Select blood type...',
             options: bloodTypeOptions as any,
-            value: value.blood_type,
-            onSelect: option => handleChange('blood_type', option?.value || ''),
+            value: value.blood_type || '',
+            onSelect: (option: any) => handleChange('blood_type', option?.value || ''),
           }}
         />
 
@@ -98,8 +101,8 @@ export function PhysicalCharacteristics({
           mode={mode}
           loading={loadingStates?.complexion}
           inputProps={{
-            value: value.complexion,
-            onChange: e => handleChange('complexion', e.target.value),
+            value: value.complexion || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('complexion', e.target.value),
             placeholder: 'e.g., Fair, Medium, Dark',
             error: errors.complexion,
           }}
@@ -114,8 +117,8 @@ export function PhysicalCharacteristics({
           loading={loadingStates?.height}
           inputProps={{
             type: 'number',
-            value: value.height,
-            onChange: e => handleChange('height', e.target.value),
+            value: value.height || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('height', e.target.value),
             placeholder: '170',
             error: errors.height,
           }}
@@ -130,8 +133,8 @@ export function PhysicalCharacteristics({
           loading={loadingStates?.weight}
           inputProps={{
             type: 'number',
-            value: value.weight,
-            onChange: e => handleChange('weight', e.target.value),
+            value: value.weight || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('weight', e.target.value),
             placeholder: '65',
             error: errors.weight,
           }}
@@ -148,7 +151,7 @@ export function PhysicalCharacteristics({
             placeholder: 'Select citizenship...',
             options: citizenshipOptions as any,
             value: value.citizenship || 'filipino',
-            onSelect: option => handleChange('citizenship', option?.value || 'filipino'),
+            onSelect: (option: any) => handleChange('citizenship', option?.value || 'filipino'),
           }}
         />
 
@@ -162,8 +165,8 @@ export function PhysicalCharacteristics({
           selectProps={{
             placeholder: 'Select ethnicity...',
             options: ethnicityOptions as any,
-            value: value.ethnicity,
-            onSelect: option => handleChange('ethnicity', option?.value || ''),
+            value: value.ethnicity || '',
+            onSelect: (option: any) => handleChange('ethnicity', option?.value || ''),
           }}
         />
 
@@ -177,8 +180,8 @@ export function PhysicalCharacteristics({
           selectProps={{
             placeholder: 'Select religion...',
             options: religionOptions as any,
-            value: value.religion,
-            onSelect: option => handleChange('religion', option?.value || ''),
+            value: value.religion || '',
+            onSelect: (option: any) => handleChange('religion', option?.value || ''),
           }}
         />
 
@@ -193,7 +196,7 @@ export function PhysicalCharacteristics({
             mode={mode}
             inputProps={{
               value: value.religion_others_specify || '',
-              onChange: e => handleChange('religion_others_specify', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('religion_others_specify', e.target.value),
               placeholder: 'Please specify religion',
               required: true,
             }}

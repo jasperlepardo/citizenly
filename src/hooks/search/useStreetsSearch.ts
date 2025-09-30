@@ -64,11 +64,39 @@ export function useStreetsSearch({
       const queryString = buildQueryParams();
       const url = `/api/addresses/streets${queryString ? `?${queryString}` : ''}`;
 
-      const response = await fetch(url);
+      // Simple fetch without authentication for testing
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch streets');
+        let errorData;
+        const contentType = response.headers.get('content-type');
+
+        try {
+          if (contentType && contentType.includes('application/json')) {
+            errorData = await response.json();
+          } else {
+            errorData = { error: await response.text() };
+          }
+        } catch (parseError) {
+          errorData = {
+            error: 'Failed to parse error response',
+            parseError: parseError instanceof Error ? parseError.message : String(parseError)
+          };
+        }
+
+        console.error('❌ Streets API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          contentType,
+          url,
+          errorData,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+        throw new Error(errorData?.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       return response.json();

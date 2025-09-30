@@ -211,6 +211,9 @@ export class CacheService {
   }
 }
 
+// Singleton cache service instance
+const cacheService = new CacheService();
+
 /**
  * Cache decorator for service methods
  */
@@ -282,3 +285,6 @@ export function setupCacheCleanup(intervalMs: number = 10 * 60 * 1000): () => vo
     }
   };
 }
+
+// Export cache service instance (class is already exported above)
+export { cacheService };

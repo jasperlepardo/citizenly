@@ -14,10 +14,10 @@ import { container } from '@/services/container';
 import { useGenericSearch } from './useGenericSearch';
 
 import type {
-  PsgcSearchResult,
   UsePsgcSearchOptions,
   UsePsgcSearchReturn,
-} from '@/types';
+} from '@/types/shared/hooks/searchHooks';
+import type { PsgcOption } from '@/types/domain/residents/api';
 
 /**
  * PSGC API implementation
@@ -28,7 +28,7 @@ const psgcApi = {
     levels: string;
     limit: number;
     parentCode?: string;
-  }): Promise<PsgcSearchResult[]> {
+  }): Promise<PsgcOption[]> {
     const searchParams = new URLSearchParams({
       q: params.query,
       limit: params.limit.toString(),
@@ -61,7 +61,7 @@ export function usePsgcSearch({
 }: UsePsgcSearchOptions = {}): UsePsgcSearchReturn {
   // Additional state for lazy loading
   const [offset, setOffset] = useState(0);
-  const [allResults, setAllResults] = useState<PsgcSearchResult[]>([]);
+  const [allResults, setAllResults] = useState<PsgcOption[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -70,11 +70,11 @@ export function usePsgcSearch({
   const cacheService = container.getCacheService();
   const cacheKeyPrefix = `psgc-${levels}-${parentCode || 'all'}`;
   
-  const getCachedResult = useCallback((query: string): PsgcSearchResult[] | null => {
-    return enableCache ? cacheService.get<PsgcSearchResult[]>(`${cacheKeyPrefix}-${query}`) : null;
+  const getCachedResult = useCallback((query: string): PsgcOption[] | null => {
+    return enableCache ? cacheService.get<PsgcOption[]>(`${cacheKeyPrefix}-${query}`) : null;
   }, [cacheService, cacheKeyPrefix, enableCache]);
   
-  const setCachedResult = useCallback((query: string, result: PsgcSearchResult[]) => {
+  const setCachedResult = useCallback((query: string, result: PsgcOption[]) => {
     if (enableCache) {
       cacheService.set(`${cacheKeyPrefix}-${query}`, result, {
         ttl: 5 * 60 * 1000, // 5 minutes
@@ -91,7 +91,7 @@ export function usePsgcSearch({
       query: string,
       currentOffset: number = 0,
       append: boolean = false
-    ): Promise<PsgcSearchResult[]> => {
+    ): Promise<PsgcOption[]> => {
       if (!query.trim()) {
         setAllResults([]);
         setHasMore(false);

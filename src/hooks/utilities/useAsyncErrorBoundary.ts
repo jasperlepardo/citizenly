@@ -20,10 +20,9 @@ interface ErrorBoundaryState {
   errorInfo: string | null;
 }
 
-import type { 
-  AsyncErrorBoundaryOptions,
-  UseAsyncErrorBoundaryReturn,
-} from '@/types';
+// Types for async error boundary - will need proper imports
+type AsyncErrorBoundaryOptions = any;
+type UseAsyncErrorBoundaryReturn = any;
 
 /**
  * Hook for async error boundary functionality

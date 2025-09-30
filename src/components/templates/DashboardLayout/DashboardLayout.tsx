@@ -15,10 +15,10 @@ function useIsClient() {
 import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
 
-import { Navigation } from '@/components';
-import SkipNavigation from '@/components/atoms/SkipNavigation';
+import Navigation from '@/components/organisms/Navigation/Navigation';
+import SkipNavigation from '@/components/atoms/SkipNavigation/SkipNavigation';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/hooks/utilities/useLogger';
 import { supabase } from '@/lib/data/supabase';
 
@@ -147,7 +147,7 @@ function UserDropdown() {
         window.location.href = '/login';
       }
     } catch (error) {
-      logError(error as Error, 'SIGN_OUT_ERROR');
+      logger.error('DashboardLayout', 'Failed to sign out', error);
     }
   };
 
@@ -171,7 +171,7 @@ function UserDropdown() {
               'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23e5e7eb"%2F%3E%3Ctext x="16" y="20" text-anchor="middle" fill="%236b7280" font-size="14"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
           }}
         ></div>
-        <div className="font-montserrat text-sm font-medium text-gray-800 dark:text-gray-200 dark:text-gray-800">
+        <div className="font-montserrat text-sm font-medium text-gray-800 dark:text-gray-200">
           {`${userProfile.first_name} ${userProfile.last_name}`}
         </div>
         <div className="size-4 text-gray-600 dark:text-gray-400">
@@ -207,7 +207,7 @@ function UserDropdown() {
                   }}
                 ></div>
                 <div>
-                  <div className="font-montserrat font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">
+                  <div className="font-montserrat font-semibold text-gray-900 dark:text-gray-100">
                     {`${userProfile.first_name} ${userProfile.last_name}`}
                   </div>
                   <div className="font-montserrat text-sm text-gray-600 dark:text-gray-400">
@@ -268,24 +268,24 @@ function UserDropdown() {
 }
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-800 dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Skip Navigation */}
       <SkipNavigation skipTo="#main-content" />
 
       {/* Sidebar */}
       <aside
         id="navigation"
-        className="fixed top-0 left-0 h-full w-56 border-r border-gray-200 border-gray-300 bg-gray-50 dark:border-gray-600 dark:border-gray-700 dark:bg-gray-800"
+        className="fixed top-0 left-0 h-full w-56 border-r border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800"
         aria-label="Main navigation"
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-200 border-gray-300 px-4 py-3 dark:border-gray-600 dark:border-gray-700">
+          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
             <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-300">
               Citizenly
             </h1>
@@ -309,7 +309,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <main className="ml-56">
         {/* Top Header */}
-        <header className="border-b border-gray-200 border-gray-300 bg-white px-6 py-2 dark:border-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:bg-gray-900">
+        <header className="border-b border-gray-200 bg-white px-6 py-2 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center justify-between">
             {/* Inline Command Menu */}
             <div className="w-[497px]">
@@ -355,9 +355,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <div id="main-content" role="main" tabIndex={-1}>
+        <main id="main-content" tabIndex={-1}>
           {children}
-        </div>
+        </main>
       </main>
 
       {/* Note: Command menu is now inline in the header */}

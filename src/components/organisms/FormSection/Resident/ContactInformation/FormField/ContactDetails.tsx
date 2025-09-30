@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 
-import { InputField } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';
-import type { FormMode, ContactDetailsFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { ContactDetailsFormData } from '@/types/domain/residents/forms';
 
 export interface ContactDetailsProps {
   /** Form mode - determines if field is editable or read-only */
@@ -55,8 +57,8 @@ export function ContactDetails({
           inputProps={{
             name: 'email',
             type: 'email',
-            value: value.email,
-            onChange: e => handleChange('email', e.target.value),
+            value: value.email || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('email', e.target.value),
             placeholder: 'Enter email address',
             error: errors.email,
           }}
@@ -72,8 +74,8 @@ export function ContactDetails({
           inputProps={{
             name: 'telephone_number',
             type: 'tel',
-            value: value.telephone_number,
-            onChange: e => handleChange('telephone_number', e.target.value),
+            value: value.telephone_number || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('telephone_number', e.target.value),
             placeholder: 'Enter phone number',
             error: errors.telephone_number,
           }}
@@ -89,8 +91,8 @@ export function ContactDetails({
           inputProps={{
             name: 'mobile_number',
             type: 'tel',
-            value: value.mobile_number,
-            onChange: e => handleChange('mobile_number', e.target.value),
+            value: value.mobile_number || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mobile_number', e.target.value),
             placeholder: 'Enter mobile number',
             error: errors.mobile_number,
           }}

@@ -3,7 +3,7 @@
  * Provides offline-first data storage for PWA functionality
  */
 
-import type { OfflineStoredData as StoredData, PendingSyncItem } from '@/types/shared/utilities';
+import type { OfflineStoredData, PendingSyncItem } from '@/types/shared/utilities/utilities';
 
 export class OfflineStorage {
   private db: IDBDatabase | null = null;
@@ -204,7 +204,7 @@ export class OfflineStorage {
     const tx = this.db!.transaction(['dashboard_stats'], 'readonly');
     const store = tx.objectStore('dashboard_stats');
 
-    const result = await new Promise<StoredData | undefined>((resolve, reject) => {
+    const result = await new Promise<OfflineStoredData | undefined>((resolve, reject) => {
       const request = store.get('current');
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -350,7 +350,7 @@ export class OfflineStorage {
     const tx = this.db!.transaction(['api_cache'], 'readonly');
     const store = tx.objectStore('api_cache');
 
-    const result = await new Promise<StoredData | undefined>((resolve, reject) => {
+    const result = await new Promise<OfflineStoredData | undefined>((resolve, reject) => {
       const request = store.get(url);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);

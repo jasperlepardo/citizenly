@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import type { Database } from '@/lib/data/supabase';
-import type { HouseholdRecord } from '@/types/infrastructure/database/database';
 import type { AuthUserProfile } from '@/types/app/auth/auth';
+import type { HouseholdRecord } from '@/types/infrastructure/database/database';
 
 type DbHouseholdUpdate = Database['public']['Tables']['households']['Update'];
 
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     // First try with head_resident JOIN - this might be causing the 404
-    let householdResult = await supabaseAdmin
+    const householdResult = await supabaseAdmin
       .from('households')
       .select('*')
       .eq('code', householdCode)

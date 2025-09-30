@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
-import DataTable from '@/components/organisms/DataTable';
+import DataTable from '@/components/organisms/DataTable/DataTable';
 
 const meta: Meta<typeof DataTable> = {
   title: 'Organisms/DataTable',

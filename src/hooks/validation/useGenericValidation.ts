@@ -10,7 +10,8 @@
 import { useCallback, useState } from 'react';
 
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
-import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/shared/hooks';
+
+import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/shared/validation/validation';
 
 // Re-export for backward compatibility
 export type { UseGenericValidationReturn };
@@ -32,7 +33,7 @@ export function useGenericValidation<T>(
   const [hasValidated, setHasValidated] = useState(false);
 
   const getFieldError = useCallback((fieldName: string) => {
-    return errors[fieldName] || null;
+    return errors[fieldName] || undefined;
   }, [errors]);
 
   const hasFieldError = useCallback((fieldName: string) => {
@@ -84,7 +85,7 @@ export function useGenericValidation<T>(
     // Update validation state based on result
     if (result.errors && result.errors.length > 0) {
       const errorMap: Record<string, string> = {};
-      result.errors.forEach(error => {
+      result.errors.forEach((error: any) => {
         errorMap[error.field] = error.message;
       });
       setErrors(errorMap);

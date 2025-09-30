@@ -10,7 +10,8 @@
 import { useCallback } from 'react';
 
 import { logError } from '@/utils/shared/errorUtils';
-import type { UseFieldErrorHandlerReturn } from '@/types';
+
+import type { UseFieldErrorHandlerReturn } from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Hook for functional error boundary behavior

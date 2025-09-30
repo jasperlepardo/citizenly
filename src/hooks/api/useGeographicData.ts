@@ -7,13 +7,19 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { supabase } from '@/lib/data/supabase';
 
-import type { GeographicOption, GeographicData, UseGeographicDataReturn } from '@/types';
+import type { GeographicOption } from '@/types/shared/hooks/apiHooks';
 
 // Interface moved to centralized types
 
 // GeographicData interface moved to centralized types
 
-interface GeographicState extends GeographicData {
+interface GeographicState {
+  regions: GeographicOption[];
+  provinces: GeographicOption[];
+  cities: GeographicOption[];
+  barangays: GeographicOption[];
+  streets: GeographicOption[];
+  subdivisions: GeographicOption[];
   loading: {
     regions: boolean;
     provinces: boolean;

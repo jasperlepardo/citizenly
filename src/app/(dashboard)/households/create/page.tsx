@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 
-import { HouseholdForm } from '@/components';
+import HouseholdForm from '@/components/templates/Form/Household/HouseholdForm';
 
 export const dynamic = 'force-dynamic';
 

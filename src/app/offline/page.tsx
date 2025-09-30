@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 
 export default function OfflinePage() {
   const handleRefresh = () => {

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
-import { InputField, SelectField } from '@/components/molecules/FieldSet';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { useGeographicData } from '@/hooks/api/useGeographicData';
-
 import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export interface AddressDetailsProps {

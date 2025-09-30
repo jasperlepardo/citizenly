@@ -7,7 +7,7 @@
 
 import { Suspense, ComponentType, ReactNode } from 'react';
 
-import { LoadingFallback } from '@/components/atoms/Loading';
+import { LoadingFallback } from '@/components/atoms/Loading/LoadingFallback/LoadingFallback';
 
 /**
  * HOC for wrapping lazy components with Suspense and loading states
@@ -40,13 +40,13 @@ export function withLazyLoading<P extends object>(
  * Components can be preloaded before they're actually needed
  */
 export const preloadComponents = {
-  createHouseholdModal: () => import('@/components/organisms/CreateHouseholdModal'),
-  dataTable: () => import('@/components/organisms/DataTable'),
-  populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
-  userProfile: () => import('@/components/organisms/UserProfile'),
+  createHouseholdModal: () => import('@/components/organisms/CreateHouseholdModal/CreateHouseholdModal'),
+  dataTable: () => import('@/components/organisms/DataTable/DataTable'),
+  populationPyramid: () => import('@/components/organisms/PopulationPyramid/PopulationPyramid'),
+  userProfile: () => import('@/components/organisms/UserProfile/UserProfile'),
   personalInformation: () =>
     import('@/components/organisms/FormSection/Resident/PersonalInformation/PersonalInformation'),
-  sectoralInfo: () => import('@/components/organisms/FormSection/Resident/SectoralInformation'),
+  sectoralInfo: () => import('@/components/organisms/FormSection/Resident/SectoralInformation/SectoralInformation'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),
 } as const;

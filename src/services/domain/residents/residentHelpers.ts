@@ -14,16 +14,20 @@ export const initializeResidentFields = (
 ): ResidentWithRelations => {
   // Set required fields with defaults if missing
   const baseData: ResidentWithRelations = {
+    ...residentData,
     id: residentData.id || '',
     first_name: residentData.first_name || '',
     last_name: residentData.last_name || '',
     birthdate: residentData.birthdate || '',
     sex: residentData.sex || 'male',
+    barangay_code: residentData.barangay_code || '',
+    city_municipality_code: residentData.city_municipality_code || '',
+    province_code: residentData.province_code ?? null,
+    region_code: residentData.region_code || '',
     created_at: residentData.created_at || '',
     updated_at: residentData.updated_at || '',
     is_active: residentData.is_active ?? true,
     is_graduate: residentData.is_graduate ?? false,
-    ...residentData,
     telephone_number: residentData.telephone_number || '',
     philsys_card_number: residentData.philsys_card_number || '',
     height: residentData.height || null,

@@ -21,8 +21,9 @@
  * @since 1.0.0
  */
 
-// REMOVED: @/lib barrel import - replace with specific module;
-import type { UsePreloadOnHoverReturn } from '@/types';
+import type { UsePreloadOnHoverReturn } from '@/types/shared/hooks/utilityHooks';
+import { preloadComponents } from '@/components/shared/lazy/lazyLoading';
+import type { PreloadComponentKey } from '@/components/shared/lazy/lazyLoading';
 
 /**
  * Hook for preloading lazy components on hover interaction
@@ -44,7 +45,7 @@ import type { UsePreloadOnHoverReturn } from '@/types';
  * ```
  */
 export function usePreloadOnHover(
-  componentKey: keyof typeof preloadComponents
+  componentKey: PreloadComponentKey
 ): UsePreloadOnHoverReturn {
   return {
     onMouseEnter: () => {

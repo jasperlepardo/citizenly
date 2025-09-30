@@ -7,15 +7,16 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
-import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
 import { logger } from '@/hooks/utilities/useLogger';
+import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
 import { supabase } from '@/lib/data/supabase';
+
 import type {
   DashboardResponse,
   UseDashboardApiReturn
-} from '@/types';
+} from '@/types/app/dashboard/dashboard';
 
 // Interfaces moved to centralized types
 
@@ -82,7 +83,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
       // Retry on network errors and server errors (5xx)
       return true;
     },
-    onSuccess: (result, attempt) => {
+    onSuccess: (result: any, attempt: number) => {
       if (attempt > 0) {
         logger.info('useDashboardApi', 'Dashboard API retry succeeded', {
           attempts: attempt + 1,
@@ -90,14 +91,14 @@ export function useDashboardApi(): UseDashboardApiReturn {
         });
       }
     },
-    onError: (error, attempt) => {
+    onError: (error: Error, attempt: number) => {
       logger.warn('useDashboardApi', 'Dashboard API retry attempt failed', {
         attempt: attempt + 1,
         error: error.message,
         operation: 'dashboard-fetch',
       });
     },
-    onMaxAttemptsReached: error => {
+    onMaxAttemptsReached: (error: Error) => {
       logger.error('useDashboardApi', 'Dashboard API max retry attempts reached', {
         error: error.message,
         operation: 'dashboard-fetch',
@@ -108,7 +109,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
 
   // Error boundary for critical dashboard operations
   const { wrapAsync, errorState } = useAsyncErrorBoundary({
-    onError: (error, errorInfo) => {
+    onError: (error: Error, errorInfo: any) => {
       // Log critical dashboard errors for monitoring
       logger.error('useDashboardApi', 'Dashboard API critical error', {
         error: error.message,

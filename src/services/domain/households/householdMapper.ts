@@ -3,8 +3,8 @@
  * Handles data transformation between different formats
  */
 
-import type { HouseholdRecord } from '@/types/infrastructure/database/database';
 import type { HouseholdFormData } from '@/types/app/ui/forms';
+import type { HouseholdRecord } from '@/types/infrastructure/database/database';
 
 /**
  * Map form data to database record

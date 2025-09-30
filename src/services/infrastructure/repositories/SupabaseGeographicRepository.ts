@@ -4,9 +4,9 @@
  * Handles all Supabase-specific geographic data access
  */
 
-import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 import { createLogger } from '@/lib/config/environment';
 import { supabase } from '@/lib/data/supabase';
+import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 
 const logger = createLogger('SupabaseGeographicRepository');
 
@@ -19,9 +19,9 @@ export class SupabaseGeographicRepository {
   private readonly supabase = supabase;
 
   /**
-   * Get all regions from PSGC data
+   * Find all regions from PSGC data
    */
-  async getRegions(): Promise<RepositoryResult<any[]>> {
+  async findRegions(): Promise<RepositoryResult<any[]>> {
     try {
       const { data, error } = await this.supabase
         .from('psgc_regions')
@@ -46,13 +46,17 @@ export class SupabaseGeographicRepository {
   /**
    * Get provinces for a specific region
    */
-  async getProvinces(regionCode: string): Promise<RepositoryResult<any[]>> {
+  async findProvinces(regionCode?: string): Promise<RepositoryResult<any[]>> {
     try {
-      const { data, error } = await this.supabase
+      let query = this.supabase
         .from('psgc_provinces')
-        .select('code, name, region_code')
-        .eq('region_code', regionCode)
-        .order('name');
+        .select('code, name, region_code');
+
+      if (regionCode) {
+        query = query.eq('region_code', regionCode);
+      }
+
+      const { data, error } = await query.order('name');
 
       if (error) {
         logger.error('Failed to fetch provinces', error);
@@ -72,9 +76,9 @@ export class SupabaseGeographicRepository {
   /**
    * Get cities/municipalities for a specific province
    */
-  async getCities(provinceCode: string): Promise<RepositoryResult<any[]>> {
+  async findCities(provinceCode?: string): Promise<RepositoryResult<any[]>> {
     try {
-      const { data, error } = await this.supabase
+      let query = this.supabase
         .from('psgc_cities_municipalities')
         .select(`
           code,
@@ -82,9 +86,13 @@ export class SupabaseGeographicRepository {
           type,
           province_code,
           is_independent
-        `)
-        .eq('province_code', provinceCode)
-        .order('name');
+        `);
+
+      if (provinceCode) {
+        query = query.eq('province_code', provinceCode);
+      }
+
+      const { data, error } = await query.order('name');
 
       if (error) {
         logger.error('Failed to fetch cities', error);
@@ -104,18 +112,21 @@ export class SupabaseGeographicRepository {
   /**
    * Get barangays for a specific city/municipality
    */
-  async getBarangays(cityCode: string): Promise<RepositoryResult<any[]>> {
+  async findBarangays(cityCode?: string): Promise<RepositoryResult<any[]>> {
     try {
-      const { data, error } = await this.supabase
+      let query = this.supabase
         .from('psgc_barangays')
         .select(`
           code,
           name,
-          city_municipality_code,
-          urban_rural_status
-        `)
-        .eq('city_municipality_code', cityCode)
-        .order('name');
+          city_municipality_code
+        `);
+
+      if (cityCode) {
+        query = query.eq('city_municipality_code', cityCode);
+      }
+
+      const { data, error } = await query.order('name');
 
       if (error) {
         logger.error('Failed to fetch barangays', error);
@@ -148,17 +159,21 @@ export class SupabaseGeographicRepository {
       if (codes.regionCode) {
         const { data: region, error: regionError } = await this.supabase
           .from('psgc_regions')
-          .select('region_code, region_name')
-          .eq('region_code', codes.regionCode)
+          .select('code, name')
+          .eq('code', codes.regionCode)
           .single();
 
         if (regionError && regionError.code !== 'PGRST116') {
-          logger.error('Failed to lookup region', regionError);
+          logger.error('Failed to lookup region - Code:', codes.regionCode, 'Error:', JSON.stringify(regionError));
           return { success: false, error: 'Failed to lookup region' };
         }
 
+        if (regionError?.code === 'PGRST116') {
+          logger.warn('Region not found in database - Code:', codes.regionCode);
+        }
+
         if (region) {
-          address.region = { code: region.region_code, name: region.region_name };
+          address.region = { code: region.code, name: region.name };
         }
       }
 
@@ -166,17 +181,21 @@ export class SupabaseGeographicRepository {
       if (codes.provinceCode) {
         const { data: province, error: provinceError } = await this.supabase
           .from('psgc_provinces')
-          .select('province_code, province_name, region_code')
-          .eq('province_code', codes.provinceCode)
+          .select('code, name, region_code')
+          .eq('code', codes.provinceCode)
           .single();
 
         if (provinceError && provinceError.code !== 'PGRST116') {
-          logger.error('Failed to lookup province', provinceError);
+          logger.error('Failed to lookup province - Code:', codes.provinceCode, 'Error:', JSON.stringify(provinceError));
           return { success: false, error: 'Failed to lookup province' };
         }
 
+        if (provinceError?.code === 'PGRST116') {
+          logger.warn('Province not found in database - Code:', codes.provinceCode);
+        }
+
         if (province) {
-          address.province = { code: province.province_code, name: province.province_name };
+          address.province = { code: province.code, name: province.name };
           // Also get region if not already retrieved
           if (!address.region && province.region_code) {
             const regionResult = await this.lookupAddress({ regionCode: province.region_code });
@@ -192,25 +211,30 @@ export class SupabaseGeographicRepository {
         const { data: city, error: cityError } = await this.supabase
           .from('psgc_cities_municipalities')
           .select(`
-            city_municipality_code,
-            city_municipality_name,
+            code,
+            name,
             province_code,
-            is_city,
-            city_class
+            type,
+            is_independent
           `)
-          .eq('city_municipality_code', codes.cityCode)
+          .eq('code', codes.cityCode)
           .single();
 
         if (cityError && cityError.code !== 'PGRST116') {
-          logger.error('Failed to lookup city', cityError);
+          logger.error('Failed to lookup city - Code:', codes.cityCode, 'Error:', JSON.stringify(cityError));
           return { success: false, error: 'Failed to lookup city' };
         }
 
+        if (cityError?.code === 'PGRST116') {
+          logger.warn('City not found in database - Code:', codes.cityCode);
+        }
+
         if (city) {
-          address.city = { 
-            code: city.city_municipality_code, 
-            name: city.city_municipality_name,
-            is_city: city.is_city
+          address.city = {
+            code: city.code,
+            name: city.name,
+            type: city.type,
+            is_independent: city.is_independent
           };
           // Also get province and region if not already retrieved
           if (!address.province && city.province_code) {
@@ -228,24 +252,26 @@ export class SupabaseGeographicRepository {
         const { data: barangay, error: barangayError } = await this.supabase
           .from('psgc_barangays')
           .select(`
-            barangay_code,
-            barangay_name,
-            city_municipality_code,
-            is_urban
+            code,
+            name,
+            city_municipality_code
           `)
-          .eq('barangay_code', codes.barangayCode)
+          .eq('code', codes.barangayCode)
           .single();
 
         if (barangayError && barangayError.code !== 'PGRST116') {
-          logger.error('Failed to lookup barangay', barangayError);
+          logger.error('Failed to lookup barangay - Code:', codes.barangayCode, 'Error:', JSON.stringify(barangayError));
           return { success: false, error: 'Failed to lookup barangay' };
         }
 
+        if (barangayError?.code === 'PGRST116') {
+          logger.warn('Barangay not found in database - Code:', codes.barangayCode);
+        }
+
         if (barangay) {
-          address.barangay = { 
-            code: barangay.barangay_code, 
-            name: barangay.barangay_name,
-            is_urban: barangay.is_urban
+          address.barangay = {
+            code: barangay.code,
+            name: barangay.name
           };
           // Also get city, province, and region if not already retrieved
           if (!address.city && barangay.city_municipality_code) {
@@ -280,31 +306,86 @@ export class SupabaseGeographicRepository {
     streetId?: string;
     subdivisionId?: string;
   }): Promise<RepositoryResult<any>> {
+    console.log('🔍 SupabaseGeographicRepository.lookupAddressLabels called with:', addressData);
     try {
       const labels: any = {};
 
-      // Helper function to lookup a single address component
+      // Helper function to lookup a single address component using API endpoints
       const lookupAddressComponent = async (
         table: string,
         field: string,
         value: string | undefined
       ): Promise<string | undefined> => {
         if (!value) return undefined;
-        
+
+        console.log(`🔍 Looking up ${field}=${value} in table ${table}`);
+
         try {
-          // Add timeout to prevent hanging on permission errors
-          const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => reject(new Error('Query timeout')), 5000); // 5 second timeout
-          });
-          
-          const queryPromise = this.supabase
-            .from(table)
-            .select('name')
-            .eq(field, value)
-            .single();
-          
-          const { data } = await Promise.race([queryPromise, timeoutPromise]);
-          return data?.name;
+          // Use API endpoints instead of direct database queries to avoid RLS issues
+          let apiUrl = '';
+          let searchParam = '';
+
+          if (table === 'geo_streets') {
+            // For streets, we need to find by ID - use a search approach
+            apiUrl = '/api/addresses/streets';
+            searchParam = ''; // We'll filter the results client-side
+          } else if (table === 'geo_subdivisions') {
+            // For subdivisions, we need to find by ID - use a search approach
+            apiUrl = '/api/addresses/subdivisions';
+            searchParam = ''; // We'll filter the results client-side
+          } else {
+            // For PSGC tables, use direct query (these work fine)
+            const queryPromise = this.supabase
+              .from(table)
+              .select('name')
+              .eq(field, value)
+              .single();
+
+            const { data, error } = await queryPromise;
+
+            if (error) {
+              logger.warn(`Database error looking up ${field} in ${table}`, {
+                error: error.message,
+                code: error.code,
+                value
+              });
+              return undefined;
+            }
+
+            return data?.name;
+          }
+
+          // For geo_streets and geo_subdivisions, use API endpoints
+          if (apiUrl) {
+            const response = await fetch(apiUrl, {
+              headers: {
+                'Authorization': `Bearer ${(await this.supabase.auth.getSession()).data.session?.access_token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (!response.ok) {
+              logger.warn(`API error looking up ${field} in ${table}`, {
+                status: response.status,
+                statusText: response.statusText,
+                value
+              });
+              return undefined;
+            }
+
+            const result = await response.json();
+            const items = result.data || [];
+
+            // Find the item with matching ID
+            const item = items.find((item: any) => item.value === value);
+            const name = item?.label;
+
+            console.log(`🔍 API Lookup result for ${table}.${field}=${value}:`, { name, itemsCount: items.length });
+
+            return name;
+          }
+
+          return undefined;
         } catch (error) {
           // Log the specific error for debugging
           logger.warn(`Failed to lookup ${field} in ${table}`, { error: error instanceof Error ? error.message : String(error) });
@@ -388,5 +469,140 @@ export class SupabaseGeographicRepository {
         error: error instanceof Error ? error.message : 'Household head lookup failed' 
       };
     }
+  }
+
+  /**
+   * Find region by code
+   */
+  async findRegionByCode(code: string): Promise<RepositoryResult<any>> {
+    try {
+      const { data, error } = await this.supabase
+        .from('psgc_regions')
+        .select('code, name')
+        .eq('code', code)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Region not found' };
+        }
+        logger.error('Failed to find region by code', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding region', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find region'
+      };
+    }
+  }
+
+  /**
+   * Find province by code
+   */
+  async findProvinceByCode(code: string): Promise<RepositoryResult<any>> {
+    try {
+      const { data, error } = await this.supabase
+        .from('psgc_provinces')
+        .select('code, name, region_code')
+        .eq('code', code)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Province not found' };
+        }
+        logger.error('Failed to find province by code', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding province', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find province'
+      };
+    }
+  }
+
+  /**
+   * Find city by code
+   */
+  async findCityByCode(code: string): Promise<RepositoryResult<any>> {
+    try {
+      const { data, error } = await this.supabase
+        .from('psgc_cities_municipalities')
+        .select('code, name, type, province_code, is_independent')
+        .eq('code', code)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'City not found' };
+        }
+        logger.error('Failed to find city by code', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding city', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find city'
+      };
+    }
+  }
+
+  /**
+   * Find barangay by code
+   */
+  async findBarangayByCode(code: string): Promise<RepositoryResult<any>> {
+    try {
+      const { data, error } = await this.supabase
+        .from('psgc_barangays')
+        .select('code, name, city_municipality_code')
+        .eq('code', code)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'Barangay not found' };
+        }
+        logger.error('Failed to find barangay by code', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding barangay', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find barangay'
+      };
+    }
+  }
+
+  /**
+   * Backward compatibility aliases
+   */
+  async getRegions(): Promise<RepositoryResult<any[]>> {
+    return this.findRegions();
+  }
+
+  async getProvinces(regionCode: string): Promise<RepositoryResult<any[]>> {
+    return this.findProvinces(regionCode);
+  }
+
+  async getCities(provinceCode: string): Promise<RepositoryResult<any[]>> {
+    return this.findCities(provinceCode);
+  }
+
+  async getBarangays(cityCode: string): Promise<RepositoryResult<any[]>> {
+    return this.findBarangays(cityCode);
   }
 }

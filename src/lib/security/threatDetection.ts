@@ -5,9 +5,9 @@
 
 import { logger } from '@/lib/logging/secure-logger';
 
-import { storeThreatDetectionEvent, ThreatDetectionEvent } from './auditStorage';
+import { storeThreatDetectionEvent } from './auditStorage';
 
-import type { SecurityContext, ThreatPattern, SecurityEvent } from '@/types/security';
+import type { SecurityContext, ThreatPattern, SecurityEvent, ThreatDetectionEvent } from '@/types/app/auth/security';
 
 // In-memory cache for recent security events (in production, use Redis)
 const eventCache = new Map<string, SecurityEvent[]>();
@@ -139,7 +139,7 @@ const bruteForceDetector: ThreatPattern = {
   name: 'brute_force_attack',
   description: 'Multiple failed login attempts detected',
   severity: 'high',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const recentFailedLogins = history.filter(
       event =>
         event.type === 'login_failed' &&
@@ -147,7 +147,7 @@ const bruteForceDetector: ThreatPattern = {
     );
     return recentFailedLogins.length >= 5;
   },
-  mitigation: async context => {
+  mitigation: async (context: SecurityContext) => {
     // TODO: Implement IP blocking or account lockout
     logger.warn('Brute force mitigation triggered', { ipAddress: context.ipAddress });
   },
@@ -160,7 +160,7 @@ const sqlInjectionDetector: ThreatPattern = {
   name: 'sql_injection_attempt',
   description: 'Potential SQL injection attack detected',
   severity: 'critical',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const sqlPatterns = [
       /union\s+select/i,
       /drop\s+table/i,
@@ -182,7 +182,7 @@ const xssAttemptDetector: ThreatPattern = {
   name: 'xss_attempt',
   description: 'Cross-site scripting attempt detected',
   severity: 'high',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const xssPatterns = [
       /<script[^>]*>.*<\/script>/i,
       /javascript:/i,
@@ -203,7 +203,7 @@ const suspiciousNavigationDetector: ThreatPattern = {
   name: 'suspicious_navigation',
   description: 'Unusual navigation patterns detected',
   severity: 'medium',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const recentRequests = history.filter(
       event => Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
     );
@@ -225,14 +225,14 @@ const rapidRequestDetector: ThreatPattern = {
   name: 'rapid_requests',
   description: 'Unusually high request rate detected',
   severity: 'medium',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const recentRequests = history.filter(
       event => Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
     );
 
     return recentRequests.length > 100; // More than 100 requests per minute
   },
-  mitigation: async context => {
+  mitigation: async (context: SecurityContext) => {
     // TODO: Implement rate limiting
     logger.warn('Rate limiting triggered', { ipAddress: context.ipAddress });
   },
@@ -245,7 +245,7 @@ const privilegeEscalationDetector: ThreatPattern = {
   name: 'privilege_escalation',
   description: 'Potential privilege escalation attempt detected',
   severity: 'critical',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const adminAttempts = history.filter(
       event =>
         event.type === 'access_denied' &&
@@ -264,7 +264,7 @@ const dataExfiltrationDetector: ThreatPattern = {
   name: 'data_exfiltration',
   description: 'Potential data exfiltration detected',
   severity: 'critical',
-  detector: (context, history) => {
+  detector: (context: SecurityContext, history: SecurityEvent[]) => {
     const dataRequests = history.filter(
       event =>
         event.type === 'data_access' &&

@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { InputField } from '@/components';
-import type { FormMode } from '@/types';
-import type { DemographicsInformationFormData } from '@/types/domain/households';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { DemographicsInformationFormData } from '@/types/domain/households/forms';
 
 export interface DemographicsInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -50,7 +51,7 @@ export function DemographicsInformation({
             type: 'number',
             min: 1,
             value: value.noOfFamilies,
-            onChange: e => handleChange('noOfFamilies', parseInt(e.target.value) || 1),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('noOfFamilies', parseInt(e.target.value) || 1),
             placeholder: 'Enter number of families',
             error: errors.noOfFamilies,
           }}
@@ -67,7 +68,7 @@ export function DemographicsInformation({
             type: 'number',
             min: 0,
             value: value.noOfHouseholdMembers,
-            onChange: e => handleChange('noOfHouseholdMembers', parseInt(e.target.value) || 0),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('noOfHouseholdMembers', parseInt(e.target.value) || 0),
             placeholder: 'Enter number of members',
             error: errors.noOfHouseholdMembers,
           }}
@@ -83,7 +84,7 @@ export function DemographicsInformation({
             type: 'number',
             min: 0,
             value: value.noOfMigrants,
-            onChange: e => handleChange('noOfMigrants', parseInt(e.target.value) || 0),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('noOfMigrants', parseInt(e.target.value) || 0),
             placeholder: 'Enter number of migrants',
             error: errors.noOfMigrants,
           }}

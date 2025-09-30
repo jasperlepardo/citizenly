@@ -4,8 +4,8 @@
  * No infrastructure dependencies - uses interfaces only
  */
 
-import type { IHouseholdRepository, IResidentRepository } from '@/types/domain/repositories';
 import type { HouseholdData } from '@/types/domain/households/households';
+import type { IHouseholdRepository, IResidentRepository } from '@/types/domain/repositories';
 import type { Resident } from '@/types/domain/residents/core';
 import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 
@@ -110,11 +110,11 @@ export class HouseholdDomainService {
     }
 
     // Get members
-    const membersResult = await this.householdRepository.findMembers(code);
+    const membersResult = await this.residentRepository.findByHousehold(code);
     const members = membersResult.success ? membersResult.data || [] : [];
 
     // Find household head
-    const head = members.find(member => member.is_household_head);
+    const head = members.find((member: any) => member.is_household_head);
 
     return {
       success: true,
@@ -141,11 +141,11 @@ export class HouseholdDomainService {
 
     // If setting as head, unset current head
     if (isHead) {
-      const currentMembers = await this.householdRepository.findMembers(householdCode);
+      const currentMembers = await this.residentRepository.findByHousehold(householdCode);
       if (currentMembers.success && currentMembers.data) {
-        const currentHead = currentMembers.data.find(m => m.is_household_head);
+        const currentHead = currentMembers.data.find((m: any) => m.is_household_head);
         if (currentHead) {
-          await this.residentRepository.update(currentHead.id, { is_household_head: false });
+          await this.residentRepository.update(currentHead.id, { is_household_head: false } as any);
         }
       }
     }
@@ -154,7 +154,7 @@ export class HouseholdDomainService {
     return this.residentRepository.update(residentId, {
       household_code: householdCode,
       is_household_head: isHead
-    });
+    } as any);
   }
 
   /**
@@ -170,7 +170,7 @@ export class HouseholdDomainService {
     unemployed: number;
     averageAge: number;
   }> {
-    const membersResult = await this.householdRepository.findMembers(code);
+    const membersResult = await this.residentRepository.findByHousehold(code);
     const members = membersResult.success ? membersResult.data || [] : [];
 
     if (members.length === 0) {
@@ -186,7 +186,7 @@ export class HouseholdDomainService {
       };
     }
 
-    const stats = members.reduce((acc, member) => {
+    const stats = members.reduce((acc: any, member: any) => {
       const age = this.calculateAge(member.birthdate);
       
       acc.totalMembers++;

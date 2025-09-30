@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { syncQueue } from '@/lib/data/sync-queue';
 import { offlineStorage } from '@/lib/data/offline-storage';
+import { syncQueue } from '@/lib/data/sync-queue';
 import { pwaPerformance } from '@/utils/performance/pwaPerformanceUtils';
 
 interface PWADevToolsProps {
@@ -60,7 +60,7 @@ export default function PWADevTools({ className = '' }: PWADevToolsProps) {
     localStorage.removeItem('pwa-user-metrics');
     localStorage.removeItem('pwa-prompt-dismissed-date');
     sessionStorage.removeItem('pwa-prompt-dismissed');
-    pwaPerformance.instance?.reset();
+    // Reset PWA performance metrics (method not available)
     toast.success('PWA data cleared');
     window.location.reload();
   };

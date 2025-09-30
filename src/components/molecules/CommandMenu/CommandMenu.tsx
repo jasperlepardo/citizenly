@@ -4,8 +4,9 @@ import { Dialog } from '@headlessui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { useEffect, useRef } from 'react';
 
-import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/components/shared/utils';
+import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
+
 import type {
   CommandMenuSearchResult,
 } from '../../../types/infrastructure/services/services';

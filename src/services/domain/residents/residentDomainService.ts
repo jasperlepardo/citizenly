@@ -4,15 +4,17 @@
  * No infrastructure dependencies - uses interfaces only
  */
 
-import type { IResidentRepository } from '@/types/infrastructure/services/repositories';
-import type { Resident } from '@/types/domain/residents/core';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
-import type { ValidationResult } from '@/types/shared/validation/validation';
-import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { classifyResident } from '@/services/domain/residents/residentClassification';
 import { SupabaseHouseholdRepository } from '@/services/infrastructure/repositories/SupabaseHouseholdRepository';
 import type { HouseholdData } from '@/types/domain/households/households';
-import { classifyResident } from '@/services/domain/residents/residentClassification';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Resident } from '@/types/domain/residents/core';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type { IResidentRepository } from '@/types/domain/repositories';
+import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
+import type { ValidationResult } from '@/types/shared/validation/validation';
+
 
 /**
  * Resident Domain Service

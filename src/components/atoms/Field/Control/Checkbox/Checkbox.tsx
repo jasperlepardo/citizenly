@@ -3,9 +3,9 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
+import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 import { cn } from '@/components/shared/utils';
 
-import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 
 const checkboxVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
@@ -78,7 +78,13 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     },
     ref
   ) => {
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
+    // Determine the appropriate variant based on state
+    let actualVariant = variant;
+    if (disabled) {
+      actualVariant = 'disabled';
+    } else if (errorMessage) {
+      actualVariant = 'error';
+    }
 
     const checkboxRef = React.useRef<HTMLInputElement>(null);
 
@@ -119,7 +125,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 }
               )}
             >
-              {indeterminate ? (
+              {/* Render appropriate icon based on state */}
+              {indeterminate && (
                 <svg
                   className={cn(
                     'text-white dark:text-black',
@@ -136,7 +143,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 >
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-              ) : checked ? (
+              )}
+              {!indeterminate && checked && (
                 <svg
                   className={cn(
                     'text-white dark:text-black',
@@ -153,7 +161,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 >
                   <polyline points="20,6 9,17 4,12"></polyline>
                 </svg>
-              ) : null}
+              )}
             </div>
           </div>
 

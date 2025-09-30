@@ -9,7 +9,8 @@
 
 import { useMemo } from 'react';
 
-import type { ResidentData, UseDashboardCalculationsReturn, AgeGroup } from '@/types';
+import type { ResidentData, AgeGroup } from '@/types/shared/hooks/dashboardHooks';
+import type { UseDashboardCalculationsReturn } from '@/types/app/dashboard/dashboard';
 
 /**
  * Age calculation utility
@@ -273,7 +274,7 @@ export const calculateCivilStatusDistribution = (residents: ResidentData[]): Civ
   residents.forEach(resident => {
     if (!resident || typeof resident !== 'object') return;
 
-    const status = safeCivilStatus(resident.civil_status);
+    const status = resident.civil_status ? safeCivilStatus(resident.civil_status) : null;
     if (!status) return;
 
     const mappedStatus = civilStatusMap[status];
@@ -346,7 +347,7 @@ export const calculateEmploymentStatusDistribution = (
   residents.forEach(resident => {
     if (!resident || typeof resident !== 'object') return;
 
-    const status = safeEmploymentStatus(resident.employment_status);
+    const status = resident.employment_status ? safeEmploymentStatus(resident.employment_status) : null;
     if (!status) return;
 
     const mappedStatus = employmentStatusMap[status];
@@ -423,6 +424,19 @@ export function useDashboardCalculations(
     civilStatusData,
     employmentData,
     totalPopulation,
+    stats: {
+      totalResidents: totalPopulation,
+      totalHouseholds: 0, // This would need to be passed in or calculated
+      totalFamilies: 0,
+      averageHouseholdSize: 0,
+      residents: totalPopulation,
+      households: 0,
+      seniorCitizens: populationData.filter(group =>
+        ['65-69', '70-74', '75-79', '80-84', '85-89', '90-94', '95-99', '100+'].includes(group.ageRange)
+      ).reduce((sum, group) => sum + group.male + group.female, 0),
+      employedResidents: employmentData.employed,
+    },
+    charts: populationData, // Use population data as charts data
   };
 }
 

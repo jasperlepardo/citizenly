@@ -44,7 +44,7 @@ interface LoggerConfig {
   minLevel?: LogLevel;
 }
 
-import type { UseLoggerReturn } from '@/types';
+import type { UseLoggerReturn } from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Get current environment configuration

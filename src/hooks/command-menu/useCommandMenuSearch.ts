@@ -10,12 +10,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
-import { searchData } from '@/utils/shared/apiUtils';
-import { trackCommandMenuSearch, trackCommandMenuError } from '@/utils/command-menu/analytics-utils';
 import { trackSearch } from '@/lib/data/recent-items-storage';
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
+import { trackCommandMenuSearch, trackCommandMenuError } from '@/utils/command-menu/analytics-utils';
+import { searchData } from '@/utils/shared/apiUtils';
 
-import type { CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types';
+import type { CommandMenuSearchResult as CommandMenuItem , CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types/shared/hooks/commandMenuHooks';
+
 
 // Interfaces moved to centralized types
 
@@ -38,7 +38,7 @@ export function useCommandMenuSearch(
 
   // Error boundary for search operations
   const { wrapAsync } = useAsyncErrorBoundary({
-    onError: (error, errorInfo) => {
+    onError: (error: any, errorInfo: any) => {
       // Track search errors for monitoring
       trackCommandMenuError(error, {
         context: 'search',
@@ -80,7 +80,7 @@ export function useCommandMenuSearch(
           trackCommandMenuSearch(searchQuery, apiResults.length);
 
           // Convert API results to menu items
-          const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
+          const dynamicMenuItems: CommandMenuItem[] = apiResults.map((result: any) => ({
             id: `search-${result.id}`,
             title: result.title,
             subtitle: result.description,
@@ -123,6 +123,8 @@ export function useCommandMenuSearch(
     isLoading,
     dynamicResults,
     clearSearch,
+    results: dynamicResults, // Alias for backward compatibility
+    error: null, // TODO: Add proper error state
   };
 }
 

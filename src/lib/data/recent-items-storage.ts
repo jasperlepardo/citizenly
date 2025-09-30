@@ -3,7 +3,7 @@
  * Manages recent search and navigation history in localStorage
  */
 
-import type { RecentItem } from '@/types/shared/utilities';
+import type { RecentItem } from '@/types/shared/utilities/utilities';
 
 const RECENT_ITEMS_KEY = 'command-menu-recent-items';
 const MAX_RECENT_ITEMS = 10;

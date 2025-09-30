@@ -6,6 +6,7 @@
  */
 
 import type { ResidentRecord } from '@/types/infrastructure/database/database';
+
 import type { Resident, ResidentListItem } from './core';
 
 /**

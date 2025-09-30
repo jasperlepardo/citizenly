@@ -1,10 +1,14 @@
-import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
 
-import { InputField, SelectField } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import type { SelectOption } from '@/utils/ui/selectUtils';
+import { useAuth } from '@/contexts/AuthContext';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
 import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
-import type { FormMode } from '@/types';
-import type { AddressInformationFormData } from '@/types/domain/households';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { AddressInformationFormData } from '@/types/domain/households/forms';
 
 export interface AddressInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -18,6 +22,8 @@ export interface AddressInformationProps {
   provinceOptions?: Array<{ value: string; label: string }>;
   cityOptions?: Array<{ value: string; label: string }>;
   barangayOptions?: Array<{ value: string; label: string }>;
+  streetOptions?: Array<{ value: string; label: string }>;
+  subdivisionOptions?: Array<{ value: string; label: string }>;
   // Loading states (streets and subdivisions will be handled automatically)
   regionsLoading?: boolean;
   provincesLoading?: boolean;
@@ -40,6 +46,8 @@ export function AddressInformation({
   provinceOptions = [],
   cityOptions = [],
   barangayOptions = [],
+  streetOptions,
+  subdivisionOptions,
   regionsLoading = false,
   provincesLoading = false,
   citiesLoading = false,
@@ -49,18 +57,113 @@ export function AddressInformation({
   onCityChange,
   onBarangayChange,
 }: AddressInformationProps) {
-  // Fetch subdivisions based on selected barangay
-  const { subdivisions: subdivisionOptions, loading: subdivisionsLoading } = useSubdivisionsSearch({
+  // Get authentication context and query client
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+
+  // State for search terms
+  const [streetSearchTerm, setStreetSearchTerm] = useState('');
+  const [subdivisionSearchTerm, setSubdivisionSearchTerm] = useState('');
+
+  // Fetch subdivisions based on selected barangay (only if not provided in view mode)
+  const { subdivisions: fetchedSubdivisionOptions, loading: subdivisionsLoading } = useSubdivisionsSearch({
     barangayCode: value.barangayCode,
-    enabled: !!value.barangayCode,
+    search: subdivisionSearchTerm,
+    enabled: !!value.barangayCode && mode !== 'view',
   });
 
-  // Fetch streets based on selected barangay and subdivision
-  const { streets: streetOptions, loading: streetsLoading } = useStreetsSearch({
+  // Fetch streets based on selected barangay and subdivision (only if not provided in view mode)
+  const { streets: fetchedStreetOptions, loading: streetsLoading } = useStreetsSearch({
     barangayCode: value.barangayCode,
     subdivisionId: value.subdivisionId,
-    enabled: !!value.barangayCode,
+    search: streetSearchTerm,
+    enabled: !!value.barangayCode && mode !== 'view',
   });
+
+  // Use provided options in view mode, otherwise use fetched options
+  const finalSubdivisionOptions = subdivisionOptions || fetchedSubdivisionOptions;
+  const finalStreetOptions = streetOptions || fetchedStreetOptions;
+
+  // Handle creating new street
+  const handleCreateNewStreet = async (streetName: string): Promise<SelectOption> => {
+    try {
+      if (!session?.access_token) {
+        throw new Error('Authentication required to create new street');
+      }
+
+      const response = await fetch('/api/addresses/streets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          name: streetName,
+          barangay_code: value.barangayCode,
+          subdivision_id: value.subdivisionId || null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create street');
+      }
+
+      const result = await response.json();
+
+      // Invalidate all streets queries for this barangay to ensure fresh data on next fetch
+      queryClient.invalidateQueries({
+        queryKey: ['streets', value.barangayCode],
+        exact: false // This will invalidate all queries that start with ['streets', barangayCode]
+      });
+
+      return result.data;
+    } catch (error) {
+      console.error('Error creating new street:', error);
+      throw error;
+    }
+  };
+
+  // Handle creating new subdivision
+  const handleCreateNewSubdivision = async (subdivisionName: string): Promise<SelectOption> => {
+    try {
+      if (!session?.access_token) {
+        throw new Error('Authentication required to create new subdivision');
+      }
+
+      const response = await fetch('/api/addresses/subdivisions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          name: subdivisionName,
+          barangay_code: value.barangayCode,
+          type: 'Subdivision', // Default type
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create subdivision');
+      }
+
+      const result = await response.json();
+
+      // Invalidate all subdivisions queries for this barangay to ensure fresh data on next fetch
+      queryClient.invalidateQueries({
+        queryKey: ['subdivisions', value.barangayCode],
+        exact: false // This will invalidate all queries that start with ['subdivisions', barangayCode]
+      });
+
+      return result.data;
+    } catch (error) {
+      console.error('Error creating new subdivision:', error);
+      throw error;
+    }
+  };
+
 
   const handleChange = (field: keyof AddressInformationFormData, fieldValue: string) => {
     onChange({
@@ -127,7 +230,7 @@ export function AddressInformation({
           mode={mode}
           inputProps={{
             value: value.houseNumber,
-            onChange: e => handleChange('houseNumber', e.target.value),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('houseNumber', e.target.value),
             placeholder: 'Enter house number',
             error: errors.houseNumber,
           }}
@@ -141,14 +244,18 @@ export function AddressInformation({
           errorMessage={errors.streetId}
           mode={mode}
           selectProps={{
-            options: streetOptions,
+            options: finalStreetOptions,
             value: value.streetId,
             onSelect: (option: any) => {
               handleChange('streetId', option?.value || '');
             },
-            placeholder: streetsLoading ? 'Loading streets...' : 'Select street',
+            placeholder: streetsLoading ? 'Loading streets...' : 'Select or type street name',
             loading: streetsLoading,
-            disabled: !value.barangayCode,
+            disabled: !value.barangayCode && mode !== 'view',
+            searchable: true, // Enable typing for "Add New Item" functionality
+            allowCreate: mode !== 'view' && !!value.barangayCode,
+            onCreateNew: handleCreateNewStreet,
+            onSearch: setStreetSearchTerm, // Enable dynamic search
           }}
         />
 
@@ -156,9 +263,10 @@ export function AddressInformation({
         <SelectField
           label="Subdivision"
           labelSize="sm"
+          errorMessage={errors.subdivisionId}
           mode={mode}
           selectProps={{
-            options: subdivisionOptions,
+            options: finalSubdivisionOptions,
             value: value.subdivisionId,
             onSelect: (option: any) => {
               const newSubdivisionId = option?.value || '';
@@ -170,9 +278,13 @@ export function AddressInformation({
             },
             placeholder: subdivisionsLoading
               ? 'Loading subdivisions...'
-              : 'Select subdivision (optional)',
+              : 'Select or type subdivision name (optional)',
             loading: subdivisionsLoading,
-            disabled: !value.barangayCode,
+            disabled: !value.barangayCode && mode !== 'view',
+            searchable: true, // Enable typing for "Add New Item" functionality
+            allowCreate: mode !== 'view' && !!value.barangayCode,
+            onCreateNew: handleCreateNewSubdivision,
+            onSearch: setSubdivisionSearchTerm, // Enable dynamic search
           }}
         />
 

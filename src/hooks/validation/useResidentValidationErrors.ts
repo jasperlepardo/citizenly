@@ -11,11 +11,12 @@ import { useState, useCallback } from 'react';
 
 import { validateResidentForm as validateResidentData } from '@/services/infrastructure/validation/residentSchema';
 import type { ValidationResult } from '@/types/shared/validation/validation';
+
 import type {
-  ResidentFormData,
   UseResidentValidationErrorsReturn,
-} from '@/types';
-import type { ValidationError } from '@/types/shared/validation';
+} from '@/types/shared/hooks/utilityHooks';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type { ValidationError } from '@/types/shared/validation/validation';
 
 
 /**
@@ -35,7 +36,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
   /**
    * Validate a single field
    */
-  const validateField = useCallback((field: string, value: any) => {
+  const validateField = useCallback(async (field: string, value: any): Promise<any> => {
     try {
       // Simple validation for production readiness
       const isValid = value || !['firstName', 'lastName', 'birthdate', 'sex'].includes(field);
@@ -47,15 +48,18 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
           delete newErrors[field];
           return newErrors;
         });
+        return { isValid: true };
       } else {
         // Set error if validation fails
         setErrorsState(prev => ({
           ...prev,
           [field]: `${field} is required`,
         }));
+        return { isValid: false, error: `${field} is required` };
       }
     } catch (error) {
       // Validation error handled silently
+      return { isValid: false, error: 'Validation failed' };
     }
   }, []);
 
@@ -143,5 +147,14 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
     clearFieldError,
     clearAllErrors,
     setErrors,
+    // Missing methods from interface
+    getFormattedError: getFieldError,
+    addError: (fieldName: string, message: string) => {
+      setErrorsState(prev => ({ ...prev, [fieldName]: message }));
+    },
+    removeError: (fieldName: string) => {
+      clearFieldError(fieldName);
+    },
+    clearErrors: clearAllErrors,
   };
 }

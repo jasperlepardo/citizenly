@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { InputField, SelectField } from '@/components';
-import type { FormMode, IncomeAndHeadInformationFormData } from '@/types';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { IncomeAndHeadInformationFormData } from '@/types/domain/households/forms';
 
 export interface IncomeAndHeadInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -79,7 +81,7 @@ export function IncomeAndHeadInformation({
             min: 0,
             step: '0.01',
             value: value.monthlyIncome,
-            onChange: e => handleChange('monthlyIncome', parseFloat(e.target.value) || 0),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('monthlyIncome', parseFloat(e.target.value) || 0),
             placeholder: 'Enter monthly income',
             error: errors.monthlyIncome,
           }}

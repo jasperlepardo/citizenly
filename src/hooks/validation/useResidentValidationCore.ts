@@ -9,10 +9,14 @@
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 
+import { VALIDATION_DEBOUNCE_MS } from '@/constants/residentFormDefaults';
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-import { VALIDATION_DEBOUNCE_MS } from '@/constants/residentFormDefaults';
-import { ResidentFormSchema } from '@/services/infrastructure/validation/residentSchema';
+import {
+  getFormToSchemaFieldMapping,
+  getSchemaToFormFieldMapping,
+  mapFormToApi,
+} from '@/services/domain/residents/residentMapper';
 import {
   validateField as validateFieldValue,
   validateFormSection,
@@ -21,20 +25,18 @@ import {
   getRequiredFieldsForSection,
   createDebouncedValidator,
 } from '@/services/infrastructure/validation/fieldValidators';
+import { ResidentFormSchema } from '@/services/infrastructure/validation/residentSchema';
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
-import {
-  getFormToSchemaFieldMapping,
-  getSchemaToFormFieldMapping,
-  mapFormToApi,
-} from '@/services/domain/residents/residentMapper';
-import type {
-  ResidentFormData,
-  ResidentValidationOptions,
-  UseResidentValidationCoreReturn,
-} from '@/types';
 
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
+
+import type {
+  ResidentValidationOptions,
+  UseResidentValidationCoreReturn,
+} from '@/types/shared/hooks/utilityHooks';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+
 
 
 /**
@@ -82,8 +84,8 @@ export function useResidentValidationCore(
    * Validate a specific field
    */
   const validateField = useCallback(
-    (fieldName: string, value: unknown): FieldValidationResult => {
-      return validateFieldFn(fieldName, value);
+    async (fieldName: string, value: unknown): Promise<FieldValidationResult> => {
+      return Promise.resolve(validateFieldFn(fieldName, value));
     },
     [validateFieldFn]
   );
@@ -214,11 +216,15 @@ export function useResidentValidationCore(
    * Clear validation errors for specific section
    */
   const clearSectionErrors = useCallback(
-    (section: keyof typeof REQUIRED_FIELDS): void => {
-      const sectionFields = getRequiredFieldsForSection(section);
-      sectionFields.forEach(field => {
-        genericValidation.clearFieldError(field);
-      });
+    (section: string): void => {
+      // Type guard to ensure section is valid
+      if (section in REQUIRED_FIELDS) {
+        const validSection = section as keyof typeof REQUIRED_FIELDS;
+        const sectionFields = getRequiredFieldsForSection(validSection);
+        sectionFields.forEach(field => {
+          genericValidation.clearFieldError(field);
+        });
+      }
     },
     [genericValidation]
   );
@@ -227,11 +233,16 @@ export function useResidentValidationCore(
    * Check if section is valid
    */
   const isSectionValid = useCallback(
-    (section: keyof typeof REQUIRED_FIELDS): boolean => {
-      const sectionFields = getRequiredFieldsForSection(section);
-      const errors = genericValidation.errors;
+    (section: string): boolean => {
+      // Type guard to ensure section is valid
+      if (section in REQUIRED_FIELDS) {
+        const validSection = section as keyof typeof REQUIRED_FIELDS;
+        const sectionFields = getRequiredFieldsForSection(validSection);
+        const errors = genericValidation.errors;
 
-      return !sectionFields.some(field => errors[field]);
+        return !sectionFields.some(field => errors[field]);
+      }
+      return true; // Unknown sections are considered valid
     },
     [genericValidation.errors]
   );

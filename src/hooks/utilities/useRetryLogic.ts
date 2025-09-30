@@ -10,12 +10,13 @@
 import { useState, useCallback, useRef } from 'react';
 
 import { useLogger } from './useLogger';
+
 import type {
   RetryStrategy,
   RetryState,
   UseRetryLogicOptions,
   UseRetryLogicReturn,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Default retry strategy
@@ -121,7 +122,7 @@ export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogic
     }
 
     cancelledRef.current = true;
-    setState(prev => ({
+    setState((prev: RetryState) => ({
       ...prev,
       isRetrying: false,
     }));
@@ -142,7 +143,7 @@ export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogic
           throw new Error('Operation cancelled');
         }
 
-        setState(prev => ({
+        setState((prev: RetryState) => ({
           ...prev,
           attempt: attemptNumber,
           isRetrying: attemptNumber > 0,
@@ -154,7 +155,7 @@ export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogic
           const result = await operation();
 
           // Success!
-          setState(prev => ({
+          setState((prev: RetryState) => ({
             ...prev,
             isRetrying: false,
             lastError: null,
@@ -169,7 +170,7 @@ export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogic
         } catch (error) {
           const err = error as Error;
 
-          setState(prev => ({
+          setState((prev: RetryState) => ({
             ...prev,
             lastError: err,
             nextDelay: calculateDelay(attemptNumber),
@@ -183,7 +184,7 @@ export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogic
           const hasAttemptsLeft = attemptNumber < strategy.maxAttempts;
 
           if (!shouldRetry || !hasAttemptsLeft) {
-            setState(prev => ({
+            setState((prev: RetryState) => ({
               ...prev,
               isRetrying: false,
               maxAttemptsReached: !hasAttemptsLeft,

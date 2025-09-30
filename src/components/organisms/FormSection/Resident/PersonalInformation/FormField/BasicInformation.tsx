@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { InputField, SelectField, ControlFieldSet } from '@/components';
-import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import {
   SEX_OPTIONS_WITH_DEFAULT,
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT,
 } from '@/constants/residentEnums';
-import type { FormMode, BasicInformationFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { BasicInformationFormData } from '@/types/domain/residents/forms';
 
 interface BasicInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -103,7 +105,7 @@ export function BasicInformation({
               loading={loading || loadingStates?.first_name}
               inputProps={{
                 value: value.first_name,
-                onChange: e => handleChange('first_name', e.target.value),
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('first_name', e.target.value),
                 placeholder: 'Enter first name',
                 required: true,
               }}
@@ -115,8 +117,8 @@ export function BasicInformation({
               labelSize="sm"
               loading={loading || loadingStates?.middle_name}
               inputProps={{
-                value: value.middle_name,
-                onChange: e => handleChange('middle_name', e.target.value),
+                value: value.middle_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('middle_name', e.target.value),
                 placeholder: 'Enter middle name',
               }}
             />
@@ -130,7 +132,7 @@ export function BasicInformation({
               loading={loading || loadingStates?.last_name}
               inputProps={{
                 value: value.last_name,
-                onChange: e => handleChange('last_name', e.target.value),
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('last_name', e.target.value),
                 placeholder: 'Enter last name',
                 required: true,
               }}
@@ -142,8 +144,8 @@ export function BasicInformation({
               labelSize="sm"
               loading={loading || loadingStates?.extension_name}
               inputProps={{
-                value: value.extension_name,
-                onChange: e => handleChange('extension_name', e.target.value),
+                value: value.extension_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('extension_name', e.target.value),
                 placeholder: 'Jr., Sr., III, etc.',
               }}
             />
@@ -151,33 +153,29 @@ export function BasicInformation({
         )}
 
         {/* Sex, Civil Status, Civil Status Other (conditional), Citizenship */}
-        <ControlFieldSet
-          mode={mode}
-          type="radio"
-          label="Sex"
-          labelSize="sm"
-          radioName="sex"
-          radioValue={value.sex}
-          onRadioChange={(selectedValue: string) => handleChange('sex', selectedValue)}
-          errorMessage={errors.sex}
-          loading={loading || loadingStates?.sex}
-          orientation="horizontal"
-          spacing="sm"
-        >
-          {SEX_OPTIONS_WITH_DEFAULT.map(option => (
-            <Radio
-              key={option.value}
-              value={option.value}
-              label={option.label}
-              size="md"
-              style="button"
-              buttonProps={{
-                variant: 'neutral-outline',
-                size: 'lg',
-              }}
-            />
-          ))}
-        </ControlFieldSet>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Sex
+          </label>
+          {errors.sex && (
+            <p className="text-sm text-red-600 dark:text-red-400">{errors.sex}</p>
+          )}
+          <div className="flex space-x-4">
+            {SEX_OPTIONS_WITH_DEFAULT.map(option => (
+              <label key={option.value} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="sex"
+                  value={option.value}
+                  checked={value.sex === option.value}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('sex', e.target.value)}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
 
         <SelectField
           mode={mode}
@@ -206,7 +204,7 @@ export function BasicInformation({
             loading={loading || loadingStates?.civil_status_others_specify}
             inputProps={{
               value: value.civil_status_others_specify || '',
-              onChange: e => handleChange('civil_status_others_specify', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('civil_status_others_specify', e.target.value),
               placeholder: 'Please specify civil status',
               required: true,
             }}

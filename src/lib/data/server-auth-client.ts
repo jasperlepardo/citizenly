@@ -5,6 +5,7 @@
 
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest } from 'next/server';
+
 import { Database } from './supabase';
 
 /**

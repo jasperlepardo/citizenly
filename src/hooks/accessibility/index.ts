@@ -11,4 +11,4 @@ export type {
   FieldAccessibilityIds,
   FieldAccessibilityProps,
   FieldGroupAccessibilityReturn,
-} from '@/types';
+} from '@/types/app/ui/accessibility';

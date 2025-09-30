@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { InputField } from '@/components/molecules/FieldSet';
-
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export interface HouseholdStatisticsProps {

@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from 'react';
 
-import { formatPsocOption, formatPsgcOption } from '@/services/domain/residents/residentMapper';
 import { container } from '@/services/container';
-import type { PsocOption, PsgcOption, HouseholdOption, UseFormSearchesReturn } from '@/types';
+import { formatPsocOption, formatPsgcOption } from '@/services/domain/residents/residentMapper';
+
+import type { PsocOption, PsgcOption, HouseholdOption, UseFormSearchesReturn } from '@/types/shared/hooks/searchHooks';
 
 export const useFormSearches = (userBarangayCode?: string): UseFormSearchesReturn => {
   // PSOC search state
@@ -94,18 +95,22 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
 
       setHouseholdLoading(true);
       try {
-        // Use HouseholdDomainService through container
-        const householdService = container.getHouseholdService();
-        const result = await householdService.findHouseholds({
+        // Use HouseholdRepository through container
+        const householdRepository = container.getHouseholdRepository();
+        const result = await householdRepository.findAll({
           barangayCode: userBarangayCode,
-          searchTerm: query,
+          search: query,
           limit: 20
         });
         
         if (result.success) {
-          const households = result.data?.map(h => ({
+          const households = result.data?.map((h: any) => ({
             value: h.code,
             label: `${h.code} - ${h.house_number || 'No house number'}`,
+            description: h.street_name || 'No description',
+            code: h.code,
+            head_name: h.head_resident?.first_name || 'No head name',
+            address: `${h.house_number || ''} ${h.street_name || ''}`.trim(),
             data: h
           })) || [];
           setHouseholdOptions(households);

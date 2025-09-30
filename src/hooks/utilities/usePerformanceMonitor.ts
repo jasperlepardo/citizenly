@@ -10,11 +10,12 @@
 import { useRef, useEffect, useCallback } from 'react';
 
 import { useLogger } from './useLogger';
-import type { 
-  HookPerformanceMetrics as PerformanceMetrics,
+
+import type {
+  HookPerformanceMetrics,
   UsePerformanceMonitorOptions,
   UsePerformanceMonitorReturn,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Hook for monitoring React hook performance
@@ -71,7 +72,7 @@ export function usePerformanceMonitor(
   /**
    * Calculate performance metrics
    */
-  const getMetrics = useCallback((): PerformanceMetrics => {
+  const getMetrics = useCallback((): HookPerformanceMetrics => {
     const times = renderTimes.current;
     const averageRenderTime =
       times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0;

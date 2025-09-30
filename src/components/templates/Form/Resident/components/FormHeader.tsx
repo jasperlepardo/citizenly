@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
+import type { FormMode } from '@/types/app/ui/forms';
 
 interface FormHeaderProps {
   mode: FormMode;

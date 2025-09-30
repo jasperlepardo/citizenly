@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 import { supabase } from '@/lib/data/supabase';
 import { logger, logError } from '@/lib/logging/secure-logger';
 

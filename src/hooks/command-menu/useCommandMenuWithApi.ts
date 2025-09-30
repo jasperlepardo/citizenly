@@ -15,20 +15,21 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types/shared/hooks/commandMenuHooks';
 import { getCommandMenuItems } from '@/utils/command-menu/items-utils';
 
 import { useCommandMenu } from './useCommandMenu';
 import { useCommandMenuActions } from './useCommandMenuActions';
 import { useCommandMenuRecents } from './useCommandMenuRecents';
 import { useCommandMenuSearch } from './useCommandMenuSearch';
+
 import type {
   UseCommandMenuWithApiProps,
   UseCommandMenuWithApiReturn,
   UseCommandMenuSearchReturn,
   UseCommandMenuRecentsReturn,
   UseCommandMenuActionsReturn
-} from '@/types';
+} from '@/types/shared/hooks/commandMenuHooks';
 
 // Interfaces moved to centralized types
 
@@ -159,8 +160,8 @@ export function useCommandMenuWithApi({
     executeCommand,
 
     // Statistics
-    dynamicResults: search.dynamicResults.length,
-    recentItems: recents.recentItemsCount,
+    dynamicResults: search.dynamicResults,
+    recentItemsCount: recents.recentItemsCount,
 
     // Recent items management
     handleClearRecentItems: recents.handleClearRecentItems,

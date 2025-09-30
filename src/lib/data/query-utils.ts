@@ -1,10 +1,15 @@
-// REMOVED: @/lib barrel import - replace with specific module;
-
 /**
  * Database utility functions for optimized operations
  */
 
-import type { QuickStats } from '@/types/shared/utilities';
+import { supabase } from '@/lib/data/supabase';
+import { logger } from '@/lib/logging/secure-logger';
+import type { QuickStats } from '@/types/shared/utilities/utilities';
+
+// Helper function to replace missing logError
+const logError = (error: Error, context: string) => {
+  logger.error(`${context}: ${error.message}`, { error, context });
+};
 
 /**
  * Get barangay statistics from materialized view (fast cached data)

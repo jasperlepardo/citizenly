@@ -1,8 +1,11 @@
 import React from 'react';
 
-import { InputField, ControlFieldSet } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import type { FormMode, VotingInformationFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { VotingInformationFormData } from '@/types/domain/residents/forms';
 
 /**
  * Props for the VotingInformation component
@@ -81,16 +84,11 @@ export function VotingInformation({
 
       {/* All Fields in One Grid */}
       <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
-        <ControlFieldSet
-          type="radio"
+        <ControlField
           label="Registered Voter?"
           labelSize="sm"
-          radioName="is_voter"
-          radioValue={value.is_voter || 'no'}
-          onRadioChange={(selectedValue: string) => handleChange('is_voter', selectedValue)}
           errorMessage={errors.is_voter}
           orientation="horizontal"
-          spacing="sm"
           mode={mode}
           loading={loadingStates?.is_voter}
         >
@@ -106,20 +104,13 @@ export function VotingInformation({
               }}
             />
           ))}
-        </ControlFieldSet>
+        </ControlField>
 
-        <ControlFieldSet
-          type="radio"
+        <ControlField
           label="Resident Voter?"
           labelSize="sm"
-          radioName="is_resident_voter"
-          radioValue={value.is_resident_voter || 'no'}
-          onRadioChange={(selectedValue: string) =>
-            handleChange('is_resident_voter', selectedValue)
-          }
           errorMessage={errors.is_resident_voter}
           orientation="horizontal"
-          spacing="sm"
           mode={mode}
           loading={loadingStates?.is_resident_voter}
         >
@@ -135,7 +126,7 @@ export function VotingInformation({
               }}
             />
           ))}
-        </ControlFieldSet>
+        </ControlField>
 
         <InputField
           label="Last Voted Year"
@@ -146,8 +137,8 @@ export function VotingInformation({
           loading={loadingStates?.last_voted_date}
           inputProps={{
             type: 'number',
-            value: value.last_voted_date,
-            onChange: e => handleChange('last_voted_date', e.target.value),
+            value: value.last_voted_date || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('last_voted_date', e.target.value),
             placeholder: '2024',
             min: '1900',
             max: new Date().getFullYear().toString(),

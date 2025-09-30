@@ -262,8 +262,6 @@ export interface RadioProps {
   checked?: boolean;
   /** Change handler */
   onChange?: (value: string | number) => void;
-  /** Radio group name */
-  name?: string;
 }
 
 // =============================================================================
@@ -273,7 +271,11 @@ export interface RadioProps {
 /**
  * Card component props
  */
-export interface CardProps extends ComponentWithChildren {
+export interface CardProps {
+  /** Child components */
+  children?: ReactNode;
+  /** Additional CSS classes */
+  className?: string;
   /** Card variant */
   variant?: 'default' | 'outlined' | 'elevated';
   /** Padding size */
@@ -287,7 +289,11 @@ export interface CardProps extends ComponentWithChildren {
 /**
  * Modal component props
  */
-export interface ModalProps extends ComponentWithChildren {
+export interface ModalProps {
+  /** Child components */
+  children?: ReactNode;
+  /** Additional CSS classes */
+  className?: string;
   /** Whether modal is open */
   open: boolean;
   /** Close handler */
@@ -315,7 +321,9 @@ export interface ModalProps extends ComponentWithChildren {
 /**
  * Table component props
  */
-export interface TableProps<T = any> extends BaseComponentProps {
+export interface TableProps<T = any> {
+  /** Additional CSS classes */
+  className?: string;
   /** Table data */
   data: T[];
   /** Column definitions */
@@ -345,7 +353,9 @@ export interface TableProps<T = any> extends BaseComponentProps {
 /**
  * Loading component props
  */
-export interface LoadingProps extends BaseComponentProps {
+export interface LoadingProps {
+  /** Additional CSS classes */
+  className?: string;
   /** Loading message */
   message?: string;
   /** Size variant */
@@ -396,7 +406,7 @@ export interface FileUploadProps {
   onFileSelect?: (files: FileList | null) => void;
   showPreview?: boolean;
   variant?: 'default' | 'error' | 'success' | 'disabled';
-  size?: ComponentSize;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   multiple?: boolean;
 }
 
@@ -409,7 +419,9 @@ export interface FileUploadProps {
 /**
  * Search bar component props
  */
-export interface SearchBarProps extends BaseComponentProps {
+export interface SearchBarProps {
+  /** Additional CSS classes */
+  className?: string;
   value?: string;
   placeholder?: string;
   onSearch?: (query: string) => void;
@@ -417,7 +429,7 @@ export interface SearchBarProps extends BaseComponentProps {
   onClear?: () => void;
   loading?: boolean;
   disabled?: boolean;
-  size?: ComponentSize;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'default' | 'outlined' | 'filled';
   showClearButton?: boolean;
   showSearchIcon?: boolean;
@@ -435,7 +447,9 @@ export interface SearchBarProps extends BaseComponentProps {
 /**
  * Button group component props
  */
-export interface ButtonGroupProps<T = string> extends BaseComponentProps {
+export interface ButtonGroupProps<T = string> {
+  /** Additional CSS classes */
+  className?: string;
   options: Array<{
     label: string;
     value: T;
@@ -591,7 +605,9 @@ export type TypographyVariant =
  * Typography component props
  * Consolidates from src/lib/ui/typography.ts
  */
-export interface TypographyProps extends BaseComponentProps {
+export interface TypographyProps {
+  /** Additional CSS classes */
+  className?: string;
   variant?: TypographyVariant;
   component?: keyof JSX.IntrinsicElements;
   children: ReactNode;

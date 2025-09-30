@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { supabase } from '@/lib/data/supabase';
-import { useAuth } from '@/contexts';
 import { createClient } from '@supabase/supabase-js';
+import React, { useState } from 'react';
+
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/data/supabase';
 
 interface DiagnosticResult {
   timestamp: string;

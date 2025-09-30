@@ -2,10 +2,13 @@
 
 import React, { useMemo, useEffect, useState } from 'react';
 
-import { InputField, SelectField } from '@/components';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
 import { formatBirthdateWithAgeCompact } from '@/utils/shared/dateUtils';
-import type { FormMode, BirthInformationFormData } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { BirthInformationFormData } from '@/types/domain/residents/forms';
 
 export interface BirthInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -39,6 +42,9 @@ export function BirthInformation({
 }: Readonly<BirthInformationProps>) {
   // State for resolved birth place name when only code is available
   const [resolvedBirthPlaceName, setResolvedBirthPlaceName] = useState<string>('');
+  // State to track PSGC lookup loading
+  const [isLookingUpPsgc, setIsLookingUpPsgc] = useState(false);
+
   // PSGC search hook for birth place
   const {
     options: psgcOptions,
@@ -54,9 +60,6 @@ export function BirthInformation({
   const effectivePsgcOptions = externalPsgcOptions.length > 0 ? externalPsgcOptions : psgcOptions;
   const effectivePsgcLoading = externalPsgcSearch ? externalPsgcLoading : (psgcLoading || isLookingUpPsgc);
   const effectiveSearchFunction = externalPsgcSearch || handlePsgcSearch;
-
-  // State to track PSGC lookup loading
-  const [isLookingUpPsgc, setIsLookingUpPsgc] = React.useState(false);
 
   // Lookup birth place name from code for view mode
   useEffect(() => {
@@ -76,7 +79,7 @@ export function BirthInformation({
       if (shouldLookup) {
         try {
           console.log('🔍 BirthInformation: Starting lookup for code:', value.birth_place_code);
-          const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(value.birth_place_code)}`);
+          const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(value.birth_place_code || '')}`);
           console.log('🔍 BirthInformation: API response status:', response.status);
 
           if (response.ok) {
@@ -127,7 +130,7 @@ export function BirthInformation({
         setIsLookingUpPsgc(true);
         
         // Use PSGC lookup API to get complete address
-        fetch(`/api/psgc/lookup?code=${value.birth_place_code}`)
+        fetch(`/api/psgc/lookup?code=${value.birth_place_code || ''}`)
           .then(response => response.json())
           .then(result => {
             if (result.data) {
@@ -164,7 +167,7 @@ export function BirthInformation({
     }
   }, [value.birth_place_code, value.birth_place_name, isLookingUpPsgc, onChange]);
 
-  const handleChange = (field: keyof BirthInformationFormData, fieldValue: any) => {
+  const handleChange = (field: keyof BirthInformationFormData, fieldValue: string) => {
     console.log(`🔍 BirthInformation: handleChange called for ${field}:`, fieldValue);
     const newValue = {
       ...value,
@@ -178,8 +181,8 @@ export function BirthInformation({
   const birthPlaceOptions = useMemo(() => {
     console.log('🔍 BirthInformation: Creating birthPlaceOptions from effectivePsgcOptions:', effectivePsgcOptions);
     console.log('🔍 BirthInformation: First place object:', effectivePsgcOptions[0]);
-    let allOptions = effectivePsgcOptions
-      .filter(place => {
+    const allOptions = effectivePsgcOptions
+      .filter((place: any) => {
         // Check for both PSGC API format (name) and Select option format (label)
         const hasName = place && (place.name || place.label);
         console.log('🔍 BirthInformation: Filter check -', {
@@ -190,7 +193,7 @@ export function BirthInformation({
         });
         return hasName;
       }) // Pre-filter to only places with valid names
-      .map(place => {
+      .map((place: any) => {
         console.log('🔍 BirthInformation: Processing place object:', place);
         // Format hierarchical display based on level
         // Handle both PSGC API format (name) and Select option format (label)
@@ -267,11 +270,11 @@ export function BirthInformation({
 
     // Ensure current selected value is always in options for proper display in view mode
     if (value.birth_place_code) {
-      const exists = allOptions.some(opt => opt.value === value.birth_place_code);
+      const exists = allOptions.some((opt: any) => opt.value === value.birth_place_code);
       if (!exists) {
         // Use the resolved birth place name if available, otherwise fall back to stored name, or show code as fallback
         let displayLabel = resolvedBirthPlaceName || value.birth_place_name || value.birth_place_code;
-        const matchingOption = effectivePsgcOptions.find(opt => opt.code === value.birth_place_code);
+        const matchingOption = effectivePsgcOptions.find((opt: any) => opt.code === value.birth_place_code);
         
         // Only enhance the label if we have complete data from search results
         if (matchingOption && matchingOption.name) {
@@ -306,7 +309,7 @@ export function BirthInformation({
     console.log('🔍 BirthInformation: Options count:', allOptions.length);
 
     // Log if we found an option that matches the current birth_place_code
-    const matchingOption = allOptions.find(opt => opt.value === value.birth_place_code);
+    const matchingOption = allOptions.find((opt: any) => opt.value === value.birth_place_code);
     console.log('🔍 BirthInformation: Matching option for current code:', matchingOption);
 
     return allOptions;
@@ -350,7 +353,7 @@ export function BirthInformation({
           selectProps={{
             placeholder: 'Search for birth place...',
             options: birthPlaceOptions,
-            value: value.birth_place_code,
+            value: value.birth_place_code || '',
             onSelect: option => {
               console.log('🔍 BirthInformation: Birth place selected:', option);
               const newCode = option?.value || '';

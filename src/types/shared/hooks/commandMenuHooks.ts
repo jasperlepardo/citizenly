@@ -54,7 +54,7 @@ export interface CommandMenuHookResult<T = any> {
  * Consolidates from src/hooks/command-menu/useCommandMenu.ts
  */
 export interface UseCommandMenuProps {
-  items: import('@/components').CommandMenuItemType[];
+  items: CommandMenuSearchResult[];
   maxResults?: number;
 }
 
@@ -69,10 +69,10 @@ export interface UseCommandMenuReturn {
   toggle: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  filteredItems: import('@/components').CommandMenuItemType[];
+  filteredItems: CommandMenuSearchResult[];
   selectedIndex: number;
   setSelectedIndex: (index: number) => void;
-  executeCommand: (item: import('@/components').CommandMenuItemType) => void;
+  executeCommand: (item: CommandMenuSearchResult) => void;
 }
 
 /**
@@ -162,26 +162,79 @@ export interface UseCommandMenuActionsReturn {
   getEnhancedMenuItems: (baseItems: CommandMenuSearchResult[]) => CommandMenuSearchResult[];
 }
 
+// Using the comprehensive UseCommandMenuWithApiReturn interface below (line 236)
+
+/**
+ * Command menu actions hook return interface
+ */
+export interface UseCommandMenuActionsReturn {
+  executeCommand: (command: CommandMenuSearchResult) => void;
+  handleExportData: (type: 'residents' | 'households', format: 'csv' | 'xlsx') => Promise<void>;
+  handleBackupData: () => Promise<void>;
+  handleQuickAction: (actionFn: () => Promise<string>) => Promise<void>;
+  getEnhancedMenuItems: (items: CommandMenuSearchResult[]) => CommandMenuSearchResult[];
+}
+
+/**
+ * Command menu recents hook return interface
+ */
+export interface UseCommandMenuRecentsReturn {
+  recentItems: CommandMenuSearchResult[];
+  isLoading: boolean;
+  loadRecentItems: () => Promise<void>;
+  handleClearRecentItems: () => Promise<void>;
+  recentItemsCount: number;
+}
+
+// Using the first CommandMenuSearchOptions interface above (line 91)
+
+/**
+ * Command menu search hook return interface
+ */
+export interface UseCommandMenuSearchReturn {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  isLoading: boolean;
+  dynamicResults: CommandMenuSearchResult[];
+  clearSearch: () => void;
+  results: CommandMenuSearchResult[];
+  error: string | null;
+}
+
+/**
+ * Command menu with API props interface
+ */
+export interface UseCommandMenuWithApiProps {
+  maxResults?: number;
+}
+
 /**
  * Command menu with API return interface
- * Consolidates from src/hooks/command-menu/useCommandMenuWithApi.ts
  */
-export interface UseCommandMenuWithApiReturn
-  extends Pick<UseCommandMenuSearchReturn, 'searchQuery' | 'setSearchQuery' | 'isLoading'>,
-    Pick<UseCommandMenuRecentsReturn, 'handleClearRecentItems'>,
-    Pick<UseCommandMenuActionsReturn, 'executeCommand'> {
-  /** Menu open state */
+export interface UseCommandMenuWithApiReturn {
+  // Menu state
   isOpen: boolean;
-  /** Open menu */
   open: () => void;
-  /** Close menu */
   close: () => void;
-  /** Toggle menu */
   toggle: () => void;
-  /** Search results */
-  results: CommandMenuSearchResult[];
-  /** Recent items */
-  recentItems: CommandMenuSearchResult[];
-  /** Handle item selection */
-  handleItemSelect: (item: CommandMenuSearchResult) => void;
+
+  // Search functionality
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  isLoading: boolean;
+
+  // Items and selection
+  filteredItems: CommandMenuSearchResult[];
+  selectedIndex: number;
+  setSelectedIndex: (index: number) => void;
+
+  // Actions
+  executeCommand: (command: CommandMenuSearchResult) => void;
+
+  // Statistics
+  dynamicResults: CommandMenuSearchResult[];
+  recentItemsCount: number;
+
+  // Recent items management
+  handleClearRecentItems: () => Promise<void>;
 }

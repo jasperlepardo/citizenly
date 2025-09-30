@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 
-import { InputField, Button } from '@/components';
-import { useAuth } from '@/contexts';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { Button } from '@/components/atoms/Button/Button';
+import { useAuth } from '@/contexts/AuthContext';
 import { useGenericFormSubmission } from '@/hooks/utilities';
 import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';
 import type { LoginFormData } from '@/types/app/auth/auth';
@@ -32,7 +33,7 @@ export default function LoginForm({
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<LoginFormData>({
-    onSubmit: async data => {
+    onSubmit: async (data: any) => {
       const { error } = await signIn(data.email, data.password);
 
       if (error) {
@@ -45,7 +46,7 @@ export default function LoginForm({
         }
       }
     },
-    validate: data => {
+    validate: (data: any) => {
       const newErrors: Record<string, string> = {};
 
       if (!data.email.trim()) {
@@ -72,7 +73,7 @@ export default function LoginForm({
         window.location.href = redirectTo;
       }
     },
-    onError: error => {
+    onError: (error: any) => {
       setErrors({ general: error.message });
     },
   });

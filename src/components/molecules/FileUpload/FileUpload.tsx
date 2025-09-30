@@ -4,10 +4,10 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
+import { cn } from '@/components/shared/utils';
 import { clientLogger } from '@/lib/logging/client-logger';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security/fileSecurity';
-import { cn } from '@/components/shared/utils';
 import { formatFileSize } from '@/utils/shared/fileUtils';
 
 const fileUploadVariants = cva(

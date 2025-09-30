@@ -6,8 +6,8 @@
 
 import { lazy } from 'react';
 
-import { FormSkeleton } from '@/components/atoms/Loading';
-// REMOVED: @/lib barrel import - replace with specific module;
+import { FormSkeleton } from '@/components/atoms/Loading/FormSkeleton/FormSkeleton';
+import { withLazyLoading } from '@/components/shared/lazy/lazyLoading';
 
 const CreateHouseholdModalLazy = lazy(() => import('./CreateHouseholdModal'));
 

@@ -11,11 +11,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
 
 import type { ValidationResult } from '@/types/shared/validation/validation';
+
 import type {
-  ResidentFormData,
   UseResidentSubmissionOptions,
   UseResidentSubmissionReturn,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 
 /**

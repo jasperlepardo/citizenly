@@ -1,6 +1,7 @@
 'use client';
 
-import { AuthProvider, ThemeProvider } from '@/contexts';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ErrorBoundary } from '@/providers/ErrorBoundary';
 import QueryProvider from '@/providers/QueryProvider';
 

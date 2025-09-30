@@ -4,6 +4,7 @@
  */
 
 import type { Session } from '@supabase/supabase-js';
+
 import { supabase } from '@/lib/data/supabase';
 
 /**

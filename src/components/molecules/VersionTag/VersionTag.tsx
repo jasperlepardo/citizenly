@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 
+import packageJson from '@/../package.json';
 import { cn } from '@/components/shared/utils';
 
-import packageJson from '@/../package.json';
 
 export interface VersionTagProps {
   className?: string;

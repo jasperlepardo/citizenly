@@ -5,8 +5,8 @@
  */
 
 import { createLogger } from '@/lib/config/environment';
-import type { ISecurityAuditRepository } from '@/types/domain/repositories';
 import type { SecurityAuditLog, ThreatDetectionEvent } from '@/types/app/auth/security';
+import type { ISecurityAuditRepository } from '@/types/domain/repositories';
 import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 
 const logger = createLogger('SecurityDomainService');

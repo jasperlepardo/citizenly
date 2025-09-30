@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts';
+
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function TestUserPermissions() {
   const { user, userProfile } = useAuth();

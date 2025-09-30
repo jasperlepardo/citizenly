@@ -7,9 +7,8 @@ import { createClient } from '@supabase/supabase-js';
 
 import { logger } from '@/lib/logging/secure-logger';
 
-import { ErrorCode as ApiErrorCode } from '@/lib/api/types';
-
-import type { SecurityAuditLog, ThreatDetectionEvent } from '@/types/security';
+import { ErrorCode as ApiErrorCode } from '@/types/shared/errors/errors';
+import type { SecurityAuditLog, ThreatDetectionEvent } from '@/types/app/auth/security';
 
 /**
  * Store security audit log in secure database

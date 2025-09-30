@@ -5,10 +5,11 @@
  */
 
 import type { User, Session } from '@supabase/supabase-js';
-import type { AuthUserProfile } from '@/types/app/auth/auth';
-import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
+
 import { createLogger } from '@/lib/config/environment';
 import { supabase } from '@/lib/data/supabase';
+import type { AuthUserProfile } from '@/types/app/auth/auth';
+import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 
 const logger = createLogger('SupabaseAuthRepository');
 
@@ -103,7 +104,7 @@ export class SupabaseAuthRepository {
   /**
    * Sign out current user
    */
-  async signOut(): Promise<RepositoryResult<void>> {
+  async signOut(): Promise<RepositoryResult<boolean>> {
     try {
       const { error } = await this.supabase.auth.signOut();
 
@@ -112,7 +113,7 @@ export class SupabaseAuthRepository {
         return { success: false, error: error.message };
       }
 
-      return { success: true, data: undefined };
+      return { success: true, data: true };
     } catch (error) {
       logger.error('Unexpected error during sign out', error);
       return { 
@@ -149,9 +150,9 @@ export class SupabaseAuthRepository {
   }
 
   /**
-   * Get user profile from database
+   * Find user profile from database
    */
-  async getProfile(userId: string): Promise<RepositoryResult<AuthUserProfile>> {
+  async findUserProfile(userId: string): Promise<RepositoryResult<AuthUserProfile>> {
     try {
       const { data, error } = await this.supabase
         .from('auth_user_profiles')
@@ -180,7 +181,7 @@ export class SupabaseAuthRepository {
   /**
    * Update user profile in database
    */
-  async updateProfile(userId: string, profile: Partial<AuthUserProfile>): Promise<RepositoryResult<AuthUserProfile>> {
+  async updateUserProfile(userId: string, profile: Partial<AuthUserProfile>): Promise<RepositoryResult<AuthUserProfile>> {
     try {
       const { data, error } = await this.supabase
         .from('auth_user_profiles')
@@ -202,5 +203,102 @@ export class SupabaseAuthRepository {
         error: error instanceof Error ? error.message : 'Failed to update profile' 
       };
     }
+  }
+
+  /**
+   * Create user profile
+   */
+  async createUserProfile(data: any): Promise<RepositoryResult<any>> {
+    try {
+      const { data: profile, error } = await this.supabase
+        .from('auth_user_profiles')
+        .insert(data)
+        .select()
+        .single();
+
+      if (error) {
+        logger.error('Failed to create profile', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data: profile };
+    } catch (error) {
+      logger.error('Unexpected error creating profile', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create profile'
+      };
+    }
+  }
+
+  /**
+   * Find user by email
+   */
+  async findUserByEmail(email: string): Promise<RepositoryResult<any>> {
+    try {
+      const { data, error } = await this.supabase
+        .from('auth_user_profiles')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return { success: false, error: 'User not found' };
+        }
+        logger.error('Failed to find user by email', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Unexpected error finding user', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to find user'
+      };
+    }
+  }
+
+  /**
+   * Verify user credentials
+   */
+  async verifyUserCredentials(email: string, password: string): Promise<RepositoryResult<any>> {
+    return this.signIn(email, password);
+  }
+
+  /**
+   * Update user password
+   */
+  async updateUserPassword(userId: string, newPassword: string): Promise<RepositoryResult<boolean>> {
+    try {
+      const { error } = await this.supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        logger.error('Failed to update password', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data: true };
+    } catch (error) {
+      logger.error('Unexpected error updating password', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to update password'
+      };
+    }
+  }
+
+  /**
+   * Alias methods for backward compatibility
+   */
+  async getProfile(userId: string): Promise<RepositoryResult<AuthUserProfile>> {
+    return this.findUserProfile(userId);
+  }
+
+  async updateProfile(userId: string, profile: Partial<AuthUserProfile>): Promise<RepositoryResult<AuthUserProfile>> {
+    return this.updateUserProfile(userId, profile);
   }
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { InputField, SelectField } from '@/components';
-import type { FormMode, HouseholdTypeInformationFormData } from '@/types';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { HouseholdTypeInformationFormData } from '@/types/domain/households/forms';
 
 export interface HouseholdTypeInformationProps {
   /** Form mode - determines if field is editable or read-only */
@@ -122,7 +124,7 @@ export function HouseholdTypeInformation({
             mode={mode}
             inputProps={{
               value: value.tenureOthersSpecify,
-              onChange: e => handleChange('tenureOthersSpecify', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('tenureOthersSpecify', e.target.value),
               placeholder: 'Please specify tenure status',
               error: errors.tenureOthersSpecify,
             }}
@@ -154,7 +156,7 @@ export function HouseholdTypeInformation({
             mode={mode}
             inputProps={{
               value: value.householdName,
-              onChange: e => handleChange('householdName', e.target.value),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('householdName', e.target.value),
               placeholder: 'Enter household name',
               error: errors.householdName,
             }}

@@ -19,6 +19,8 @@ export interface ApiSuccessResponse<T = any> {
     page?: number;
     limit?: number;
     hasMore?: boolean;
+    timestamp?: string;
+    requestId?: string;
   };
 }
 
@@ -32,6 +34,7 @@ export interface ApiErrorResponse {
     code: string;
     details?: Record<string, any>;
     timestamp: string;
+    requestId?: string;
   };
 }
 

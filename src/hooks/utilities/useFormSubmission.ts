@@ -2,15 +2,16 @@
 
 import { useState, useCallback } from 'react';
 
+import { useResidentFormValidation } from '@/hooks/validation/useOptimizedResidentValidation';
 import { createFormSubmitHandler } from '@/services/app/forms/formHandlers';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
 import type { FormMode } from '@/types/app/ui/forms';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+
 import type {
   HookFormSubmissionProps as UseFormSubmissionProps,
   HookFormSubmissionReturn as UseFormSubmissionReturn,
-} from '@/types/shared/hooks';
+} from '@/types/shared/hooks/utilityHooks';
 
-import { useResidentFormValidation } from '@/hooks/validation/useOptimizedResidentValidation';
 
 export function useFormSubmission<T extends ResidentFormData = ResidentFormData>({
   onSubmit,

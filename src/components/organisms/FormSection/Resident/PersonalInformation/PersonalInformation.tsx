@@ -1,18 +1,19 @@
 import React from 'react';
 
-import type {
-  FormMode,
-  BasicInformationFormData,
-  BirthInformationFormData,
-  EducationInformationFormData,
-  EmploymentInformationFormData,
-} from '@/types';
 
 import { BasicInformation } from './FormField/BasicInformation';
 import { BirthInformation } from './FormField/BirthInformation';
 import { EducationInformation } from './FormField/EducationInformation';
 import { EmploymentInformation } from './FormField/EmploymentInformation';
 import { PhilSysCardField } from './FormField/PhilSysCardField';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type {
+  BasicInformationFormData,
+  BirthInformationFormData,
+  EducationInformationFormData,
+  EmploymentInformationFormData,
+} from '@/types/domain/residents/forms';
 
 export interface PersonalInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -130,7 +131,7 @@ export function PersonalInformationForm({
 
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentBasicInfo[field as keyof BasicInformationFormData] !== fieldValue) {
-          onChange(field, fieldValue);
+          onChange(field, fieldValue as string | number | boolean | null);
         }
       });
     },
@@ -162,7 +163,7 @@ export function PersonalInformationForm({
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentBirthInfo[field as keyof BirthInformationFormData] !== fieldValue) {
           console.log(`🔍 PersonalInformationForm: Birth field changed - ${field}:`, fieldValue);
-          onChange(field, fieldValue);
+          onChange(field, fieldValue as string | number | boolean | null);
         }
       });
     },
@@ -184,7 +185,7 @@ export function PersonalInformationForm({
           if (field === 'is_graduate') {
             onChange(field, fieldValue === 'yes');
           } else {
-            onChange(field, fieldValue);
+            onChange(field, fieldValue as string | number | boolean | null);
           }
         }
       });
@@ -223,10 +224,10 @@ export function PersonalInformationForm({
         });
         
         // Use batch update for occupation fields to prevent race conditions
-        onChange('__employment_occupation_batch__', {
+        onChange('__employment_occupation_batch__', JSON.stringify({
           occupation_code: changedFields.occupation_code ?? currentEmploymentInfo.occupation_code,
           occupation_title: changedFields.occupation_title ?? currentEmploymentInfo.occupation_title,
-        });
+        }));
         
         // Remove occupation fields from individual updates
         delete changedFields.occupation_code;

@@ -2,22 +2,21 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 
-import {
-  PersonalInformationForm,
-  ContactInformationForm,
-  PhysicalPersonalDetailsForm,
-  SectoralInformationForm,
-  MigrationInformation,
-} from '@/components/organisms/FormSection';
-import { useAuth } from '@/contexts';
+import { PersonalInformationForm } from '@/components/organisms/FormSection/Resident/PersonalInformation/PersonalInformation';
+import { ContactInformationForm } from '@/components/organisms/FormSection/Resident/ContactInformation/ContactInformation';
+import { PhysicalPersonalDetailsForm } from '@/components/organisms/FormSection/Resident/PhysicalPersonalDetails/PhysicalPersonalDetails';
+import { SectoralInformationForm } from '@/components/organisms/FormSection/Resident/SectoralInformation/SectoralInformation';
+import { MigrationInformation } from '@/components/organisms/FormSection/Resident/MigrationInformation/MigrationInformation';
+import { useAuth } from '@/contexts/AuthContext';
 import { useFieldLoading } from '@/hooks/utilities/useFieldLoading';
-import { isIndigenousPeople } from '@/services/domain/residents/residentClassification';
 import { supabase } from '@/lib/data/supabase';
-import type { FormMode } from '@/types';
-import { ResidentFormData } from '@/types/domain/residents/forms';
+import { isIndigenousPeople } from '@/services/domain/residents/residentClassification';
+import { ResidentFormData, SectoralInformation } from '@/types/domain/residents/forms';
 
 import { FormActions } from './components/FormActions';
 import { FormHeader } from './components/FormHeader';
+
+import type { FormMode } from '@/types/app/ui/forms';
 
 interface ResidentFormProps {
   mode?: FormMode;
@@ -40,9 +39,9 @@ interface ResidentFormProps {
 }
 
 // Helper function to get sectoral classifications based on ethnicity
-const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<ResidentFormData> => {
+const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<SectoralInformation> => {
   console.log('🔍 getSectoralClassificationsByEthnicity: Called with ethnicity:', ethnicity);
-  const updates: Partial<ResidentFormData> = {};
+  const updates: Partial<SectoralInformation> = {};
 
   // Reset all sectoral classifications first (except manually set ones)
   updates.is_indigenous_people = false;
@@ -144,8 +143,8 @@ export function ResidentForm({
       // Physical Personal Details - database field names
       blood_type: '', // Nullable field - no default
       complexion: '',
-      height: 0, // Will be excluded from submission if section is hidden
-      weight: 0, // Will be excluded from submission if section is hidden
+      height: '', // Will be excluded from submission if section is hidden
+      weight: '', // Will be excluded from submission if section is hidden
       ethnicity: '', // Nullable field - no default
       religion: '', // Nullable field - no default
       religion_others_specify: '',
@@ -156,28 +155,7 @@ export function ResidentForm({
       mother_maiden_middle: '',
       mother_maiden_last: '',
 
-      // Sectoral Information - database field names
-      is_labor_force_employed: false,
-      is_unemployed: false,
-      is_overseas_filipino_worker: false,
-      is_person_with_disability: false,
-      is_out_of_school_children: false,
-      is_out_of_school_youth: false,
-      is_senior_citizen: false,
-      is_registered_senior_citizen: false,
-      is_solo_parent: false,
-      is_indigenous_people: false,
-      is_migrant: false,
-
-      // Migration Information - database field names
-      previous_barangay_code: '',
-      previous_city_municipality_code: '',
-      previous_province_code: '',
-      previous_region_code: '',
-      length_of_stay_previous_months: 0,
-      date_of_transfer: '',
-      duration_of_stay_current_months: 0,
-      is_intending_to_return: false,
+      // Note: Sectoral and migration information are handled separately
     };
 
     // Smart merge strategy: only apply defaults for missing/empty values
@@ -205,6 +183,33 @@ export function ResidentForm({
     // The parent should use initialData or handle changes via handleFieldChange
 
     return finalFormData;
+  });
+
+  // Separate state for sectoral information
+  const [sectoralData, setSectoralData] = useState<SectoralInformation>({
+    is_labor_force_employed: false,
+    is_unemployed: false,
+    is_overseas_filipino_worker: false,
+    is_person_with_disability: false,
+    is_out_of_school_children: false,
+    is_out_of_school_youth: false,
+    is_senior_citizen: false,
+    is_registered_senior_citizen: false,
+    is_solo_parent: false,
+    is_indigenous_people: false,
+    is_migrant: false,
+  });
+
+  // Separate state for migration information
+  const [migrationData, setMigrationData] = useState({
+    previous_barangay_code: '',
+    previous_city_municipality_code: '',
+    previous_province_code: '',
+    previous_region_code: '',
+    length_of_stay_previous_months: 0,
+    reason_for_migration: '',
+    date_of_transfer: '',
+    migration_type: ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -446,7 +451,12 @@ export function ResidentForm({
         console.log('🎯 ResidentForm: ETHNICITY IN BATCH:', physicalData.ethnicity);
         const sectoralUpdates = getSectoralClassificationsByEthnicity(physicalData.ethnicity);
         console.log('🎯 ResidentForm: Adding sectoral updates to batch:', sectoralUpdates);
-        updatedData = { ...updatedData, ...sectoralUpdates };
+
+        // Update sectoral data separately
+        setSectoralData(prev => ({
+          ...prev,
+          ...sectoralUpdates,
+        }));
       }
 
       const newFormData = {
@@ -456,7 +466,6 @@ export function ResidentForm({
 
       console.log('🎯 ResidentForm: BATCH UPDATE COMPLETE:', {
         ethnicity: newFormData.ethnicity,
-        is_indigenous_people: newFormData.is_indigenous_people
       });
 
       setFormData(newFormData);
@@ -522,10 +531,13 @@ export function ResidentForm({
         ...updatedData,
       };
 
-      console.log('🔍 ResidentForm: Updated form data with sectoral fields:', {
-        is_senior_citizen: newFormData.is_senior_citizen,
-        is_unemployed: newFormData.is_unemployed,
-        is_labor_force_employed: newFormData.is_labor_force_employed,
+      console.log('🔍 ResidentForm: Updated form data (sectoral fields are in separate state):', {
+        formData: newFormData.ethnicity,
+        sectoralData: {
+          is_senior_citizen: sectoralData.is_senior_citizen,
+          is_unemployed: sectoralData.is_unemployed,
+          is_labor_force_employed: sectoralData.is_labor_force_employed,
+        }
       });
 
       setFormData(newFormData);
@@ -725,22 +737,22 @@ export function ResidentForm({
           mode={mode}
           formData={{
             // Direct snake_case properties (matching database schema)
-            philsys_card_number: formData.philsys_card_number,
+            philsys_card_number: formData.philsys_card_number ?? undefined,
             first_name: formData.first_name,
-            middle_name: formData.middle_name,
+            middle_name: formData.middle_name ?? undefined,
             last_name: formData.last_name,
-            extension_name: formData.extension_name,
+            extension_name: formData.extension_name ?? undefined,
             sex: formData.sex,
             civil_status: formData.civil_status,
-            citizenship: formData.citizenship,
+            citizenship: formData.citizenship ?? undefined,
             birthdate: formData.birthdate,
-            birth_place_name: formData.birth_place_name,
-            birth_place_code: formData.birth_place_code,
-            education_attainment: formData.education_attainment,
-            is_graduate: formData.is_graduate,
-            employment_status: formData.employment_status,
-            occupation_code: formData.occupation_code,
-            occupation_title: formData.occupation_title,
+            birth_place_name: formData.birth_place_name ?? undefined,
+            birth_place_code: formData.birth_place_code ?? undefined,
+            education_attainment: formData.education_attainment ?? undefined,
+            is_graduate: formData.is_graduate ?? undefined,
+            employment_status: formData.employment_status ?? undefined,
+            occupation_code: formData.occupation_code ?? undefined,
+            occupation_title: formData.occupation_title ?? undefined,
           }}
           onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
             // Direct field mapping (no conversion needed as both use snake_case)
@@ -867,7 +879,7 @@ export function ResidentForm({
         {!hideSectoralInfo && (
           <SectoralInformationForm
             mode={mode}
-            formData={formData}
+            formData={{...formData, ...sectoralData}}
             onChange={handleFieldChange}
             loading={isSubmitting}
             sectionLoadingStates={{
@@ -877,19 +889,19 @@ export function ResidentForm({
         )}
 
         {/* Migration Information Section - Only show if migrant is checked */}
-        {formData.is_migrant && (
+        {sectoralData.is_migrant && (
           <MigrationInformation
             mode={mode}
             value={{
-              previous_barangay_code: formData.previous_barangay_code || undefined,
+              previous_barangay_code: migrationData.previous_barangay_code || undefined,
               previous_city_municipality_code:
-                formData.previous_city_municipality_code || undefined,
-              previous_province_code: formData.previous_province_code || undefined,
-              previous_region_code: formData.previous_region_code || undefined,
-              length_of_stay_previous_months: formData.length_of_stay_previous_months || undefined,
-              reason_for_migration: formData.reason_for_migration || undefined,
-              date_of_transfer: formData.date_of_transfer || undefined,
-              migration_type: formData.migration_type || undefined,
+                migrationData.previous_city_municipality_code || undefined,
+              previous_province_code: migrationData.previous_province_code || undefined,
+              previous_region_code: migrationData.previous_region_code || undefined,
+              length_of_stay_previous_months: migrationData.length_of_stay_previous_months || undefined,
+              reason_for_migration: migrationData.reason_for_migration || undefined,
+              date_of_transfer: migrationData.date_of_transfer || undefined,
+              migration_type: migrationData.migration_type || undefined,
             }}
             onChange={migrationData => {
               handleFieldChange(

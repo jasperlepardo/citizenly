@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import StatisticsChart from '@/components/molecules/StatisticsChart';
-import type { DependencyData, SexData, CivilStatusData, EmploymentStatusData } from '@/types/app/ui/charts';
+import type { DependencyRatioData, SexDistributionData, CivilStatusData, EmploymentStatusData } from '@/types/app/dashboard/dashboard';
 
 const meta: Meta<typeof StatisticsChart> = {
   title: 'Molecules/StatisticsChart',
@@ -32,15 +32,21 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Sample data for different chart types
-const sampleDependencyData: DependencyData = {
+const sampleDependencyData: DependencyRatioData = {
   youngDependents: 25,
   workingAge: 50,
   oldDependents: 15,
+  dependencyRatio: 0.8,
+  youngDependencyRatio: 0.5,
+  oldDependencyRatio: 0.3,
 };
 
-const sampleSexData: SexData = {
+const sampleSexData: SexDistributionData = {
   male: 45,
   female: 55,
+  total: 100,
+  malePercentage: 45,
+  femalePercentage: 55,
 };
 
 const sampleCivilStatusData: CivilStatusData = {

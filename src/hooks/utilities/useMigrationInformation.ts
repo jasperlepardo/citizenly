@@ -2,9 +2,10 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import { MigrationInformationData } from '@/types/infrastructure/services';
+import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
+import { MigrationInformationData } from '@/types/infrastructure/services/services';
+import type { PsgcOption } from '@/types/domain/residents/api';
 
-import { usePsgcSearch, PsgcSearchResult } from '@/hooks/search/usePsgcSearch';
 
 export { type MigrationInformationData };
 
@@ -21,13 +22,13 @@ interface UseMigrationInformationReturn {
   selectedBarangayInfo: SelectedBarangayInfo | null;
 
   // Search functionality
-  barangayOptions: PsgcSearchResult[];
+  barangayOptions: PsgcOption[];
   isLoadingBarangays: boolean;
 
   // Actions
   updateMigrationData: (field: keyof MigrationInformationData, value: any) => void;
   searchBarangays: (searchTerm: string) => Promise<void>;
-  handleBarangaySelect: (option: PsgcSearchResult) => void;
+  handleBarangaySelect: (option: PsgcOption) => void;
   setMigrationData: (data: MigrationInformationData) => void;
 
   // Lazy loading

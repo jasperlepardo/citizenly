@@ -12,7 +12,9 @@
  */
 
 // Atoms - Loading components
-export { LoadingFallback, FormSkeleton, TableSkeleton } from './atoms/Loading';
+export { default as LoadingFallback } from './atoms/Loading/LoadingFallback/LoadingFallback';
+export { default as FormSkeleton } from './atoms/Loading/FormSkeleton/FormSkeleton';
+export { default as TableSkeleton } from './atoms/Loading/TableSkeleton/TableSkeleton';
 
 // Molecules - Lazy modals
 export { LazyErrorModal as ErrorModal } from './molecules/ErrorModal/ErrorModal.lazy';

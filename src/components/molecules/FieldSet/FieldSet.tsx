@@ -2,13 +2,13 @@
 
 import React from 'react';
 
-import { cn } from '@/components/shared/utils';
-import type { FormMode } from '@/types/app/ui/forms';
 
 import { CheckboxGroup } from '@/components/atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '@/components/atoms/Field/Control/Radio/Radio';
 import { Label } from '@/components/atoms/Field/Label/Label';
-import { SkeletonInput } from '@/components/atoms/Skeleton';
+import { SkeletonInput } from '@/components/atoms/Skeleton/SkeletonVariants';
+import { cn } from '@/components/shared/utils';
+import type { FormMode } from '@/types/app/ui/forms';
 
 import { ControlGroup } from './ControlField/ControlField';
 import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';

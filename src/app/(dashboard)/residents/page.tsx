@@ -4,9 +4,10 @@ import Link from 'next/link';
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { DataTable, SearchBar, Button } from '@/components';
-import { supabase } from '@/lib/data/supabase';
-import type { TableColumn, TableAction } from '@/components';
+import DataTable from '@/components/organisms/DataTable/DataTable';
+import type { TableColumn, TableAction } from '@/types/app/ui/components';
+import { SearchBar } from '@/components/molecules/SearchBar/SearchBar';
+import { Button } from '@/components/atoms/Button/Button';
 import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
 import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
 import {
@@ -15,6 +16,7 @@ import {
   type Resident,
   type AdvancedFilters,
 } from '@/hooks/crud/useResidents';
+import { supabase } from '@/lib/data/supabase';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 function ResidentsContent() {
@@ -417,7 +419,7 @@ function ResidentsContent() {
                 <span className="font-medium">
                   {String(confirmDelete.resident.first_name)} {String(confirmDelete.resident.last_name)}
                 </span>
-                ? This action cannot be undone.
+                {' '}? This action cannot be undone.
               </p>
             </div>
             <div className="flex justify-end space-x-3">

@@ -6,9 +6,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
 import { createAuthenticatedServerClient } from '@/lib/data/server-auth-client';
 import { logger, logError } from '@/lib/logging/secure-logger';
+import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
+import { createRateLimitHandler } from '@/lib/security/rateLimit';
+import { container } from '@/services/container';
+import { securityAuditService } from '@/services/domain/auth/securityAuditService';
+import { ResidentDomainService } from '@/services/domain/residents/residentDomainService';
+import { SupabaseResidentRepository } from '@/services/infrastructure/repositories/SupabaseResidentRepository';
+import type { RequestContext, AuthenticatedUser } from '@/types/app/auth/auth';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 import {
   createSuccessResponse,
   createValidationErrorResponse,
@@ -16,13 +23,6 @@ import {
   withSecurityHeaders,
 } from '@/utils/auth/apiResponseHandlers';
 import { createResidentSchema, updateResidentSchema } from '@/utils/shared/validationUtils';
-import { createRateLimitHandler } from '@/lib/security/rateLimit';
-import { securityAuditService } from '@/services/domain/auth/securityAuditService';
-import { container } from '@/services/container';
-import { SupabaseResidentRepository } from '@/services/infrastructure/repositories/SupabaseResidentRepository';
-import { ResidentDomainService } from '@/services/domain/residents/residentDomainService';
-import type { RequestContext, AuthenticatedUser } from '@/types/app/auth/auth';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 /**
  * GET /api/residents/[id]

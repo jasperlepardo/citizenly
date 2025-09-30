@@ -1,14 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface AgeGroup {
-  ageRange: string;
-  male: number;
-  female: number;
-  malePercentage: number;
-  femalePercentage: number;
-}
+import type { AgeGroup } from '@/types/shared/hooks/dashboardHooks';
 
 interface PopulationPyramidProps {
   data?: AgeGroup[];

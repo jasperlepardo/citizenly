@@ -1,5 +1,4 @@
 import { logger } from '@/lib/logging/secure-logger';
-
 import { ErrorCode } from '@/types/shared/errors/errors';
 
 /**

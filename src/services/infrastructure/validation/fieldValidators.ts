@@ -10,7 +10,6 @@ import {
   isValidMobileNumber,
   isValidBirthdate,
 } from '@/services/domain/residents/formRules';
-
 import type { FieldValidator } from '@/types/shared/validation/validation';
 
 // Note: FieldValidationResult interface is still exported from types for backward compatibility

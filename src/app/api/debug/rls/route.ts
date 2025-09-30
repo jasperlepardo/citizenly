@@ -4,9 +4,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
-import { createAuthenticatedServerClient } from '@/lib/data/server-auth-client';
+
 import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import { createAuthenticatedServerClient } from '@/lib/data/server-auth-client';
+import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
 import type { RequestContext, AuthenticatedUser } from '@/types/app/auth/auth';
 import { withNextRequestErrorHandling } from '@/utils/auth/apiResponseHandlers';
 

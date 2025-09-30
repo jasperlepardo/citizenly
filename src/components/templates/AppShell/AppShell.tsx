@@ -7,8 +7,8 @@
 
 import React, { useState } from 'react';
 
-import { Button } from '@/components';
-import { Navigation } from '@/components/organisms/Navigation';
+import { Button } from '@/components/atoms/Button/Button';
+import Navigation from '@/components/organisms/Navigation/Navigation';
 
 interface AppShellProps {
   children: React.ReactNode;

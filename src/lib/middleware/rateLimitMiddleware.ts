@@ -10,7 +10,7 @@ import { createSecureErrorResponse } from '@/lib/security/apiSecurity';
 // In-memory store for rate limiting (use Redis in production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-import type { RateLimitConfig } from '@/types/security';
+import type { RateLimitConfig } from '@/types/app/auth/security';
 
 // Default rate limit configurations by endpoint type
 export const rateLimitConfigs = {

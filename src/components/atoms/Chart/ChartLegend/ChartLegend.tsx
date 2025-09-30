@@ -20,7 +20,7 @@ interface ChartLegendProps {
 // Extract style calculation functions
 const getItemContainerClasses = (
   hasNoData: boolean,
-  isHovered: boolean,
+  _isHovered: boolean,
   isOtherHovered: boolean
 ): string => {
   const baseClasses =
@@ -35,7 +35,7 @@ const getItemContainerClasses = (
   return `${baseClasses} cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800`;
 };
 
-const getColorIndicatorClasses = (hasNoData: boolean, isHovered: boolean): string => {
+const getColorIndicatorClasses = (_hasNoData: boolean, isHovered: boolean): string => {
   const baseClasses = 'w-4 h-4 rounded-sm transition-all duration-200';
   return isHovered ? `${baseClasses} scale-110 shadow-md` : baseClasses;
 };

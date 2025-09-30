@@ -1,35 +1,13 @@
 'use client';
 
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback, useMemo } from 'react';
+import type { OptionProps } from '@/types/app/ui/select';
+import { parseOptionLabel, getOptionClassName } from '@/utils/ui/optionUtils';
 
-export interface OptionProps {
-  /** Whether this option is currently selected */
-  selected?: boolean;
-  /** Whether this option is currently focused/highlighted */
-  focused?: boolean;
-  /** Whether this option is disabled */
-  disabled?: boolean;
-  /** Main option label */
-  label: string;
-  /** Optional description text */
-  description?: string;
-  /** Optional value for the option */
-  value?: string;
-  /** Optional badge text to display on the right */
-  badge?: string;
-  /** Click handler */
-  onClick?: () => void;
-  /** Mouse enter handler for focus management */
-  onMouseEnter?: () => void;
-  /** Custom class name */
-  className?: string;
-  /** Custom children to override default rendering */
-  children?: React.ReactNode;
-}
-
-export const Option = forwardRef<HTMLDivElement, OptionProps>(
+export const Option = React.memo(forwardRef<HTMLDivElement, OptionProps>(
   (
     {
+      id,
       selected = false,
       focused = false,
       disabled = false,
@@ -39,56 +17,87 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
       badge,
       onClick,
       onMouseEnter,
+      onKeyDown,
       className = '',
       children,
     },
     ref
   ) => {
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
       if (!disabled && onClick) {
         onClick();
       }
-    };
+    }, [disabled, onClick]);
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = useCallback(() => {
       if (!disabled && onMouseEnter) {
         onMouseEnter();
       }
-    };
+    }, [disabled, onMouseEnter]);
+
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!disabled) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onClick?.();
+        }
+        onKeyDown?.(event);
+      }
+    }, [disabled, onClick, onKeyDown]);
+
+    // Memoize class name computation
+    const computedClassName = useMemo(() =>
+      getOptionClassName(focused, selected, disabled, className),
+      [focused, selected, disabled, className]
+    );
+
+    // Memoize label parsing for performance
+    const parsedLabel = useMemo(() => parseOptionLabel(label), [label]);
+
+    // Memoize checkmark icon
+    const checkmarkIcon = useMemo(() => (
+      <svg className="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          fillRule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+    ), []);
 
     return (
       <div
         ref={ref}
+        id={id}
         role="option"
         aria-selected={selected}
         aria-disabled={disabled}
-        className={`cursor-pointer px-3 py-3 transition-colors duration-150 sm:px-4 ${
-          focused
-            ? 'bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:text-blue-100'
-            : 'text-gray-900 hover:bg-gray-50 dark:text-gray-100 dark:hover:bg-gray-700'
-        } ${selected ? 'bg-blue-100 font-medium dark:bg-blue-900/20' : ''} ${
-          disabled ? 'cursor-not-allowed opacity-50' : ''
-        } ${className}`}
+        tabIndex={disabled ? -1 : 0}
+        className={computedClassName}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
+        onKeyDown={handleKeyDown}
       >
-        {children ? (
-          children
-        ) : (
+        {children ?? (
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-medium">
-                {label && label.includes(',') ? (
+                {parsedLabel.secondary ? (
                   <>
-                    {label.split(',')[0]}
+                    {parsedLabel.main}
                     <span className="font-normal text-gray-500 dark:text-gray-400">
-                      , {label.split(',').slice(1).join(',')}
+                      , {parsedLabel.secondary}
                     </span>
                   </>
                 ) : (
-                  label || ''
+                  parsedLabel.main
                 )}
               </div>
+              {description && value && (
+                <div className="truncate text-xs text-gray-500 dark:text-gray-400">
+                  {description}
+                </div>
+              )}
             </div>
             <div className="flex flex-shrink-0 items-center gap-2">
               {badge && (
@@ -96,22 +105,14 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
                   {badge}
                 </span>
               )}
-              {selected && (
-                <svg className="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
+              {selected && checkmarkIcon}
             </div>
           </div>
         )}
       </div>
     );
   }
-);
+));
 
 Option.displayName = 'Option';
 

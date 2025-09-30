@@ -4,12 +4,12 @@
  */
 
 import { createLogger } from '@/lib/config/environment';
+import { supabase } from '@/lib/data/supabase';
+import type { CacheService } from '@/services/shared/cache/cacheService';
 import type {
   CommandMenuSearchResult,
   CommandMenuExportOptions,
 } from '@/types/infrastructure/services/services';
-import type { CacheService } from '@/services/shared/cache/cacheService';
-import { supabase } from '@/lib/data/supabase';
 
 const logger = createLogger('CommandMenuService');
 
@@ -63,6 +63,8 @@ export class CommandMenuService {
             description: `Resident • Barangay ${resident.barangay_code}`,
             type: 'resident' as const,
             href: `/residents/${resident.id}`,
+            data: resident,
+            score: 0,
           }))
         );
       }

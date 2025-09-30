@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 
 export default function ReportsPage() {
   const reportTypes = [

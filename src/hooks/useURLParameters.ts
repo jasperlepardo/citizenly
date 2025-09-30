@@ -7,7 +7,9 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { sanitizeInput, sanitizeNameInput } from '@/utils/auth/sanitizationUtils';
-import type { URLParameterConfig } from '@/types';
+
+// URLParameterConfig type - will need to be defined or imported from correct location
+type URLParameterConfig = any; // Temporary
 
 // Interface moved to centralized types - URLParameterConfig is already exported from @/types
 

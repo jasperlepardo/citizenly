@@ -5,7 +5,7 @@
 
 export type Environment = 'development' | 'ci' | 'staging' | 'production';
 
-import type { EnvironmentConfig } from '@/types/shared/utilities';
+import type { EnvironmentConfig } from '@/types/shared/utilities/utilities';
 
 /**
  * Detect current environment based on environment variables
@@ -111,7 +111,7 @@ export const QUALITY_TIERS = {
  */
 export function getQualityChecks(): string[] {
   const { qualityTier } = getEnvironmentConfig();
-  return [...QUALITY_TIERS[qualityTier].checks];
+  return [...QUALITY_TIERS[qualityTier as keyof typeof QUALITY_TIERS].checks];
 }
 
 /**
@@ -164,7 +164,7 @@ export function getToolConfig(tool: string): Record<string, string | number | bo
     },
   };
 
-  return toolConfigs[tool]?.[environment] ?? {};
+  return toolConfigs[tool as keyof typeof toolConfigs]?.[environment] ?? {};
 }
 
 /**
@@ -172,7 +172,7 @@ export function getToolConfig(tool: string): Record<string, string | number | bo
  */
 export function logEnvironmentInfo(): void {
   const config = getEnvironmentConfig();
-  const tier = QUALITY_TIERS[config.qualityTier];
+  const tier = QUALITY_TIERS[config.qualityTier as keyof typeof QUALITY_TIERS];
 
   console.log(`🔧 Environment: ${config.environment.toUpperCase()}`);
   console.log(`📊 Quality Tier: ${config.qualityTier} (${tier.name})`);

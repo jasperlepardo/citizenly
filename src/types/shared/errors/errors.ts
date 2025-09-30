@@ -106,6 +106,29 @@ export interface ErrorRecoveryStrategy {
 }
 
 /**
+ * useErrorBoundary hook options
+ */
+export interface UseErrorBoundaryOptions {
+  componentName?: string;
+  onError?: (error: Error, errorInfo: any) => void;
+  enableReporting?: boolean;
+  enableRecovery?: boolean;
+  maxRetries?: number;
+}
+
+/**
+ * useErrorBoundary hook return type
+ */
+export interface ErrorBoundaryReturn {
+  hasError: boolean;
+  error: Error | null;
+  retry: () => void;
+  resetError: () => void;
+  wrapAsync: <T>(operation: () => Promise<T>, operationName?: string) => Promise<T>;
+  errorState: { error: Error | null; hasError: boolean };
+}
+
+/**
  * Form field error interface
  */
 export interface FieldError {
@@ -159,6 +182,7 @@ export enum ErrorCode {
   // Data errors
   DATA_NOT_FOUND = 'DATA_NOT_FOUND',
   DATA_CORRUPTED = 'DATA_CORRUPTED',
+  DATABASE_ERROR = 'DATABASE_ERROR',
 
   // Component errors
   COMPONENT_RENDER_ERROR = 'COMPONENT_RENDER_ERROR',
@@ -167,6 +191,7 @@ export enum ErrorCode {
   // Operation errors
   OPERATION_FAILED = 'OPERATION_FAILED',
   INVALID_OPERATION = 'INVALID_OPERATION',
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
 
   // Unknown errors
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',

@@ -6,8 +6,11 @@
  */
 
 // PsgcSearchResult type removed - was not defined anywhere
-import type { PsocOption, PsgcOption } from '@/types/domain/residents/api';
 import type { HouseholdOption } from '@/types/domain/households/households';
+import type { PsocOption, PsgcOption } from '@/types/domain/residents/api';
+
+// Re-export types for external use
+export type { HouseholdOption, PsocOption, PsgcOption };
 
 // =============================================================================
 // SEARCH HOOK TYPES
@@ -152,4 +155,90 @@ export interface UseFormSearchesReturn {
   householdOptions: HouseholdOption[];
   householdLoading: boolean;
   handleHouseholdSearch: (query: string) => Promise<void>;
+}
+
+/**
+ * Paginated search configuration interface
+ * Consolidates from src/hooks/search/useGenericPaginatedSearch.ts
+ */
+export interface PaginatedSearchConfig {
+  initialPageSize?: number;
+  debounceMs?: number;
+  enableInfiniteScroll?: boolean;
+  cacheResults?: boolean;
+  minQueryLength?: number;
+  onError?: (error: Error) => void;
+}
+
+/**
+ * Paginated search state interface
+ * Consolidates from src/hooks/search/useGenericPaginatedSearch.ts
+ */
+export interface PaginatedSearchState<T> {
+  query: string;
+  results: T[];
+  pagination: {
+    current: number;
+    pageSize: number;
+    total: number;
+    hasMore: boolean;
+  };
+  isLoading: boolean;
+  error: Error | null;
+}
+
+/**
+ * Paginated search function type
+ * Consolidates from src/hooks/search/useGenericPaginatedSearch.ts
+ */
+export type PaginatedSearchFunction<T, F = any> = (query: string, page: number, pageSize: number, filters?: F) => Promise<{
+  data: T[];
+  total: number;
+  hasMore: boolean;
+}>;
+
+// =============================================================================
+// GENERIC SEARCH TYPES
+// =============================================================================
+
+/**
+ * Base search configuration interface
+ * Consolidates from src/hooks/search/useGenericSearch.ts
+ */
+export interface BaseSearchConfig {
+  debounceMs?: number;
+  minQueryLength?: number;
+  initialQuery?: string;
+  onError?: (error: Error) => void;
+}
+
+/**
+ * Search state interface
+ * Consolidates from src/hooks/search/useGenericSearch.ts
+ */
+export interface SearchState<T> {
+  query: string;
+  results: T[];
+  isLoading: boolean;
+  error: Error | null;
+}
+
+/**
+ * Search function type
+ * Consolidates from src/hooks/search/useGenericSearch.ts
+ */
+export type SearchFunction<T> = (query: string) => Promise<T[]>;
+
+/**
+ * Generic search hook return interface
+ * Consolidates from src/hooks/search/useGenericSearch.ts
+ */
+export interface UseGenericSearchReturn<T> {
+  query: string;
+  setQuery: (query: string) => void;
+  results: T[];
+  isLoading: boolean;
+  error: Error | null;
+  clearSearch: () => void;
+  refresh: () => void;
 }

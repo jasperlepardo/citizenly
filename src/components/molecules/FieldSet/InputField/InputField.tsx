@@ -15,8 +15,11 @@ const getFieldIds = (fieldId: string) => ({
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, Input, HelperText, ReadOnly } from '@/components/atoms/Field';
-import { SkeletonInput } from '@/components/atoms/Skeleton';
+import { Label } from '@/components/atoms/Field/Label/Label';
+import { Input } from '@/components/atoms/Field/Input/Input';
+import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
+import { ReadOnly } from '@/components/atoms/Field/ReadOnly/ReadOnly';
+import { SkeletonInput } from '@/components/atoms/Skeleton/SkeletonVariants';
 
 export interface InputFieldProps {
   children?: React.ReactNode;
@@ -91,7 +94,7 @@ export const InputField = ({
   );
 
   return (
-    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
+    <div className={cn('w-full', isHorizontal ? 'flex items-start space-x-4' : '', className)}>
       {/* Label */}
       {label && (
         <div
@@ -104,7 +107,7 @@ export const InputField = ({
       )}
 
       {/* Field Container */}
-      <div className={cn(isHorizontal && 'flex-1')}>
+      <div className={cn(isHorizontal ? 'flex-1' : '')}>
         {/* Input/Field */}
         <div>
           {isLoading ? (

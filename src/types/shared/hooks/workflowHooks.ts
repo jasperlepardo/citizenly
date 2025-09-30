@@ -182,14 +182,12 @@ export interface UseHouseholdOperationsWorkflowOptions {
 export interface UseHouseholdOperationsWorkflowReturn {
   // CRUD operations
   getHousehold: (id: string) => Promise<any>;
-  getHouseholdByCode: (code: string) => Promise<any>;
   listHouseholds: (params?: any) => Promise<any>;
   updateHousehold: (id: string, updates: any) => Promise<any>;
   deleteHousehold: (id: string) => Promise<any>;
 
   // Creation operations
   createHousehold: (formData: any) => Promise<any>;
-  generateHouseholdCode: () => string;
 
   // Validation
   validateHousehold: (data: any) => any;

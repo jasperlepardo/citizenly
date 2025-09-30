@@ -6,12 +6,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
-import { ResidentForm } from '@/components/templates/Form/Resident';
+import { ResidentForm } from '@/components/templates/Form/Resident/ResidentForm';
 import { useFieldLoading } from '@/hooks/utilities/useFieldLoading';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger, logError } from '@/lib/logging/client-logger';
 // Remove unused enum imports - using types instead
-import { fetchWithAuth } from '@/utils/auth/sessionManagement';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { ResidentWithRelations } from '@/types/domain/residents/core';
 import type { SectoralInformation, ResidentFormData } from '@/types/domain/residents/forms';
@@ -24,6 +23,7 @@ import {
   EthnicityEnum,
   ReligionEnum,
 } from '@/types/infrastructure/database/database';
+import { fetchWithAuth } from '@/utils/auth/sessionManagement';
 
 // Tooltip component removed - not used in current implementation
 
@@ -187,70 +187,56 @@ function ResidentDetailContent() {
     }
   };
 
+  // Helper function: Query PSGC table by code
+  const queryPSGCTable = async (table: string, code: string, level: string) => {
+    const { data } = await supabase
+      .from(table)
+      .select('name, code')
+      .eq('code', code)
+      .single();
+
+    return data ? { name: data.name, level } : null;
+  };
+
+  // Helper function: Get PSGC lookup configurations
+  const getPSGCLookupConfig = (codeLength: number) => {
+    const configs = [
+      { table: 'psgc_barangays', level: 'barangay', minLength: 9 },
+      { table: 'psgc_cities_municipalities', level: 'city_municipality', minLength: 6 },
+      { table: 'psgc_provinces', level: 'province', minLength: 4 },
+      { table: 'psgc_regions', level: 'region', minLength: 2 }
+    ];
+
+    return configs.filter(config => codeLength >= config.minLength);
+  };
+
+  // Helper function: Try multiple PSGC tables
+  const tryPSGCLookup = async (code: string) => {
+    const configs = getPSGCLookupConfig(code.length);
+
+    for (const config of configs) {
+      const result = await queryPSGCTable(config.table, code, config.level);
+      if (result) return result;
+    }
+
+    return null;
+  };
+
   const loadBirthPlaceInfo = async (residentData: Resident) => {
     if (!residentData.birth_place_code) {
       return;
     }
+
     try {
-      // Try different PSGC tables based on the code length/pattern
-      let birthPlaceData = null;
-      const code = residentData.birth_place_code;
-
-      // Try barangay first (most specific)
-      if (code.length >= 9) {
-        const { data } = await supabase
-          .from('psgc_barangays')
-          .select('name, code')
-          .eq('code', code)
-          .single();
-        
-        if (data) {
-          birthPlaceData = { name: data.name, level: 'barangay' };
-        }
-      }
-
-      // Try city/municipality if no barangay found
-      if (!birthPlaceData && code.length >= 6) {
-        const { data } = await supabase
-          .from('psgc_cities_municipalities')
-          .select('name, code')
-          .eq('code', code)
-          .single();
-        
-        if (data) {
-          birthPlaceData = { name: data.name, level: 'city_municipality' };
-        }
-      }
-
-      // Try province if no city found
-      if (!birthPlaceData && code.length >= 4) {
-        const { data } = await supabase
-          .from('psgc_provinces')
-          .select('name, code')
-          .eq('code', code)
-          .single();
-        
-        if (data) {
-          birthPlaceData = { name: data.name, level: 'province' };
-        }
-      }
-
-      // Try region if no province found
-      if (!birthPlaceData && code.length >= 2) {
-        const { data } = await supabase
-          .from('psgc_regions')
-          .select('name, code')
-          .eq('code', code)
-          .single();
-        
-        if (data) {
-          birthPlaceData = { name: data.name, level: 'region' };
-        }
-      }
+      const birthPlaceData = await tryPSGCLookup(residentData.birth_place_code);
 
       if (birthPlaceData) {
-        // Store birth place data for display purposes
-        // TODO: Add birth_place_info to type definition if needed
+        // Birth place data found and ready for display
+        clientLogger.info('Birth place data loaded successfully', {
+          component: 'ResidentDetailsPage',
+          action: 'birth_place_lookup_success',
+          data: { level: birthPlaceData.level, name: birthPlaceData.name }
+        });
       }
     } catch (birthPlaceError) {
       clientLogger.warn('Birth place data lookup failed', {
@@ -565,79 +551,131 @@ function ResidentDetailContent() {
     }
   };
 
-  // Handle form submission
-  const handleFormSubmit = async (formData: ResidentFormData) => {
-    // Handle form submission with form data
-    // Form includes migration status and other resident details
-    // Processing form submission at current timestamp
+  // Helper function: Build update payload from form data
+  const buildUpdatePayload = (formData: ResidentFormData, sectoralData?: any) => {
+    return {
+      // Main resident fields
+      first_name: formData.first_name,
+      middle_name: formData.middle_name,
+      last_name: formData.last_name,
+      extension_name: formData.extension_name,
+      birthdate: formData.birthdate,
+      birth_place_code: formData.birth_place_code,
+      sex: formData.sex,
+      civil_status: formData.civil_status || null,
+      civil_status_others_specify: formData.civil_status_others_specify,
+      citizenship: formData.citizenship || null,
+      education_attainment: formData.education_attainment || null,
+      is_graduate: formData.is_graduate,
+      employment_status: formData.employment_status || null,
+      occupation_code: formData.occupation_code,
+      email: formData.email,
+      mobile_number: formData.mobile_number,
+      telephone_number: formData.telephone_number,
+      household_code: formData.household_code,
+      height: formData.height && !isNaN(Number(formData.height)) ? Number(formData.height) : null,
+      weight: formData.weight && !isNaN(Number(formData.weight)) ? Number(formData.weight) : null,
+      complexion: formData.complexion,
+      blood_type: formData.blood_type || null,
+      ethnicity: formData.ethnicity || null,
+      religion: formData.religion || null,
+      religion_others_specify: formData.religion_others_specify,
+      is_voter: formData.is_voter,
+      is_resident_voter: formData.is_resident_voter,
+      last_voted_date: formData.last_voted_date && formData.last_voted_date.trim() !== '' ? formData.last_voted_date : null,
+      mother_maiden_first: formData.mother_maiden_first,
+      mother_maiden_middle: formData.mother_maiden_middle,
+      mother_maiden_last: formData.mother_maiden_last,
+      sectoral_info: sectoralData || {
+        is_labor_force_employed: false,
+        is_unemployed: false,
+        is_overseas_filipino_worker: false,
+        is_person_with_disability: false,
+        is_out_of_school_children: false,
+        is_out_of_school_youth: false,
+        is_senior_citizen: false,
+        is_registered_senior_citizen: false,
+        is_solo_parent: false,
+        is_indigenous_people: false,
+        is_migrant: false,
+      }
+    };
+  };
+
+  // Helper function: Handle API response errors
+  const handleApiError = async (response: Response) => {
+    const errorText = await response.text().catch(() => '');
+    let errorData = {};
 
     try {
-      // Use the API endpoint for updating with session fallback
-      // Getting session for form submission authentication
-
-      // Include both resident fields and sectoral information
-      // Convert empty strings to null for enum fields to avoid validation errors
-      const updatePayload = {
-        // Main resident fields
-        first_name: formData.first_name,
-        middle_name: formData.middle_name,
-        last_name: formData.last_name,
-        extension_name: formData.extension_name,
-        birthdate: formData.birthdate,
-        birth_place_code: formData.birth_place_code,
-        sex: formData.sex,
-        civil_status: formData.civil_status || null,
-        civil_status_others_specify: formData.civil_status_others_specify,
-        citizenship: formData.citizenship || null,
-        education_attainment: formData.education_attainment || null,
-        is_graduate: formData.is_graduate,
-        employment_status: formData.employment_status || null,
-        occupation_code: formData.occupation_code,
-        email: formData.email,
-        mobile_number: formData.mobile_number,
-        telephone_number: formData.telephone_number,
-        household_code: formData.household_code,
-        height: formData.height && !isNaN(Number(formData.height)) ? Number(formData.height) : null,
-        weight: formData.weight && !isNaN(Number(formData.weight)) ? Number(formData.weight) : null,
-        complexion: formData.complexion,
-        blood_type: formData.blood_type || null, // Convert empty string to null for enum
-        ethnicity: formData.ethnicity || null,
-        religion: formData.religion || null,
-        religion_others_specify: formData.religion_others_specify,
-        is_voter: formData.is_voter,
-        is_resident_voter: formData.is_resident_voter,
-        last_voted_date: formData.last_voted_date && formData.last_voted_date.trim() !== '' ? formData.last_voted_date : null,
-        mother_maiden_first: formData.mother_maiden_first,
-        mother_maiden_middle: formData.mother_maiden_middle,
-        mother_maiden_last: formData.mother_maiden_last,
-
-        // Sectoral information fields - included for repository layer to handle
-        sectoral_info: {
-          is_labor_force_employed: formData.is_labor_force_employed,
-          is_unemployed: formData.is_unemployed,
-          is_overseas_filipino_worker: formData.is_overseas_filipino_worker,
-          is_person_with_disability: formData.is_person_with_disability,
-          is_out_of_school_children: formData.is_out_of_school_children,
-          is_out_of_school_youth: formData.is_out_of_school_youth,
-          is_senior_citizen: formData.is_senior_citizen,
-          is_registered_senior_citizen: formData.is_registered_senior_citizen,
-          is_solo_parent: formData.is_solo_parent,
-          is_indigenous_people: formData.is_indigenous_people,
-          is_migrant: formData.is_migrant,
+      errorData = errorText ? JSON.parse(errorText) : {};
+    } catch (parseError) {
+      clientLogger.warn('Failed to parse error response JSON', {
+        component: 'ResidentDetailsPage',
+        action: 'error_response_parse_failed',
+        data: {
+          error: parseError instanceof Error ? parseError.message : 'Unknown parse error',
+          errorText: errorText || 'No error text available'
         }
-      };
+      });
+      errorData = { error: errorText || 'Failed to parse error response' };
+    }
 
-      clientLogger.debug('Making PUT request', { component: 'ResidentDetailsPage', action: 'update_request', data: {
-        url: `/api/residents/${residentId}`,
-        method: 'PUT',
-        payloadKeys: Object.keys(updatePayload),
-      }});
-      
-      // Debug the specific fields we're concerned about
-      console.log('🔍 Update payload birth_place_code:', updatePayload.birth_place_code);
-      console.log('🔍 Update payload occupation_code:', updatePayload.occupation_code);
-      console.log('🔍 Form data birth_place_code:', formData.birth_place_code);
-      console.log('🔍 Form data occupation_code:', formData.occupation_code);
+    // Handle validation errors specially
+    if ((errorData as any).error?.code === 'VALIDATION_ERROR' && (errorData as any).error.details?.validationErrors) {
+      const validationErrors = (errorData as any).error.details.validationErrors;
+      const errorMessages = validationErrors.map((err: any) => `${err.field}: ${err.message}`).join(', ');
+      throw new Error(`Validation failed: ${errorMessages}`);
+    }
+
+    const errorMessage = (errorData as any).error?.message || (errorData as any).error || (errorData as any).message || `HTTP ${response.status}: ${response.statusText}`;
+    console.log('🔥 API ERROR DEBUG:', { status: response.status, errorData, url: `/api/residents/${residentId}` });
+    throw new Error(errorMessage);
+  };
+
+  // Helper function: Handle successful update
+  const handleUpdateSuccess = async () => {
+    console.log('✅ Resident update API call successful');
+    setFormMode('view');
+    toast.success('Resident updated successfully!');
+    await loadResidentDetails();
+  };
+
+  // Helper function: Handle update errors
+  const handleUpdateError = (err: unknown) => {
+    const error = err as Error;
+    const errorMessage = error.message || 'Unknown error';
+    const errorDetails = {
+      message: errorMessage,
+      stack: error.stack,
+      residentId,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log('🔥 UPDATE ERROR DEBUG:', JSON.stringify(errorDetails, null, 2));
+    logError(errorMessage, 'RESIDENT_FORM_UPDATE');
+    clientLogger.error('Failed to update resident', {
+      component: 'ResidentDetailsPage',
+      action: 'update_failed',
+      data: errorDetails
+    });
+    toast.error(`Failed to update resident: ${errorMessage}`);
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (formData: ResidentFormData) => {
+    try {
+      const updatePayload = buildUpdatePayload(formData);
+
+      clientLogger.debug('Making PUT request', {
+        component: 'ResidentDetailsPage',
+        action: 'update_request',
+        data: {
+          url: `/api/residents/${residentId}`,
+          method: 'PUT',
+          payloadKeys: Object.keys(updatePayload),
+        }
+      });
 
       const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
@@ -645,54 +683,13 @@ function ResidentDetailContent() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text().catch(() => '');
-        let errorData = {};
-        try {
-          errorData = errorText ? JSON.parse(errorText) : {};
-        } catch (e) {
-          errorData = { error: errorText || 'Failed to parse error response' };
-        }
-        
-        // Handle validation errors specially
-        if ((errorData as any).error && (errorData as any).error.code === 'VALIDATION_ERROR' && (errorData as any).error.details?.validationErrors) {
-          const validationErrors = (errorData as any).error.details.validationErrors;
-          const errorMessages = validationErrors.map((err: any) => `${err.field}: ${err.message}`).join(', ');
-          throw new Error(`Validation failed: ${errorMessages}`);
-        }
-
-        const errorMessage = (errorData as any).error?.message || (errorData as any).error || (errorData as any).message || `HTTP ${response.status}: ${response.statusText}`;
-        console.log('🔥 API ERROR DEBUG:', { status: response.status, errorData, url: `/api/residents/${residentId}` });
-        throw new Error(errorMessage);
+        await handleApiError(response);
+        return;
       }
 
-      // Successfully updated! 
-      console.log('✅ Resident update API call successful');
-      
-      // Switch back to view mode and reload the fresh data from the API
-      setFormMode('view');
-      // Removed setCurrentFormData to prevent infinite re-render loops
-      toast.success('Resident updated successfully!');
-
-      // Reload the resident data to show the latest changes without page refresh
-      await loadResidentDetails();
+      await handleUpdateSuccess();
     } catch (err) {
-      const error = err as Error;
-      const errorMessage = error.message || 'Unknown error';
-      const errorDetails = {
-        message: errorMessage,
-        stack: error.stack,
-        residentId,
-        timestamp: new Date().toISOString()
-      };
-      
-      console.log('🔥 UPDATE ERROR DEBUG:', JSON.stringify(errorDetails, null, 2));
-      logError(errorMessage, 'RESIDENT_FORM_UPDATE');
-      clientLogger.error('Failed to update resident', { 
-        component: 'ResidentDetailsPage', 
-        action: 'update_failed', 
-        data: errorDetails
-      });
-      toast.error(`Failed to update resident: ${errorMessage}`);
+      handleUpdateError(err);
     }
   };
 
@@ -967,13 +964,12 @@ function ResidentDetailContent() {
             {showDeleteConfirm && (
               <div className="fixed inset-0 z-50 overflow-y-auto">
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                  <div
-                    className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity"
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
+                    className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity border-0 p-0 cursor-default"
                     onClick={() => setShowDeleteConfirm(false)}
                     onKeyDown={e => {
-                      if (e.key === 'Escape' || e.key === 'Enter') {
+                      if (e.key === 'Escape') {
                         setShowDeleteConfirm(false);
                       }
                     }}

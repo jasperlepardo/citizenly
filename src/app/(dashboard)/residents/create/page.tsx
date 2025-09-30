@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { ResidentForm } from '@/components';
+import { ResidentForm } from '@/components/templates/Form/Resident/ResidentForm';
 import { RATE_LIMITS } from '@/constants/residentForm';
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
 import { useCSRFToken } from '@/lib/authentication/csrf';
@@ -62,7 +62,7 @@ function CreateResidentForm() {
       toast.success('Resident created successfully!');
       router.push('/residents');
     },
-    onError: (error: Error) => {
+    onError: (error: string) => {
       auditLogger.info('Resident creation failed', {
         eventType: 'RESIDENT_CREATE_FAILED',
         userId: user?.id || 'anonymous',
@@ -73,7 +73,7 @@ function CreateResidentForm() {
         retentionPeriod: '7_YEARS',
       });
 
-      toast.error(error?.message || 'Failed to create resident');
+      toast.error(error || 'Failed to create resident');
     },
   });
 

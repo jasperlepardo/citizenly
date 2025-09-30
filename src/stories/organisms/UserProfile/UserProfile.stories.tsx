@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
-import UserProfile from '@/components/organisms/UserProfile';
+import UserProfile from '@/components/organisms/UserProfile/UserProfile';
 
 interface MockAuthValue {
   user: unknown;

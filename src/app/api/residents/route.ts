@@ -5,11 +5,14 @@
 
 import { NextRequest } from 'next/server';
 
-import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
 import { createAuthenticatedServerClient } from '@/lib/data/server-auth-client';
 import { logger, logError } from '@/lib/logging/secure-logger';
-import { RequestContext } from '@/types/app/auth/auth';
+import { withAuth, extractToken } from '@/lib/middleware/authMiddleware';
+import { createRateLimitHandler } from '@/lib/security/rateLimit';
 import { securityAuditService } from '@/services/domain/auth/securityAuditService';
+import { RequestContext } from '@/types/app/auth/auth';
+import type { AuthenticatedUser } from '@/types/app/auth/auth';
+import { ResidentFormData } from '@/types/domain/residents/forms';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -19,9 +22,6 @@ import {
   withSecurityHeaders,
 } from '@/utils/auth/apiResponseHandlers';
 import { createResidentSchema } from '@/utils/shared/validationUtils';
-import { createRateLimitHandler } from '@/lib/security/rateLimit';
-import { ResidentFormData } from '@/types/domain/residents/forms';
-import type { AuthenticatedUser } from '@/types/app/auth/auth';
 
 
 

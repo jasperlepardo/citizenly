@@ -11,8 +11,13 @@ import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types/shared/hooks/commandMenuHooks';
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
+import { trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
+import {
+  trackCommandMenuNavigation,
+  trackCommandMenuAction,
+} from '@/utils/command-menu/analytics-utils';
 import {
   exportData,
   backupData,
@@ -24,13 +29,8 @@ import {
   generateCertificate,
   generateReport,
 } from '@/utils/shared/apiUtils';
-import {
-  trackCommandMenuNavigation,
-  trackCommandMenuAction,
-} from '@/utils/command-menu/analytics-utils';
-import { trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
 
-import type { UseCommandMenuActionsReturn } from '@/types';
+import type { UseCommandMenuActionsReturn } from '@/types/shared/hooks/commandMenuHooks';
 
 // Interface moved to centralized types
 
@@ -45,7 +45,7 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
 
   // Error boundary for action operations
   const { wrapAsync } = useAsyncErrorBoundary({
-    onError: (error, errorInfo) => {
+    onError: (error: any, errorInfo: any) => {
       if (process.env.NODE_ENV === 'development') {
         console.error('Command Menu Action Error:', errorInfo, error);
       }

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import type { HouseholdMemberWithResident } from '@/types/domain/households/households';
 import type { AuthUserProfile } from '@/types/app/auth/auth';
+import type { HouseholdMemberWithResident } from '@/types/domain/households/households';
 
 // Migration information validation schema
 const migrationInfoSchema = z.object({

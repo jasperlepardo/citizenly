@@ -115,7 +115,13 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
     },
     ref
   ) => {
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
+    // Determine the appropriate variant based on state
+    let actualVariant = variant;
+    if (disabled) {
+      actualVariant = 'disabled';
+    } else if (errorMessage) {
+      actualVariant = 'error';
+    }
     const checkboxRef = React.useRef<HTMLInputElement>(null);
 
     // Handle indeterminate state for checkboxes
@@ -217,6 +223,109 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
       );
     };
 
+    // Helper function to get input classes
+    const getInputClasses = () => {
+      const baseClasses = cn(
+        inputVariants({ variant: actualVariant, size, type }),
+        'shrink-0 appearance-none'
+      );
+
+      const checkedStyles = [];
+
+      if (type === 'checkbox') {
+        checkedStyles.push('checked:border-[#7c3aed] checked:bg-[#7c3aed]');
+        if (actualVariant === 'primary') {
+          checkedStyles.push('checked:border-[#2563eb] checked:bg-[#2563eb]');
+        } else if (actualVariant === 'error') {
+          checkedStyles.push('checked:border-[#dc2626] checked:bg-[#dc2626]');
+        } else if (actualVariant === 'disabled') {
+          checkedStyles.push('checked:bg-[#d4d4d4]');
+        }
+      }
+
+      if (type === 'radio') {
+        checkedStyles.push('checked:border-[#7c3aed]');
+        if (actualVariant === 'primary') {
+          checkedStyles.push('checked:border-[#2563eb]');
+        } else if (actualVariant === 'error') {
+          checkedStyles.push('checked:border-[#dc2626]');
+        }
+      }
+
+      return cn(baseClasses, ...checkedStyles);
+    };
+
+    // Helper function to get checkbox indicator container classes
+    const getIndicatorContainerClasses = () => {
+      return cn(
+        'pointer-events-none absolute inset-0 flex items-center justify-center',
+        size === 'sm' && 'h-4 w-4',
+        size === 'md' && 'h-5 w-5',
+        size === 'lg' && 'h-6 w-6'
+      );
+    };
+
+    // Helper function to render checkbox indicator
+    const renderCheckboxIndicator = () => {
+      if (indeterminate) {
+        return (
+          <div
+            className={cn(
+              'bg-white',
+              size === 'sm' && 'h-0.5 w-2',
+              size === 'md' && 'h-0.5 w-2.5',
+              size === 'lg' && 'h-1 w-3'
+            )}
+          />
+        );
+      }
+
+      if (checked) {
+        return (
+          <svg
+            className={cn(
+              'text-white',
+              size === 'sm' && 'h-3 w-3',
+              size === 'md' && 'h-3 w-3',
+              size === 'lg' && 'h-4 w-4'
+            )}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        );
+      }
+
+      return null;
+    };
+
+    // Helper function to render radio indicator
+    const renderRadioIndicator = () => {
+      if (!checked) return null;
+
+      return (
+        <div className={getIndicatorContainerClasses()}>
+          <div
+            className={cn(
+              'rounded-full',
+              actualVariant === 'primary' && 'bg-[#2563eb]',
+              actualVariant === 'error' && 'bg-[#dc2626]',
+              actualVariant === 'disabled' && 'bg-[#d4d4d4]',
+              actualVariant === 'default' && 'bg-[#7c3aed]',
+              size === 'sm' && 'h-1.5 w-1.5',
+              size === 'md' && 'h-2 w-2',
+              size === 'lg' && 'h-2.5 w-2.5'
+            )}
+          />
+        </div>
+      );
+    };
+
     // Render checkbox or radio
     const renderInput = () => {
       return (
@@ -224,22 +333,7 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
           <input
             ref={inputRef}
             type={type}
-            className={cn(
-              inputVariants({ variant: actualVariant, size, type }),
-              'shrink-0 appearance-none',
-              // Checked styles
-              type === 'checkbox' && 'checked:border-[#7c3aed] checked:bg-[#7c3aed]',
-              type === 'checkbox' &&
-                actualVariant === 'primary' &&
-                'checked:border-[#2563eb] checked:bg-[#2563eb]',
-              type === 'checkbox' &&
-                actualVariant === 'error' &&
-                'checked:border-[#dc2626] checked:bg-[#dc2626]',
-              type === 'checkbox' && actualVariant === 'disabled' && 'checked:bg-[#d4d4d4]',
-              type === 'radio' && 'checked:border-[#7c3aed]',
-              type === 'radio' && actualVariant === 'primary' && 'checked:border-[#2563eb]',
-              type === 'radio' && actualVariant === 'error' && 'checked:border-[#dc2626]'
-            )}
+            className={getInputClasses()}
             disabled={disabled}
             checked={checked}
             onChange={handleChange}
@@ -248,69 +342,12 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
 
           {/* Custom indicators */}
           {type === 'checkbox' && (
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-0 flex items-center justify-center',
-                size === 'sm' && 'h-4 w-4',
-                size === 'md' && 'h-5 w-5',
-                size === 'lg' && 'h-6 w-6'
-              )}
-            >
-              {indeterminate ? (
-                <div
-                  className={cn(
-                    'bg-white',
-                    size === 'sm' && 'h-0.5 w-2',
-                    size === 'md' && 'h-0.5 w-2.5',
-                    size === 'lg' && 'h-1 w-3'
-                  )}
-                />
-              ) : (
-                checked && (
-                  <svg
-                    className={cn(
-                      'text-white',
-                      size === 'sm' && 'h-3 w-3',
-                      size === 'md' && 'h-3 w-3',
-                      size === 'lg' && 'h-4 w-4'
-                    )}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )
-              )}
+            <div className={getIndicatorContainerClasses()}>
+              {renderCheckboxIndicator()}
             </div>
           )}
 
-          {type === 'radio' && checked && (
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-0 flex items-center justify-center',
-                size === 'sm' && 'h-4 w-4',
-                size === 'md' && 'h-5 w-5',
-                size === 'lg' && 'h-6 w-6'
-              )}
-            >
-              <div
-                className={cn(
-                  'rounded-full',
-                  actualVariant === 'primary' && 'bg-[#2563eb]',
-                  actualVariant === 'error' && 'bg-[#dc2626]',
-                  actualVariant === 'disabled' && 'bg-[#d4d4d4]',
-                  actualVariant === 'default' && 'bg-[#7c3aed]',
-                  size === 'sm' && 'h-1.5 w-1.5',
-                  size === 'md' && 'h-2 w-2',
-                  size === 'lg' && 'h-2.5 w-2.5'
-                )}
-              />
-            </div>
-          )}
+          {type === 'radio' && renderRadioIndicator()}
         </div>
       );
     };

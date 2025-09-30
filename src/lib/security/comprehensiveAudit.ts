@@ -3,7 +3,7 @@
  * Final security check for the entire API layer
  */
 
-import type { ComprehensiveAuditResult } from '@/types/security';
+import type { ComprehensiveAuditResult } from '@/types/app/auth/security';
 
 /**
  * Run comprehensive security audit
@@ -143,11 +143,12 @@ export function generateSecurityReport(audit: ComprehensiveAuditResult): string 
   report += `## 📊 Category Breakdown\n\n`;
 
   Object.entries(audit.categories).forEach(([category, result]) => {
-    const emoji = result.score >= 90 ? '🟢' : result.score >= 70 ? '🟡' : '🔴';
-    report += `### ${emoji} ${category.charAt(0).toUpperCase() + category.slice(1)}: ${result.score}/100\n`;
+    const auditResult = result as any; // Type assertion for audit result
+    const emoji = auditResult.score >= 90 ? '🟢' : auditResult.score >= 70 ? '🟡' : '🔴';
+    report += `### ${emoji} ${category.charAt(0).toUpperCase() + category.slice(1)}: ${auditResult.score}/100\n`;
 
-    if (result.issues.length > 0) {
-      result.issues.forEach(issue => {
+    if (auditResult.issues.length > 0) {
+      auditResult.issues.forEach((issue: string) => {
         report += `- ❌ ${issue}\n`;
       });
     } else {

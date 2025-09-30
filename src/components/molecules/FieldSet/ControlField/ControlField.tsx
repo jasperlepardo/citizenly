@@ -4,7 +4,6 @@ import React from 'react';
 
 // Simple inline utility (replacing deleted cssUtils)
 const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
-import type { FormMode } from '@/types/app/ui/forms';
 // Simple inline ID utilities (replacing deleted idGenerators)
 const getFieldId = (base: string = 'control-field') => `field-${base.replace(/[^a-zA-Z0-9]/g, '-')}`;
 const getFieldIds = (fieldId: string) => ({
@@ -15,9 +14,12 @@ const getFieldIds = (fieldId: string) => ({
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, HelperText, ReadOnly } from '@/components/atoms/Field';
+import { Label } from '@/components/atoms/Field/Label/Label';
+import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
+import { ReadOnly } from '@/components/atoms/Field/ReadOnly/ReadOnly';
 import { Control } from '@/components/atoms/Field/Control/Control';
-import { SkeletonInput } from '@/components/atoms/Skeleton';
+import { SkeletonInput } from '@/components/atoms/Skeleton/SkeletonVariants';
+import type { FormMode } from '@/types/app/ui/forms';
 
 export interface ControlFieldProps {
   children?: React.ReactNode;

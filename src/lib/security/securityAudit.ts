@@ -3,7 +3,7 @@
  * Comprehensive security checking for API routes
  */
 
-import type { SecurityIssue, SecurityAuditResult } from '@/types/security';
+import type { SecurityIssue, SecurityAuditResult } from '@/types/app/auth/security';
 
 /**
  * Run comprehensive security audit
@@ -26,7 +26,7 @@ export async function runSecurityAudit(): Promise<SecurityAuditResult> {
     100 -
       issues.reduce((acc, issue) => {
         const weights = { critical: 25, high: 15, medium: 5, low: 1 };
-        return acc + weights[issue.severity];
+        return acc + (weights[issue.severity as keyof typeof weights] || 0);
       }, 0)
   );
 
@@ -129,7 +129,7 @@ export function generateSecurityReport(audit: SecurityAuditResult): string {
   report += `## Issues Found (${audit.issues.length})\n\n`;
 
   const groupedIssues = audit.issues.reduce(
-    (acc, issue) => {
+    (acc: any, issue: any) => {
       if (!acc[issue.severity]) acc[issue.severity] = [];
       acc[issue.severity].push(issue);
       return acc;
@@ -142,7 +142,7 @@ export function generateSecurityReport(audit: SecurityAuditResult): string {
     if (!issues || issues.length === 0) return;
 
     report += `### ${severityEmojis[severity]} ${severity.toUpperCase()} (${issues.length})\n\n`;
-    issues.forEach((issue, index) => {
+    issues.forEach((issue: any, index: number) => {
       report += `${index + 1}. **${issue.category.replace('_', ' ').toUpperCase()}**: ${issue.description}\n`;
       report += `   - **Recommendation**: ${issue.recommendation}\n`;
       if (issue.file) report += `   - **File**: ${issue.file}\n`;

@@ -10,7 +10,15 @@
 import { useState, useEffect } from 'react';
 
 import { syncQueue } from '@/lib/data/sync-queue';
-import type { UseConnectionStatusReturn } from '@/types';
+
+// Temporary types for connection status
+type ConnectionStatus = 'online' | 'offline';
+type UseConnectionStatusReturn = {
+  status: ConnectionStatus;
+  isOnline: boolean;
+  syncPending: boolean;
+  canSync: boolean;
+};
 
 /**
  * Hook for monitoring network connection and sync status
@@ -46,6 +54,7 @@ export function useConnectionStatus(): UseConnectionStatusReturn {
   }, []);
 
   return {
+    status: isOnline ? 'online' : 'offline',
     isOnline,
     syncPending,
     canSync: isOnline && syncPending,

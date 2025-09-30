@@ -4,21 +4,6 @@
  * This is the ONLY place where infrastructure and domain are connected
  */
 
-import { ResidentDomainService } from './domain/residents/residentDomainService';
-import { AuthDomainService } from './domain/auth/authDomainService';
-import { HouseholdDomainService } from './domain/households/householdDomainService';
-import { GeographicDomainService } from './domain/geography/geographicDomainService';
-import { SecurityDomainService } from './domain/security/securityDomainService';
-import { CacheService } from './shared/cache/cacheService';
-import { SyncService } from './shared/sync/syncService';
-import { CommandMenuService } from './infrastructure/ui/commandMenuService';
-
-import { SupabaseResidentRepository } from './infrastructure/repositories/SupabaseResidentRepository';
-import { SupabaseAuthRepository } from './infrastructure/repositories/SupabaseAuthRepository';
-import { SupabaseHouseholdRepository } from './infrastructure/repositories/SupabaseHouseholdRepository';
-import { SupabaseGeographicRepository } from './infrastructure/repositories/SupabaseGeographicRepository';
-import { SupabaseSecurityAuditRepository } from './infrastructure/repositories/SupabaseSecurityAuditRepository';
-
 import type { 
   IResidentRepository, 
   IAuthRepository, 
@@ -26,6 +11,22 @@ import type {
   IGeographicRepository,
   ISecurityAuditRepository
 } from '../types/domain/repositories';
+
+import { AuthDomainService } from './domain/auth/authDomainService';
+import { GeographicDomainService } from './domain/geography/geographicDomainService';
+import { HouseholdDomainService } from './domain/households/householdDomainService';
+import { ResidentDomainService } from './domain/residents/residentDomainService';
+import { SecurityDomainService } from './domain/security/securityDomainService';
+import { SupabaseAuthRepository } from './infrastructure/repositories/SupabaseAuthRepository';
+import { SupabaseGeographicRepository } from './infrastructure/repositories/SupabaseGeographicRepository';
+import { SupabaseHouseholdRepository } from './infrastructure/repositories/SupabaseHouseholdRepository';
+import { SupabaseResidentRepository } from './infrastructure/repositories/SupabaseResidentRepository';
+import { SecurityAuditRepository } from './infrastructure/repositories/SecurityAuditRepository';
+import { CommandMenuService } from './infrastructure/ui/commandMenuService';
+import { CacheService } from './shared/cache/cacheService';
+import { SyncService } from './shared/sync/syncService';
+
+
 
 /**
  * Service Container
@@ -57,7 +58,7 @@ export class ServiceContainer {
     this.authRepository = new SupabaseAuthRepository();
     this.householdRepository = new SupabaseHouseholdRepository();
     this.geographicRepository = new SupabaseGeographicRepository();
-    this.securityAuditRepository = new SupabaseSecurityAuditRepository();
+    this.securityAuditRepository = new SecurityAuditRepository();
     
     // Create domain services with injected dependencies
     this.residentService = new ResidentDomainService(this.residentRepository);
@@ -137,6 +138,13 @@ export class ServiceContainer {
    */
   getCommandMenuService(): CommandMenuService {
     return this.commandMenuService;
+  }
+
+  /**
+   * Get household repository for direct access
+   */
+  getHouseholdRepository(): IHouseholdRepository {
+    return this.householdRepository;
   }
 
   /**

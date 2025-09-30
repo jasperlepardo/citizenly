@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/data/supabase';
-import { useAuth } from '@/contexts';
 
 export default function TestResidentRLS() {
   const { user } = useAuth();

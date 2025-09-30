@@ -3,9 +3,9 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
+import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 import { cn } from '@/components/shared/utils';
 
-import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 
 const toggleVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
@@ -73,7 +73,13 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
     },
     ref
   ) => {
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
+    // Determine the appropriate variant based on state
+    let actualVariant = variant;
+    if (disabled) {
+      actualVariant = 'disabled';
+    } else if (errorMessage) {
+      actualVariant = 'error';
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newChecked = e.target.checked;

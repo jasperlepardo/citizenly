@@ -16,6 +16,7 @@ import {
 } from '@/constants/residentForm';
 import { philippineCompliantLogger } from '@/lib/security/philippineLogging';
 import { ResidentFormData } from '@/types/domain/residents/forms';
+import type { ResidentRecord } from '@/types/infrastructure/database/database';
 import type {
   NameParts,
   UnknownFormData,
@@ -23,8 +24,8 @@ import type {
   ProcessedFormResult,
 } from '@/types/shared/utilities/utilities';
 import type { SimpleValidationResult as ValidationResult } from '@/types/shared/validation/validation';
-import { calculateAge } from '@/utils/shared/dateUtils';
 import { sanitizeInput, sanitizeNameInput, validateNameInput } from '@/utils/auth/sanitizationUtils';
+import { calculateAge } from '@/utils/shared/dateUtils';
 
 /**
  * Domain service for resident data processing operations
@@ -83,34 +84,34 @@ export class ResidentDataProcessingService {
     const errors: Record<string, string> = {};
 
     // Name validation
-    if (formData.first_name && !validateNameInput(formData.first_name)) {
+    if (formData.first_name && typeof formData.first_name === 'string' && !validateNameInput(formData.first_name)) {
       errors.first_name = 'First name contains invalid characters';
     }
-    if (formData.last_name && !validateNameInput(formData.last_name)) {
+    if (formData.last_name && typeof formData.last_name === 'string' && !validateNameInput(formData.last_name)) {
       errors.last_name = 'Last name contains invalid characters';
     }
-    if (formData.middle_name && !validateNameInput(formData.middle_name)) {
+    if (formData.middle_name && typeof formData.middle_name === 'string' && !validateNameInput(formData.middle_name)) {
       errors.middle_name = 'Middle name contains invalid characters';
     }
 
     // Email validation
-    if (formData.email && !VALIDATION_RULES.EMAIL_PATTERN.test(formData.email)) {
+    if (formData.email && typeof formData.email === 'string' && !VALIDATION_RULES.EMAIL_PATTERN.test(formData.email)) {
       errors.email = 'Invalid email format';
     }
 
     // Phone number validation
-    if (formData.mobile_number && !VALIDATION_RULES.PHONE_PATTERN.test(formData.mobile_number)) {
+    if (formData.mobile_number && typeof formData.mobile_number === 'string' && !VALIDATION_RULES.PHONE_PATTERN.test(formData.mobile_number)) {
       errors.mobile_number = 'Invalid Philippine mobile number format';
     }
 
     // PhilSys number validation
-    if (formData.philsys_card_number && !VALIDATION_RULES.PHILSYS_PATTERN.test(formData.philsys_card_number)) {
+    if (formData.philsys_card_number && typeof formData.philsys_card_number === 'string' && !VALIDATION_RULES.PHILSYS_PATTERN.test(formData.philsys_card_number)) {
       errors.philsys_card_number = 'Invalid PhilSys card number format (####-####-####)';
     }
 
     // Age validation
     if (formData.birthdate) {
-      const age = calculateAge(formData.birthdate);
+      const age = calculateAge(formData.birthdate as string | Date);
       if (age < VALIDATION_RULES.MIN_AGE || age > VALIDATION_RULES.MAX_AGE) {
         errors.birthdate = `Age must be between ${VALIDATION_RULES.MIN_AGE} and ${VALIDATION_RULES.MAX_AGE}`;
       }
@@ -125,7 +126,7 @@ export class ResidentDataProcessingService {
   /**
    * Transforms and sanitizes form data according to Philippine standards
    */
-  public static transformFormData(formData: UnknownFormData): ResidentFormData {
+  public static transformFormData(formData: UnknownFormData): Partial<ResidentRecord> {
     const sanitizedData: Record<string, any> = {};
 
     // Sanitize all string fields
@@ -142,7 +143,7 @@ export class ResidentDataProcessingService {
     }
 
     // Apply default values for missing fields
-    const transformedData: ResidentFormData = {
+    const transformedData: Partial<ResidentRecord> = {
       id: sanitizedData.id || '',
       first_name: sanitizedData.first_name || '',
       middle_name: sanitizedData.middle_name || '',
@@ -159,11 +160,8 @@ export class ResidentDataProcessingService {
       telephone_number: sanitizedData.telephone_number || '',
       philsys_card_number: sanitizedData.philsys_card_number || '',
       
-      // Address information
-      region_code: sanitizedData.region_code || '',
-      province_code: sanitizedData.province_code || '',
-      city_municipality_code: sanitizedData.city_municipality_code || '',
-      barangay_code: sanitizedData.barangay_code || '',
+      // Address information (not part of ResidentFormData - handled separately)
+      // region_code, province_code, etc. are in household address, not resident data
       
       // Education & employment
       education_attainment: sanitizedData.education_attainment || null,
@@ -207,18 +205,18 @@ export class ResidentDataProcessingService {
    */
   public static parseFullName(fullName: string): NameParts {
     if (!fullName || typeof fullName !== 'string') {
-      return { first: '', middle: '', last: '', extension: '' };
+      return { first_name: '', middleName: '', last_name: '' };
     }
 
     const cleanName = sanitizeNameInput(fullName.trim());
     const parts = cleanName.split(/\s+/);
 
     if (parts.length === 1) {
-      return { first: parts[0], middle: '', last: '', extension: '' };
+      return { first_name: parts[0], middleName: '', last_name: '' };
     }
 
     if (parts.length === 2) {
-      return { first: parts[0], middle: '', last: parts[1], extension: '' };
+      return { first_name: parts[0], middleName: '', last_name: parts[1] };
     }
 
     if (parts.length >= 3) {
@@ -227,29 +225,26 @@ export class ResidentDataProcessingService {
       
       if (isExtension && parts.length >= 4) {
         return {
-          first: parts[0],
-          middle: parts.slice(1, -2).join(' '),
-          last: parts[parts.length - 2],
-          extension: lastPart,
+          first_name: parts[0],
+          middleName: parts.slice(1, -2).join(' '),
+          last_name: parts[parts.length - 2],
         };
       } else if (isExtension) {
         return {
-          first: parts[0],
-          middle: '',
-          last: parts[parts.length - 2],
-          extension: lastPart,
+          first_name: parts[0],
+          middleName: '',
+          last_name: parts[parts.length - 2],
         };
       } else {
         return {
-          first: parts[0],
-          middle: parts.slice(1, -1).join(' '),
-          last: lastPart,
-          extension: '',
+          first_name: parts[0],
+          middleName: parts.slice(1, -1).join(' '),
+          last_name: lastPart,
         };
       }
     }
 
-    return { first: '', middle: '', last: '', extension: '' };
+    return { first_name: '', middleName: '', last_name: '' };
   }
 
   /**
@@ -272,8 +267,8 @@ export class ResidentDataProcessingService {
           sessionId,
           userId,
           barangayCode,
-          validationErrors: validationResult.errors,
           timestamp: new Date().toISOString(),
+          complianceNote: 'Form validation failed - data privacy compliance check',
         }
         );
 
@@ -286,9 +281,10 @@ export class ResidentDataProcessingService {
             action: 'form_validation',
             userId,
             sessionId,
+            barangayCode,
             timestamp: new Date().toISOString(),
             success: false,
-            errors: validationResult.errors,
+            error: JSON.stringify(validationResult.errors),
           },
         };
       }
@@ -313,7 +309,13 @@ export class ResidentDataProcessingService {
         },
       };
 
-      philippineCompliantLogger.info('FORM_PROCESSING_SUCCESS', auditTrail);
+      philippineCompliantLogger.info('FORM_PROCESSING_SUCCESS', {
+        userId,
+        sessionId,
+        barangayCode,
+        timestamp: new Date().toISOString(),
+        complianceNote: 'Form processing completed successfully with RA 10173 compliance',
+      });
 
       return {
         success: true,
@@ -327,8 +329,8 @@ export class ResidentDataProcessingService {
         sessionId,
         userId,
         barangayCode,
-        error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
+        complianceNote: `Data processing error: ${error instanceof Error ? error.message : String(error)}`,
       });
 
       return {
@@ -340,6 +342,7 @@ export class ResidentDataProcessingService {
           action: 'form_processing',
           userId,
           sessionId,
+          barangayCode,
           timestamp: new Date().toISOString(),
           success: false,
           error: error instanceof Error ? error.message : String(error),

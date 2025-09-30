@@ -15,7 +15,8 @@ import { useMemo } from 'react';
 
 import { useDashboardApi } from './useDashboardApi';
 import { useDashboardCalculations } from './useDashboardCalculations';
-import type { UseDashboardReturn } from '@/types';
+
+import type { UseDashboardReturn } from '@/types/app/dashboard/dashboard';
 
 /**
  * Dashboard hook (Refactored)

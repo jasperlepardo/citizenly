@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 import {
   loadUserMetrics,
   updatePageViewMetrics,

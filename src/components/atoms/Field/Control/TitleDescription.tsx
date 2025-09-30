@@ -89,7 +89,13 @@ export const TitleDescription: React.FC<TitleDescriptionProps> = ({
   size = 'md',
   className,
 }) => {
-  const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
+  // Determine the appropriate variant based on state
+  let actualVariant = variant;
+  if (disabled) {
+    actualVariant = 'disabled';
+  } else if (errorMessage) {
+    actualVariant = 'error';
+  }
 
   if (!title && !description && !errorMessage) {
     return null;

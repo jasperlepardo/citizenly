@@ -4,8 +4,8 @@
  */
 import { useMemo } from 'react';
 
+import type { FieldAccessibilityOptions, FieldAccessibilityProps, FieldGroupAccessibilityReturn } from '@/types/app/ui/accessibility';
 import { generateId } from '@/utils/shared/idGenerators';
-import type { FieldAccessibilityOptions, FieldAccessibilityProps, FieldGroupAccessibilityReturn } from '@/types';
 
 /**
  * Hook for standardizing field accessibility patterns

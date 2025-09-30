@@ -4,9 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { createSecureErrorResponse } from '@/lib/security/apiSecurity';
-
 import type { AuthenticatedUser, AuthResult } from '@/types/app/auth/auth';
 
 /**

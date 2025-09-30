@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { HouseholdDetails } from '@/components/organisms/HouseholdDetails';
-import { HouseholdFormData } from '@/components/types';
+import type { HouseholdFormData } from '@/types/app/ui/forms';
 
 const meta: Meta<typeof HouseholdDetails> = {
   title: 'Organisms/Form/Household/HouseholdDetails',

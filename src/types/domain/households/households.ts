@@ -314,16 +314,8 @@ export interface HouseholdTableAction {
 // ENUM OPTIONS AND CONSTANTS
 // =============================================================================
 
-// Form option constants moved to dedicated constants file for better organization
-// Import from: @/constants/household-formOptions
-export type { OptionType } from '../../../constants/householdFormOptions';
-export {
-  HOUSEHOLD_TYPE_OPTIONS,
-  TENURE_STATUS_OPTIONS,
-  HOUSEHOLD_UNIT_OPTIONS,
-  INCOME_CLASS_OPTIONS,
-  HOUSEHOLD_FORM_OPTIONS,
-} from '../../../constants/householdFormOptions';
+// Form option constants - moved to form components for better organization
+// Previously imported from householdFormOptions (legacy, removed)
 
 // =============================================================================
 // VALIDATION AND ERROR INTERFACES

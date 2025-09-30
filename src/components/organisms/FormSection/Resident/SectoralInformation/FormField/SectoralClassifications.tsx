@@ -8,14 +8,16 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 
-import { ControlField } from '@/components';
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import { calculateSectoralFlags } from '@/services/domain/residents/residentClassification';
-import type { FormMode, SectoralInformation, SectoralContext } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { SectoralInformation } from '@/types/domain/residents/forms';
 
 interface SectoralClassificationsProps {
   readonly value: SectoralInformation;
   readonly onChange: (sectoral: SectoralInformation) => void;
-  readonly context: SectoralContext;
+  readonly context: any;
   readonly mode?: FormMode;
   readonly disabled?: boolean;
   readonly loadingStates?: {

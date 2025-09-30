@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { getCompleteAddress, type AddressHierarchy } from '@/lib/data/database-utils';
-import type { UserBarangayInfo } from '@/types';
+
+import type { UserBarangayInfo } from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Hook to get the current user's primary barangay assignment and address hierarchy

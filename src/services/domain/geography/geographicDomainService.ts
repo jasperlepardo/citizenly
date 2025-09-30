@@ -44,7 +44,47 @@ export class GeographicDomainService {
     cityCode?: string;
     barangayCode?: string;
   }): Promise<RepositoryResult<CompleteAddress>> {
-    const result = await this.repository.lookupAddress(codes);
+    // Build complete address from individual lookups
+    const parts: CompleteAddress = { full_address: '' };
+
+    if (codes.regionCode) {
+      const regionResult = await this.repository.findRegionByCode(codes.regionCode);
+      if (regionResult.success && regionResult.data) {
+        parts.region = { code: codes.regionCode, name: regionResult.data.name };
+      }
+    }
+
+    if (codes.provinceCode) {
+      const provinceResult = await this.repository.findProvinceByCode(codes.provinceCode);
+      if (provinceResult.success && provinceResult.data) {
+        parts.province = { code: codes.provinceCode, name: provinceResult.data.name };
+      }
+    }
+
+    if (codes.cityCode) {
+      const cityResult = await this.repository.findCityByCode(codes.cityCode);
+      if (cityResult.success && cityResult.data) {
+        parts.city = { code: codes.cityCode, name: cityResult.data.name };
+      }
+    }
+
+    if (codes.barangayCode) {
+      const barangayResult = await this.repository.findBarangayByCode(codes.barangayCode);
+      if (barangayResult.success && barangayResult.data) {
+        parts.barangay = { code: codes.barangayCode, name: barangayResult.data.name };
+      }
+    }
+
+    // Build full address string
+    const addressParts = [];
+    if (parts.barangay) addressParts.push(parts.barangay.name);
+    if (parts.city) addressParts.push(parts.city.name);
+    if (parts.province) addressParts.push(parts.province.name);
+    if (parts.region) addressParts.push(parts.region.name);
+
+    parts.full_address = addressParts.join(', ');
+
+    const result = { success: true, data: parts, error: null };
     
     if (!result.success || !result.data) {
       return {
@@ -72,14 +112,14 @@ export class GeographicDomainService {
    * Get regions for dropdown
    */
   async getRegions(): Promise<RepositoryResult<GeographicLocation[]>> {
-    const result = await this.repository.getRegions();
+    const result = await this.repository.findRegions();
     
     if (!result.success) {
       return result;
     }
 
     // Transform and validate data
-    const regions = (result.data || []).map(region => ({
+    const regions = (result.data || []).map((region: any) => ({
       code: region.code,
       name: region.name,
       level: 'region' as const
@@ -103,7 +143,7 @@ export class GeographicDomainService {
       };
     }
 
-    const result = await this.repository.getProvinces(regionCode);
+    const result = await this.repository.findProvinces(regionCode);
     
     if (!result.success) {
       return result;
@@ -111,13 +151,13 @@ export class GeographicDomainService {
 
     // Transform and sort data
     const provinces = (result.data || [])
-      .map(province => ({
+      .map((province: any) => ({
         code: province.code,
         name: province.name,
         level: 'province' as const,
         parent_code: regionCode
       }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     return {
       success: true,
@@ -137,7 +177,7 @@ export class GeographicDomainService {
       };
     }
 
-    const result = await this.repository.getCities(provinceCode);
+    const result = await this.repository.findCities(provinceCode);
     
     if (!result.success) {
       return result;
@@ -145,13 +185,13 @@ export class GeographicDomainService {
 
     // Transform and categorize
     const cities = (result.data || [])
-      .map(city => ({
+      .map((city: any) => ({
         code: city.code,
         name: this.formatCityName(city),
         level: 'city' as const,
         parent_code: provinceCode
       }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     return {
       success: true,
@@ -171,21 +211,21 @@ export class GeographicDomainService {
       };
     }
 
-    const result = await this.repository.getBarangays(cityCode);
-    
+    const result = await this.repository.findBarangays(cityCode);
+
     if (!result.success) {
       return result;
     }
 
     // Transform and sort
     const barangays = (result.data || [])
-      .map(barangay => ({
+      .map((barangay: any) => ({
         code: barangay.code,
         name: barangay.name,
         level: 'barangay' as const,
         parent_code: cityCode
       }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     return {
       success: true,
@@ -208,7 +248,7 @@ export class GeographicDomainService {
     const sanitizedQuery = query.trim().toLowerCase();
 
     // Get all locations of specified level (or all if not specified)
-    let results: GeographicLocation[] = [];
+    const results: GeographicLocation[] = [];
 
     try {
       if (!level || level === 'region') {

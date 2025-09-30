@@ -5,6 +5,7 @@
 
 import type { LoginFormData, PasswordUpdateRequest } from '@/types/app/auth/auth';
 import type { HouseholdData } from '@/types/domain/households/households';
+
 import type {
   SimpleValidationResult as ValidationResult,
   ValidationContext,

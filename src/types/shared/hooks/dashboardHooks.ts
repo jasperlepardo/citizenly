@@ -22,24 +22,7 @@ export interface DashboardStats {
   employedResidents: number;
 }
 
-/**
- * Dependency data interface
- * Consolidates from src/hooks/dashboard/useDashboardApi.ts
- */
-export interface DependencyData {
-  youngDependents: number; // 0-14
-  workingAge: number; // 15-64
-  oldDependents: number; // 65+
-}
-
-/**
- * Sex data interface
- * Consolidates from src/hooks/dashboard/useDashboardApi.ts
- */
-export interface SexData {
-  male: number;
-  female: number;
-}
+// Legacy interfaces - use DependencyRatioData and SexDistributionData instead
 
 /**
  * Civil status data interface
@@ -78,8 +61,8 @@ export interface EmploymentStatusData {
 export interface DashboardResponse {
   stats: DashboardStats;
   demographics: {
-    ageGroups: DependencyData;
-    sexDistribution: SexData;
+    ageGroups: DependencyRatioData;
+    sexDistribution: SexDistributionData;
     civilStatus: {
       single: number;
       married: number;

@@ -4,23 +4,21 @@ import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import { Button } from '@/components';
-import {
-  LocationAndDemographicsForm,
-  HouseholdDetailsForm,
-} from '@/components/organisms/FormSection/Household';
-import { useAuth } from '@/contexts';
+import { Button } from '@/components/atoms/Button/Button';
+import { LocationAndDemographicsForm } from '@/components/organisms/FormSection/Household/LocationAndDemographics/LocationAndDemographics';
+import { HouseholdDetailsForm } from '@/components/organisms/FormSection/Household/HouseholdDetails/HouseholdDetails';
+import { useAuth } from '@/contexts/AuthContext';
 import { useUserBarangay } from '@/hooks/utilities';
 // REMOVED: @/lib barrel import - replace with specific module;
-import { container } from '@/services/container';
-import { logError } from '@/utils/shared/errorUtils';
 import { supabase } from '@/lib/data/supabase';
+import { container } from '@/services/container';
+import { HouseholdFormData } from '@/types/app/ui/forms';
+import { logError } from '@/utils/shared/errorUtils';
 
 // Import our new Form/Household components
 
 // Import molecules and atoms
 
-import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export type { HouseholdFormData };
 export type HouseholdFormMode = 'create' | 'view' | 'edit';
@@ -697,6 +695,30 @@ export default function HouseholdForm({
                   ]
                 : []
               : barangayOptions
+          }
+          streetOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.street_id
+                ? [
+                    {
+                      value: formData.street_id,
+                      label: viewModeOptions.addressLabels.streetLabel || formData.street_id,
+                    },
+                  ]
+                : []
+              : undefined
+          }
+          subdivisionOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.subdivision_id
+                ? [
+                    {
+                      value: formData.subdivision_id,
+                      label: viewModeOptions.addressLabels.subdivisionLabel || formData.subdivision_id,
+                    },
+                  ]
+                : []
+              : undefined
           }
           regionsLoading={regionsLoading}
           provincesLoading={provincesLoading}

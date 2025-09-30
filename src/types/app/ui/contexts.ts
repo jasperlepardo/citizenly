@@ -6,6 +6,7 @@
  */
 
 import type { Session, User } from '@supabase/supabase-js';
+
 import type { AuthRole, AuthUserProfile } from '@/types/app/auth/auth';
 
 // =============================================================================

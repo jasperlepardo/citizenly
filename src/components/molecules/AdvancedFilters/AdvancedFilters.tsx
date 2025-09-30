@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { Button } from '@/components';
+import { Button } from '@/components/atoms/Button/Button';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 interface FilterOption {

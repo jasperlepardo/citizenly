@@ -2,8 +2,8 @@
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 
-import { createWrappedComponent } from '@/utils/react/hocUtils';
 import { clientLogger } from '@/lib/logging/client-logger';
+import { createWrappedComponent } from '@/utils/react/hocUtils';
 
 interface CommandMenuErrorBoundaryState {
   hasError: boolean;

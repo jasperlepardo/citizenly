@@ -86,3 +86,31 @@ export interface CommandMenuPerformanceMetrics {
   errorRate: number;
   usageFrequency: number;
 }
+
+// =============================================================================
+// PERFORMANCE TRACKING HOOK TYPES
+// =============================================================================
+
+/**
+ * Performance tracking hook options interface
+ * Consolidates from src/hooks/monitoring/usePerformanceTracking.ts
+ */
+export interface UsePerformanceTrackingOptions {
+  componentName: string;
+  enableDetailedMetrics?: boolean;
+  sampleRate?: number;
+  reportInterval?: number;
+  trackRenders?: boolean;
+  trackMounts?: boolean;
+  trackUpdates?: boolean;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Performance tracking hook return interface
+ * Consolidates from src/hooks/monitoring/usePerformanceTracking.ts
+ */
+export interface PerformanceTrackingReturn {
+  trackOperation: <T>(name: string, operation: () => T, metadata?: Record<string, any>) => T;
+  trackAsyncOperation: <T>(name: string, operation: () => Promise<T>, metadata?: Record<string, any>) => Promise<T>;
+}

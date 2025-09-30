@@ -4,7 +4,10 @@ import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 import { supabase } from '@/lib/data/supabase';
-import type { AuthUserProfile, Role, AuthContextType } from '@/types';
+
+import type { AuthUserProfile, UserRole } from '@/types/app/auth/auth';
+import type { AuthContextType, Role } from '@/types/app/ui/contexts';
+
 
 // Interfaces moved to centralized types
 
@@ -146,20 +149,11 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
             last_name: profileData.last_name || '',
             phone: profileData.phone || null,
             role_id: profileData.role_id || '',
-            barangay_code: profileData.barangay_code || null,
+            barangay_code: profileData.barangay_code || '',
             city_municipality_code: profileData.city_municipality_code || null,
             province_code: profileData.province_code || null,
             region_code: profileData.region_code || null,
             is_active: profileData.is_active !== undefined ? profileData.is_active : true,
-            last_login: profileData.last_login || null,
-            email_verified: profileData.email_verified || false,
-            email_verified_at: profileData.email_verified_at || null,
-            welcome_email_sent: profileData.welcome_email_sent || false,
-            welcome_email_sent_at: profileData.welcome_email_sent_at || null,
-            onboarding_completed: profileData.onboarding_completed || false,
-            onboarding_completed_at: profileData.onboarding_completed_at || null,
-            created_by: profileData.created_by || null,
-            updated_by: profileData.updated_by || null,
             created_at: profileData.created_at || new Date().toISOString(),
             updated_at: profileData.updated_at || new Date().toISOString(),
           };
@@ -167,7 +161,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
           console.log('Profile loaded successfully:', profile);
           console.log('Role loaded:', role);
 
-          const finalRole = role || {
+          const finalRole: Role = role || {
             id: 'default-role',
             name: 'User',
             permissions: { residents_view: true },

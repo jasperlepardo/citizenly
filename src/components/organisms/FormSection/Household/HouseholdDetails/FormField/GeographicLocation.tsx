@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 
-import { SelectField } from '@/components/molecules/FieldSet';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { useGeographicData } from '@/hooks/api/useGeographicData';
-
 import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export interface GeographicLocationProps {

@@ -11,9 +11,10 @@
 import { NextResponse, NextRequest } from 'next/server';
 
 import { logger } from '@/lib/logging/secure-logger';
-import { sanitizeInput } from '@/utils/auth/sanitizationUtils';
 import { auditError, auditSecurityViolation, AuditEventType } from '@/lib/security/auditStorage';
 import type { ApiSuccessResponse, ApiErrorResponse } from '@/types/app/api/apiConsolidated';
+import { ErrorCode as ErrorCodeEnum } from '@/types/shared/errors/errors';
+import { sanitizeInput } from '@/utils/auth/sanitizationUtils';
 
 // Service interfaces
 interface PaginatedResponse<T> {
@@ -379,7 +380,7 @@ export class ErrorHandlingService {
     if (context) {
       const errorObj = new Error(error.message);
       errorObj.name = 'DatabaseError';
-      await auditError(errorObj, context, 'DATABASE_ERROR');
+      await auditError(errorObj, context, ErrorCodeEnum.DATABASE_ERROR);
     }
 
     // Check for specific database error codes
@@ -414,7 +415,7 @@ export class ErrorHandlingService {
     logger.error('Unexpected API error', { error, context });
 
     if (context) {
-      await auditError(error, context, 'INTERNAL_ERROR');
+      await auditError(error, context, ErrorCodeEnum.INTERNAL_ERROR);
     }
 
     return ApiResponseService.createErrorResponse(

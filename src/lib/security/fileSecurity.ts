@@ -32,7 +32,7 @@ const MALICIOUS_SIGNATURES = [
   Buffer.from('#!/bin/bash', 'utf-8'),
 ];
 
-import type { FileValidationResult } from '@/types/security';
+import type { FileValidationResult } from '@/types/app/auth/security';
 
 /**
  * Validate file size

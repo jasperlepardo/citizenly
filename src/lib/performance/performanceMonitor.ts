@@ -15,10 +15,11 @@
 import React from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
+
 import type {
   WebVitalsPerformanceMetric as PerformanceMetric,
   ResourceTiming,
-} from '@/types/shared/utilities';
+} from '@/types/shared/utilities/utilities';
 
 // Performance thresholds based on Core Web Vitals
 export const PERFORMANCE_THRESHOLDS = {
@@ -328,7 +329,7 @@ class PerformanceMonitor {
         });
       }
     } catch (error) {
-      logger.error('Failed to send performance metric', { error });
+      clientLogger.error('Failed to send performance metric', { error: error as Error });
     }
   }
 

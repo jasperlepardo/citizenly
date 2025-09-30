@@ -9,10 +9,8 @@
 
 import { useMemo } from 'react';
 
-import type { 
-  ResidentFormData, 
-  UseResidentCrossFieldValidationReturn,
-} from '@/types';
+import type { UseResidentCrossFieldValidationReturn } from '@/types/shared/hooks/utilityHooks';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 /**
  * Cross-field validation rule definition

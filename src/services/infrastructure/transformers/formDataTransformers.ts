@@ -2,6 +2,7 @@
  * Data transformation utilities for form data mapping
  */
 
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 import type {
   SexEnum,
   CivilStatusEnum,
@@ -12,7 +13,7 @@ import type {
   EducationLevelEnum,
   EmploymentStatusEnum,
 } from '@/types/infrastructure/database/database';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
+
 import type {
   MigrationInformationData,
   BasicInformationData,

@@ -4,12 +4,16 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 
+import { trackSearch, trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
+import type { CommandMenuSearchResult } from '@/types/infrastructure/services/services';
 import {
   trackCommandMenuSearch,
   trackCommandMenuNavigation,
   trackCommandMenuAction,
   trackCommandMenuError,
 } from '@/utils/command-menu/analytics-utils';
+import { getCommandMenuItems, getAllCommandMenuItems } from '@/utils/command-menu/items-utils';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 import {
   searchData,
   exportData,
@@ -24,10 +28,6 @@ import {
   generateCertificate,
   generateReport,
 } from '@/utils/shared/apiUtils';
-import { getCommandMenuItems, getAllCommandMenuItems } from '@/utils/command-menu/items-utils';
-import { trackSearch, trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
-import type { CommandMenuSearchResult } from '@/types/infrastructure/services/services';
 
 interface UseCommandMenuWithApiProps {
   maxResults?: number;
@@ -241,7 +241,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
     if (!isInputFocused()) {
       setIsOpen(true);
     }
-  }, true);
+  });
 
   // Command menu navigation when open
   useEffect(() => {
@@ -251,17 +251,18 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
       isOpen: true,
       selectedIndex,
       itemCount: filteredItems.length,
+      onOpen: () => setIsOpen(true),
       onClose: close,
       onSelect: (index: number) => {
         if (filteredItems[index]) {
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex,
+      onNavigate: (index: number) => setSelectedIndex(index),
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      handleMenuKeyDown(event);
+      handleMenuKeyDown(event as unknown as React.KeyboardEvent);
     };
 
     document.addEventListener('keydown', handleKeyDown);

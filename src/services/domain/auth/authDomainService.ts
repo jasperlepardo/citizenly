@@ -4,9 +4,10 @@
  * No infrastructure dependencies - uses interfaces only
  */
 
-import type { IAuthRepository } from '@/types/domain/repositories';
 import type { User, Session } from '@supabase/supabase-js';
+
 import type { AuthUserProfile, UserRole } from '@/types/app/auth/auth';
+import type { IAuthRepository } from '@/types/domain/repositories';
 import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 
 /**
@@ -82,7 +83,11 @@ export class AuthDomainService {
    * Sign out current user
    */
   async signOut(): Promise<RepositoryResult<void>> {
-    return this.repository.signOut();
+    const result = await this.repository.signOut();
+    return {
+      success: result.success,
+      error: result.error
+    };
   }
 
   /**
@@ -244,8 +249,8 @@ export class AuthDomainService {
     }
 
     // Generate display name if not provided
-    if (!enriched.display_name && (enriched.first_name || enriched.last_name)) {
-      enriched.display_name = [enriched.first_name, enriched.last_name]
+    if (!(enriched as any).display_name && (enriched.first_name || enriched.last_name)) {
+      (enriched as any).display_name = [enriched.first_name, enriched.last_name]
         .filter(Boolean)
         .join(' ');
     }

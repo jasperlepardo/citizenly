@@ -7,10 +7,10 @@
 
 import React from 'react';
 
+import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from '@/types/shared/errors/errors';
 import { createWrappedComponent } from '@/utils/react/hocUtils';
 import { logError, getErrorMessage } from '@/utils/shared/errorUtils';
 
-import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from '@/types/shared/errors/errors';
 
 /**
  * Create error boundary state from error

@@ -23,7 +23,7 @@ import { sanitizeSearchInput } from '@/utils/shared/validationUtils';
 // TYPES
 // =============================================================================
 
-import type { PSGCQueryConfig, PSGCOption } from '@/types';
+import type { PSGCQueryConfig, PSGCOption } from '@/types/shared/utilities/utilities';
 
 /**
  * Database entity interfaces
@@ -80,7 +80,7 @@ export function createPSGCHandler(config: PSGCQueryConfig) {
 
     // Transform data to standard SelectField format
     const options: PSGCOption[] =
-      data?.map((item: Record<string, unknown>) => {
+      (data as unknown as Record<string, unknown>[] | null)?.map((item: Record<string, unknown>) => {
         const option: PSGCOption = {
           value: String(item.code || ''),
           label: String(item.name || ''),
@@ -325,8 +325,8 @@ export function createCustomPSGCHandler<T = PSGCOption>(
 
     // Apply custom transformation or default transformation
     const processedData = transformer
-      ? transformer(data || [])
-      : data?.map((item: Record<string, unknown>) => {
+      ? transformer((data as unknown as Record<string, unknown>[]) || [])
+      : (data as unknown as Record<string, unknown>[] | null)?.map((item: Record<string, unknown>) => {
           const option: PSGCOption = {
             value: String(item.code || ''),
             label: String(item.name || ''),

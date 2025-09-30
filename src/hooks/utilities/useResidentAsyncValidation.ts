@@ -9,14 +9,16 @@
 
 import { useState, useCallback, useRef } from 'react';
 
-import { asyncValidationUtils } from '@/utils/validation/utilities';
 
 import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
-import type { 
+
+import type {
   AsyncValidationOptions,
   UseResidentAsyncValidationReturn,
   HookAsyncValidationResult as AsyncValidationResult,
-} from '@/types';
+} from '@/types/shared/hooks/utilityHooks';
+// TODO: Find actual validation utilities module
+// import { asyncValidationUtils } from '@/utils/validation/utilities';
 
 /**
  * Fields that support async validation
@@ -44,7 +46,7 @@ export function useResidentAsyncValidation(
 
   // Error boundary for async validation operations
   const { wrapAsync } = useAsyncErrorBoundary({
-    onError: (error, errorInfo) => {
+    onError: (error: any, errorInfo: any) => {
       // Log validation errors for debugging
       if (process.env.NODE_ENV === 'development') {
         console.error('Async Validation Error:', errorInfo, error);

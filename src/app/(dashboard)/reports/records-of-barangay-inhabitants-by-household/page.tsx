@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { useAuth } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/data/supabase';
 import { logger, logError } from '@/lib/logging/secure-logger';
 import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/domain/households/households';

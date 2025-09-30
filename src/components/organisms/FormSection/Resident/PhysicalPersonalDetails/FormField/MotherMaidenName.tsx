@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { InputField } from '@/components';
-import type { FormMode, MotherMaidenNameFormData } from '@/types';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { MotherMaidenNameFormData } from '@/types/domain/residents/forms';
 
 export interface MotherMaidenNameProps {
   /** Form mode - determines if field is editable or read-only */
@@ -36,9 +38,9 @@ export function MotherMaidenName({
   // Helper function to format full maiden name
   const formatFullMaidenName = () => {
     const parts = [
-      value.mother_maiden_first?.trim(),
-      value.mother_maiden_middle?.trim(),
-      value.mother_maiden_last?.trim(),
+      value.mother_maiden_first_name?.trim(),
+      value.mother_maiden_middle_name?.trim(),
+      value.mother_maiden_last_name?.trim(),
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(' ') : '—';
   };
@@ -76,8 +78,8 @@ export function MotherMaidenName({
               mode={mode}
               loading={loadingStates?.mother_maiden_first}
               inputProps={{
-                value: value.mother_maiden_first,
-                onChange: e => handleChange('mother_maiden_first', e.target.value),
+                value: value.mother_maiden_first_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_maiden_first_name', e.target.value),
                 placeholder: "Mother's maiden first name",
                 error: errors.mother_maiden_first,
               }}
@@ -90,8 +92,8 @@ export function MotherMaidenName({
               mode={mode}
               loading={loadingStates?.mother_maiden_middle}
               inputProps={{
-                value: value.mother_maiden_middle,
-                onChange: e => handleChange('mother_maiden_middle', e.target.value),
+                value: value.mother_maiden_middle_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_maiden_middle_name', e.target.value),
                 placeholder: "Mother's maiden middle name",
                 error: errors.mother_maiden_middle,
               }}
@@ -104,8 +106,8 @@ export function MotherMaidenName({
               mode={mode}
               loading={loadingStates?.mother_maiden_last}
               inputProps={{
-                value: value.mother_maiden_last,
-                onChange: e => handleChange('mother_maiden_last', e.target.value),
+                value: value.mother_maiden_last_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_maiden_last_name', e.target.value),
                 placeholder: "Mother's maiden last name",
                 error: errors.mother_maiden_last,
               }}

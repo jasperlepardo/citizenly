@@ -1,8 +1,11 @@
 import React from 'react';
 
-import { SelectField } from '@/components';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
-import type { FormMode, EmploymentInformationFormData, SelectOption } from '@/types';
+
+import type { FormMode } from '@/types/app/ui/forms';
+import type { EmploymentInformationFormData } from '@/types/domain/residents/forms';
+import type { SelectOption } from '@/utils/ui/selectUtils';
 
 export interface EmploymentInformationProps {
   value: EmploymentInformationFormData;
@@ -68,8 +71,8 @@ export function EmploymentInformation({
       console.log('🔍 EmploymentInformation: Title analysis:', {
         hasHierarchicalPrefix,
         isIncompleteTitle,
-        titleLength: value.occupation_title.length,
-        startsWithCode: value.occupation_title.startsWith('Occupation Code:')
+        titleLength: value.occupation_title?.length || 0,
+        startsWithCode: value.occupation_title?.startsWith('Occupation Code:') || false
       });
       
       if (hasHierarchicalPrefix || isIncompleteTitle) {
@@ -142,8 +145,8 @@ export function EmploymentInformation({
           selectProps={{
             placeholder: 'Select employment status...',
             options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
-            value: value.employment_status,
-            onSelect: option => handleChange('employment_status', option?.value || ''),
+            value: value.employment_status || '',
+            onSelect: (option: any) => handleChange('employment_status', option?.value || ''),
           }}
         />
 
@@ -199,7 +202,7 @@ export function EmploymentInformation({
                   
                   console.log('🔍 EmploymentInformation: Adding missing option with label:', displayLabel);
                   currentOptions.unshift({
-                    value: value.occupation_code,
+                    value: value.occupation_code || '',
                     label: displayLabel,
                     description: `PSOC Code: ${value.occupation_code}`,
                   });
@@ -207,9 +210,9 @@ export function EmploymentInformation({
               }
               return currentOptions;
             })(),
-            value: value.occupation_code,
+            value: value.occupation_code || '',
             loading: psocLoading,
-            onSearch: (query) => {
+            onSearch: (query: any) => {
               console.log('🔍 EmploymentInformation: onSearch called with query:', query);
               if (onPsocSearch) {
                 onPsocSearch(query);
@@ -217,7 +220,7 @@ export function EmploymentInformation({
                 console.log('⚠️ EmploymentInformation: onPsocSearch is not provided');
               }
             },
-            onSelect: option => {
+            onSelect: (option: any) => {
               console.log('🔍 EmploymentInformation: Occupation selected:', option);
               if (option) {
                 // Accept occupation, unit_sub_group, and unit_group as valid selections
