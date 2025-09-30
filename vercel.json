@@ -2,7 +2,7 @@
   "version": 2,
   "framework": "nextjs",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build",
+  "buildCommand": "./scripts/build/vercel-build.sh",
   "git": {
     "deploymentEnabled": {
       "main": true,
