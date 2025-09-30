@@ -128,10 +128,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  typescript: {
-    // Temporarily skip type checking during build to work around Vercel worker issue
-    ignoreBuildErrors: true,
-  },
   compiler: {
     removeConsole: process.env.NODE_ENV !== 'development',
   },
