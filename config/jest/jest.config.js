@@ -104,6 +104,9 @@ const customJestConfig = {
 
   // Maximum number of concurrent workers
   maxWorkers: '50%',
+
+  // Pass with no tests - allows CI to succeed when no test files exist
+  passWithNoTests: true,
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
