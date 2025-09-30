@@ -245,7 +245,7 @@ function HouseholdsContent() {
                     Households are created automatically when you add residents with address information.
                   </p>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    To get started, <a href="/residents/create" className="text-blue-600 hover:underline">add your first resident</a> or <a href="/households/create" className="text-blue-600 hover:underline">create a household manually</a>.
+                    To get started, <Link href="/residents/create" className="text-blue-600 hover:underline">add your first resident</Link> or <Link href="/households/create" className="text-blue-600 hover:underline">create a household manually</Link>.
                   </p>
                 </div>
               );
