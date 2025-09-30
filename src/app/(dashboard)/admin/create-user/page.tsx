@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
-import { useGenericFormSubmission } from '@/hooks/utilities';
+import { useGenericFormSubmission } from '@/hooks/utilities/useGenericFormSubmission';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger, logError } from '@/lib/logging/client-logger';
 // Note: createFieldChangeHandler removed - using inline form handling
