@@ -40,6 +40,7 @@
     ".storybook",
     "src/stories",
     "scripts/**/*",
-    "src/components/lazy-index.ts"
+    "src/components/lazy-index.ts",
+    "temp-excluded/**/*"
   ]
 }
