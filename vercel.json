@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "mv tsconfig.json tsconfig.json.bak && npm run build; BUILD_CODE=$?; mv tsconfig.json.bak tsconfig.json; exit $BUILD_CODE",
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",

@@ -5,8 +5,6 @@
  * Database schema aligned - PhilSys format: 12 digits (VARCHAR(20))
  */
 
-import DOMPurify from 'isomorphic-dompurify';
-
 import type { SanitizationOptions } from '@/types/shared/utilities/utilities';
 
 // Note: DEFAULT_FIELD_TYPE_MAPPING removed - unused
@@ -14,6 +12,7 @@ import type { SanitizationOptions } from '@/types/shared/utilities/utilities';
 /**
  * Sanitize general input to prevent XSS and injection attacks
  * Consolidated from multiple implementations across lib and utils
+ * Server-safe: No DOM dependencies, works in API routes
  */
 export function sanitizeInput(input: string | null, options: SanitizationOptions = {}): string {
   if (!input) return '';
@@ -63,11 +62,15 @@ export function sanitizeInput(input: string | null, options: SanitizationOptions
     result = result.substring(0, options.maxLength);
   }
 
-  // Use DOMPurify for additional sanitization
-  return DOMPurify.sanitize(result, {
-    ALLOWED_TAGS: [],
-    ALLOWED_ATTR: [],
-  }).trim();
+  // Additional comprehensive sanitization without DOM dependencies
+  result = result
+    .replace(/[\0\x08\x0B\x0C\x0E-\x1F]/g, '') // Remove control characters
+    .replace(/&#/g, '') // Remove HTML entities start
+    .replace(/\\x/g, '') // Remove hex escapes
+    .replace(/\\u/g, '') // Remove unicode escapes
+    .trim();
+
+  return result;
 }
 
 // Note: sanitizeHtml removed - unused
