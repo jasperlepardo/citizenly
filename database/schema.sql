@@ -550,7 +550,7 @@ CREATE TABLE system_dashboard_summaries (
 CREATE TABLE system_audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     table_name VARCHAR(50) NOT NULL,
-    record_id UUID NOT NULL,
+    record_id TEXT NOT NULL,
     operation VARCHAR(10) NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
     old_values JSONB,
     new_values JSONB,
@@ -684,9 +684,8 @@ BEGIN
     SELECT 
         last_name
     INTO head_last_name
-    FROM residents 
-    WHERE household_code = NEW.code 
-    AND relationship_to_head = 'head' 
+    FROM residents
+    WHERE id = NEW.household_head_id
     AND is_active = true
     LIMIT 1;
     
@@ -703,20 +702,8 @@ RETURNS TRIGGER AS $$
 DECLARE
     full_name_text TEXT;
 BEGIN
-    full_name_text := TRIM(COALESCE(NEW.first_name, ''));
-    
-    IF NEW.middle_name IS NOT NULL AND TRIM(NEW.middle_name) != '' THEN
-        full_name_text := full_name_text || ' ' || TRIM(NEW.middle_name);
-    END IF;
-    
-    IF NEW.last_name IS NOT NULL AND TRIM(NEW.last_name) != '' THEN
-        full_name_text := full_name_text || ' ' || TRIM(NEW.last_name);
-    END IF;
-    
-    IF full_name_text IS NOT NULL AND TRIM(full_name_text) != '' THEN
-        NEW.name := TRIM(full_name_text);
-    END IF;
-    
+    -- Residents do not currently have a stored full-name column.
+    -- Keep this trigger as a no-op for compatibility with existing deployments.
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -1062,7 +1049,7 @@ BEGIN
             FROM psgc_barangays b
             JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
             LEFT JOIN psgc_provinces p ON c.province_code = p.code  -- LEFT JOIN for independent cities
-            JOIN psgc_regions r ON COALESCE(p.region_code, c.region_code) = r.code
+            JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
             WHERE b.code = user_barangay_code;
         END IF;
     END IF;
@@ -1101,7 +1088,18 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Function to create audit log entries
 CREATE OR REPLACE FUNCTION create_audit_log()
 RETURNS TRIGGER AS $$
+DECLARE
+    new_data JSONB;
+    old_data JSONB;
 BEGIN
+    IF TG_OP != 'DELETE' THEN
+        new_data := to_jsonb(NEW);
+    END IF;
+
+    IF TG_OP != 'INSERT' THEN
+        old_data := to_jsonb(OLD);
+    END IF;
+
     INSERT INTO system_audit_logs (
         table_name,               -- Source table name from trigger context
         record_id,               -- Primary key of affected record
@@ -1112,19 +1110,17 @@ BEGIN
         barangay_code           -- Geographic context for audit isolation
     ) VALUES (
         TG_TABLE_NAME,                                    -- Table name from trigger context
-        COALESCE(NEW.id, OLD.id),                        -- Record ID (NEW for INSERT/UPDATE, OLD for DELETE)
+        COALESCE(new_data->>'id', old_data->>'id', new_data->>'code', old_data->>'code'),
         TG_OP,                                            -- Operation type from trigger context
-        CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD)    -- Complete record state before deletion
-             ELSE NULL END,
-        CASE WHEN TG_OP = 'INSERT' OR TG_OP = 'UPDATE'   -- Complete record state after modification
-             THEN to_jsonb(NEW) ELSE NULL END,
+        CASE WHEN TG_OP = 'DELETE' THEN old_data ELSE NULL END,
+        CASE WHEN TG_OP IN ('INSERT', 'UPDATE') THEN new_data ELSE NULL END,
         -- User attribution with fallback hierarchy
         COALESCE(
-            NEW.created_by,                               -- Record's created_by field (INSERT)
-            OLD.created_by,                               -- Previous created_by (UPDATE/DELETE)
+            NULLIF(new_data->>'created_by', '')::UUID,
+            NULLIF(old_data->>'created_by', '')::UUID,
             (current_setting('request.jwt.claims', true)::jsonb->>'sub')::UUID  -- JWT fallback
         ),
-        COALESCE(NEW.barangay_code, OLD.barangay_code)   -- Geographic context for isolation
+        COALESCE(new_data->>'barangay_code', old_data->>'barangay_code')
     );
 
     RETURN COALESCE(NEW, OLD);
@@ -1247,11 +1243,6 @@ CREATE TRIGGER trigger_residents_user_tracking
     FOR EACH ROW
     EXECUTE FUNCTION populate_user_tracking_fields();
 
-CREATE TRIGGER trigger_household_members_user_tracking
-    BEFORE INSERT OR UPDATE ON household_members
-    FOR EACH ROW
-    EXECUTE FUNCTION populate_user_tracking_fields();
-
 CREATE TRIGGER trigger_households_user_tracking
     BEFORE INSERT OR UPDATE ON households
     FOR EACH ROW
@@ -1274,23 +1265,13 @@ CREATE TRIGGER trigger_households_auto_populate_name
 CREATE OR REPLACE FUNCTION update_name_on_resident_change()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Detect household head changes or head's last name modifications
-    IF (NEW.relationship_to_head = 'head' OR OLD.relationship_to_head = 'head') 
-       AND (NEW.last_name IS DISTINCT FROM OLD.last_name) THEN
+    -- Detect household head last name changes.
+    IF NEW.last_name IS DISTINCT FROM OLD.last_name THEN
         
         -- Update household name using current head's last name
         UPDATE households 
-        SET name = (
-            SELECT TRIM(
-                r.last_name
-            ) || ' Residence'  -- Standard DILG household naming format
-            FROM residents r
-            WHERE r.household_code = NEW.household_code
-            AND r.relationship_to_head = 'head'
-            AND r.is_active = true
-            LIMIT 1  -- Ensure only one household head
-        )
-        WHERE code = NEW.household_code;
+        SET name = TRIM(NEW.last_name) || ' Residence'
+        WHERE household_head_id = NEW.id;
     END IF;
     
     RETURN NEW;
@@ -1313,12 +1294,6 @@ CREATE TRIGGER trigger_update_name_on_resident_change
 -- Sectoral information user tracking - removed as table doesn't have created_by/updated_by fields
 
 -- Migration information user tracking - removed as table doesn't have created_by/updated_by fields
-
--- Resident relationships user tracking
-CREATE TRIGGER trigger_resident_relationships_user_tracking
-    BEFORE INSERT OR UPDATE ON resident_relationships
-    FOR EACH ROW
-    EXECUTE FUNCTION populate_user_tracking_fields();
 
 -- Authentication user profiles tracking
 CREATE TRIGGER trigger_auth_user_profiles_user_tracking
@@ -1471,7 +1446,7 @@ CREATE INDEX idx_dashboard_summaries_date ON system_dashboard_summaries(calculat
 -- 13.10 SECTORAL INFORMATION INDEXES
 
 CREATE INDEX idx_sectoral_resident ON resident_sectoral_info(resident_id);
-CREATE INDEX idx_sectoral_labor_force ON resident_sectoral_info(is_labor_force);
+CREATE INDEX idx_sectoral_labor_force ON resident_sectoral_info(is_labor_force_employed);
 CREATE INDEX idx_sectoral_employed ON resident_sectoral_info(is_labor_force_employed);
 CREATE INDEX idx_sectoral_ofw ON resident_sectoral_info(is_overseas_filipino_worker);
 CREATE INDEX idx_sectoral_pwd ON resident_sectoral_info(is_person_with_disability);
@@ -1660,14 +1635,19 @@ CREATE POLICY "Users can update own profile" ON auth_user_profiles
 CREATE POLICY "Multi-level geographic access for residents" ON residents
     FOR ALL USING (
         -- Hierarchical geographic access: users can access data at their level or below
-        CASE user_access_level()::json->>'level'
-            WHEN 'barangay' THEN barangay_code = user_barangay_code()           -- Barangay-only access
-            WHEN 'city' THEN city_municipality_code = user_city_code()         -- City-wide access
-            WHEN 'province' THEN province_code = user_province_code()          -- Province-wide access
-            WHEN 'region' THEN region_code = user_region_code()                -- Region-wide access
-            WHEN 'national' THEN true                                               -- National-level access
-            ELSE false                                                               -- No access by default
-        END
+        EXISTS (
+            SELECT 1
+            FROM households h
+            WHERE h.code = residents.household_code
+            AND CASE user_access_level()::json->>'level'
+                WHEN 'barangay' THEN h.barangay_code = user_barangay_code()
+                WHEN 'city' THEN h.city_municipality_code = user_city_code()
+                WHEN 'province' THEN h.province_code = user_province_code()
+                WHEN 'region' THEN h.region_code = user_region_code()
+                WHEN 'national' THEN true
+                ELSE false
+            END
+        )
     );
 
 -- Households: Geographic access control matching resident-level restrictions
@@ -1995,7 +1975,32 @@ LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
 LEFT JOIN geo_subdivisions s ON b.code = s.barangay_code
 ORDER BY COALESCE(r.name, 'ZZ'), COALESCE(p.name, ''), c.name, b.name;
 
--- 16.3 HOUSEHOLD SEARCH VIEW (REMOVED - NOT IN SUPABASE)
+-- 16.3 HOUSEHOLD SEARCH VIEW
+
+CREATE OR REPLACE VIEW household_search AS
+SELECT
+    h.code,
+    h.house_number,
+    st.name::TEXT AS street_name,
+    sd.name::TEXT AS subdivision_name,
+    b.name::TEXT AS barangay_name,
+    c.name::TEXT AS city_municipality_name,
+    p.name::TEXT AS province_name,
+    r.name::TEXT AS region_name,
+    h.address AS full_address,
+    h.barangay_code,
+    h.city_municipality_code,
+    h.province_code,
+    h.region_code,
+    h.no_of_household_members,
+    h.created_at
+FROM households h
+JOIN geo_streets st ON h.street_id = st.id
+LEFT JOIN geo_subdivisions sd ON h.subdivision_id = sd.id
+JOIN psgc_barangays b ON h.barangay_code = b.code
+JOIN psgc_cities_municipalities c ON h.city_municipality_code = c.code
+LEFT JOIN psgc_provinces p ON h.province_code = p.code
+JOIN psgc_regions r ON h.region_code = r.code;
 
 -- 16.4 BIRTH PLACE OPTIONS VIEW
 
@@ -2086,7 +2091,6 @@ BEGIN
             bpo.name ILIKE '%' || search_term || '%' OR
             bpo.full_name ILIKE '%' || search_term || '%'
         ))
-        AND (level_filter IS NULL OR bpo.place_level = level_filter::TEXT)
         AND (parent_code_filter IS NULL OR bpo.parent_code = parent_code_filter)
     ORDER BY
         bpo.name ASC,
@@ -2116,7 +2120,7 @@ BEGIN
         bpo.place_level,
         bpo.parent_code
     FROM birth_place_options bpo
-    WHERE bpo.code = place_code AND bpo.place_level = place_level::TEXT;
+    WHERE bpo.code = get_birth_place_details.place_code;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -2165,7 +2169,7 @@ BEGIN
         pos.level_type as psoc_level,
         pos.occupation_title
     FROM psoc_occupation_search pos
-    WHERE pos.occupation_code = occupation_details.occupation_code;
+    WHERE pos.occupation_code = get_occupation_details.occupation_code;
 END;
 $$ LANGUAGE plpgsql;
 
