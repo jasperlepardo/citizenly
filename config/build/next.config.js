@@ -125,9 +125,8 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Turbopack config (empty to silence Next.js 16 warning)
+  turbopack: {},
   compiler: {
     removeConsole: process.env.NODE_ENV !== 'development',
   },

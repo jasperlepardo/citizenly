@@ -116,12 +116,13 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
 
           if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error('Profile API error:', {
+            const errorDetails = {
               status: response.status,
               statusText: response.statusText,
               error: errorData.error || 'Unknown error',
               fullError: JSON.stringify(errorData, null, 2),
-            });
+            };
+            console.error('Profile API error:', errorDetails);
             throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
           }
 

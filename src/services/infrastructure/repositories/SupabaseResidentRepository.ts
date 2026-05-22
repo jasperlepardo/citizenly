@@ -199,7 +199,7 @@ export class SupabaseResidentRepository {
           .from('residents')
           .select(`
             *,
-            households!inner(code, barangay_code)
+            households!residents_household_code_fkey!inner(code, barangay_code)
           `, { count: 'exact' })
           .eq('is_active', true);
 

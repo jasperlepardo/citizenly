@@ -12,14 +12,44 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 
   // Patch console.error
   console.error = function (...args: any[]) {
-    const message = typeof args[0] === 'string' ? args[0] : '';
+    // Convert all args to string to check content
+    const allArgsString = args.map(arg =>
+      typeof arg === 'string' ? arg : JSON.stringify(arg)
+    ).join(' ');
 
     // Skip Next.js OuterLayoutRouter key warnings
     if (
-      message.includes('Each child in a list should have a unique "key" prop') &&
-      message.includes('OuterLayoutRouter')
+      allArgsString.includes('Each child in a list should have a unique "key" prop') &&
+      allArgsString.includes('OuterLayoutRouter')
     ) {
       return; // Suppress this specific warning
+    }
+
+    // Skip hydration mismatch from browser extensions (Scribe, etc.)
+    // Check both specific extension errors and general hydration mismatches
+    if (
+      allArgsString.includes('A tree hydrated but some attributes') &&
+      (allArgsString.includes('data-scribe-recorder-ready') ||
+       allArgsString.includes('browser extension'))
+    ) {
+      return; // Suppress browser extension hydration warnings
+    }
+
+    // Also suppress generic hydration mismatches that mention browser extensions
+    if (
+      allArgsString.includes('A tree hydrated but some attributes') &&
+      allArgsString.includes('client has a browser extension installed')
+    ) {
+      return; // Suppress browser extension hydration warnings
+    }
+
+    // Skip expected unauthenticated errors (dashboard/profile when not logged in)
+    if (
+      allArgsString.includes('[useDashboardApi] Dashboard API') ||
+      allArgsString.includes('Dashboard data fetch returned null') ||
+      allArgsString.includes('permission denied for table auth_user_profiles')
+    ) {
+      return; // Suppress expected authentication errors in development
     }
 
     // Call original error for everything else
