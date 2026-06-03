@@ -8,8 +8,6 @@ import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectF
 import { useGenericFormSubmission } from '@/hooks/utilities/useGenericFormSubmission';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger, logError } from '@/lib/logging/client-logger';
-// Note: createFieldChangeHandler removed - using inline form handling
-
 export const dynamic = 'force-dynamic';
 
 interface CreateUserFormData {

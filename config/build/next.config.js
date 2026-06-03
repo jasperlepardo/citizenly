@@ -128,9 +128,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV !== 'development',
-  },
   experimental: {
     // Keep empty until packages using it are installed
     optimizePackageImports: [],
@@ -143,6 +140,12 @@ const nextConfig = {
   },
 
   webpack: config => {
+    // Explicit module resolution for Vercel builds
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, '../../src'),
+    };
+
     // Bundle Analysis (if ANALYZE=true)
     if (process.env.ANALYZE === 'true') {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
